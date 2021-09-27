@@ -1351,7 +1351,7 @@ yyreduce:
 #line 82 "csv.y"
                      { 
 		++num_lines2;
-		//csv_record.resize(0);
+		csv_record.resize(0);
 		yyerrok; 
 	}
 #line 1358 "csv.tab.c"

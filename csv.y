@@ -81,7 +81,7 @@ input:
 	//}
 	| error '\n' { 
 		++num_lines2;
-		//csv_record.resize(0);
+		csv_record.resize(0);
 		yyerrok; 
 	}
 	;
