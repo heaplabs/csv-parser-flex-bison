@@ -98,6 +98,12 @@ int expected_fields = 0;
 	return ',';
 }
 
+<<EOF>> {
+	static int once = 0;
+	cout << "flex - returning NEWL on EOF" << endl;
+	return once++ ? 0 : '\n';
+}
+
 \r\n|\n\r|\r|\n {
 	++num_lines;
 	printf("total fields :%d\n", num_fields);

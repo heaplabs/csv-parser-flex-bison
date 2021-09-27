@@ -72,9 +72,17 @@
 	int yylex(void);
 	void yyerror(char const *);
 	#include <string>
+	#include <vector>
 	using std::string;
+	using std::vector;
+	vector<string> csv_record;
+	#include <iostream>
+	using std::cout;
+	using std::endl;
 
-#line 78 "csv.tab.c"
+	int num_fields2 = 0, num_lines2 = 0;
+
+#line 86 "csv.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -444,16 +452,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  6
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   7
+#define YYLAST   13
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  6
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  3
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  6
+#define YYNRULES  7
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  9
+#define YYNSTATES  12
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   258
@@ -500,7 +508,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    16,    16,    17,    20,    21,    22
+       0,    24,    24,    36,    66,    69,    70,    74
 };
 #endif
 
@@ -510,7 +518,7 @@ static const yytype_int8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "CSV_FIELD", "'\\n'", "','", "$accept",
-  "input", "line", YY_NULLPTR
+  "input", "record", YY_NULLPTR
 };
 #endif
 
@@ -523,12 +531,12 @@ static const yytype_int16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF (-2)
+#define YYPACT_NINF (-4)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-1)
+#define YYTABLE_NINF (-6)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -537,7 +545,8 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       4,     1,     0,    -2,    -2,     4,    -2,    -2,    -2
+      -1,    -3,    -4,     5,     2,    -4,    -4,     6,    -4,     9,
+      -4,    -4
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -545,19 +554,20 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       4,     0,     0,     2,     5,     4,     1,     3,     6
+       0,     0,     6,     5,     0,     4,     1,     0,     2,     0,
+       3,     7
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -2,    -2,    -1
+      -4,    -4,    10
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
 static const yytype_int8 yydefgoto[] =
 {
-      -1,     2,     3
+      -1,     3,     4
 };
 
   /* YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
@@ -565,31 +575,34 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       6,     7,     0,     1,     8,     4,     5,     1
+       1,     5,     2,    -5,    -5,     6,     8,     9,     2,     0,
+      10,     9,    11,     7
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     2,    -1,     3,     5,     4,     5,     3
+       1,     4,     3,     4,     5,     0,     4,     5,     3,    -1,
+       4,     5,     3,     3
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     7,     8,     4,     5,     0,     8,     8
+       0,     1,     3,     7,     8,     4,     0,     8,     4,     5,
+       4,     3
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,     6,     7,     7,     8,     8,     8
+       0,     6,     7,     7,     7,     8,     8,     8
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     1,     2,     0,     2,     3
+       0,     2,     2,     3,     2,     0,     1,     3
 };
 
 
@@ -1284,8 +1297,66 @@ yyreduce:
   YY_REDUCE_PRINT (yyn);
   switch (yyn)
     {
+  case 2:
+#line 24 "csv.y"
+                    {
+		for (int i =0; i < csv_record.size(); ++i) {
+			cout << ' ' << csv_record[i] ;
+		}
+		cout << endl;
+		csv_record.resize(0);
+		++num_lines2;
+		cout << "new rec: " << ", num_lines2: " << num_lines2
+			<< ", num_fields2: " << num_fields2
+			<< endl;
+		num_fields2 = 0;
+	}
+#line 1315 "csv.tab.c"
+    break;
 
-#line 1289 "csv.tab.c"
+  case 3:
+#line 36 "csv.y"
+                            {
+		for (int i =0; i < csv_record.size(); ++i) {
+			cout << ' ' << csv_record[i] ;
+		}
+		cout << endl;
+		csv_record.resize(0);
+		++num_lines2;
+		cout << "new rec: " << ", num_lines2: " << num_lines2
+			<< ", num_fields2: " << num_fields2
+			<< endl;
+		num_fields2 = 0;
+	}
+#line 1332 "csv.tab.c"
+    break;
+
+  case 4:
+#line 66 "csv.y"
+                     { yyerrok; }
+#line 1338 "csv.tab.c"
+    break;
+
+  case 6:
+#line 70 "csv.y"
+                    {
+		csv_record.push_back(yyvsp[0]);
+		++ num_fields2;
+	}
+#line 1347 "csv.tab.c"
+    break;
+
+  case 7:
+#line 74 "csv.y"
+                               {
+		csv_record.push_back(yyvsp[0]);
+		++ num_fields2;
+	}
+#line 1356 "csv.tab.c"
+    break;
+
+
+#line 1360 "csv.tab.c"
 
       default: break;
     }
@@ -1517,7 +1588,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 25 "csv.y"
+#line 80 "csv.y"
 
 
 /* Called by yyparse on error. */

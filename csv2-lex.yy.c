@@ -850,10 +850,19 @@ YY_RULE_SETUP
 	return ',';
 }
 	YY_BREAK
+case YY_STATE_EOF(INITIAL):
+case YY_STATE_EOF(quoted_field):
+#line 101 "csv2-lex.l"
+{
+	static int once = 0;
+	cout << "flex - returning NEWL on EOF" << endl;
+	return once++ ? 0 : '\n';
+}
+	YY_BREAK
 case 10:
 /* rule 10 can match eol */
 YY_RULE_SETUP
-#line 101 "csv2-lex.l"
+#line 107 "csv2-lex.l"
 {
 	++num_lines;
 	printf("total fields :%d\n", num_fields);
@@ -872,13 +881,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 117 "csv2-lex.l"
+#line 123 "csv2-lex.l"
 ECHO;
 	YY_BREAK
-#line 879 "csv2-lex.yy.c"
-case YY_STATE_EOF(INITIAL):
-case YY_STATE_EOF(quoted_field):
-	yyterminate();
+#line 888 "csv2-lex.yy.c"
 
 	case YY_END_OF_BUFFER:
 		{
@@ -1881,7 +1887,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 117 "csv2-lex.l"
+#line 123 "csv2-lex.l"
 
 
 //int main() {
