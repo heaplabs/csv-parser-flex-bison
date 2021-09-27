@@ -1644,7 +1644,7 @@ yyreturn:
 /* Called by yyparse on error. */
 void yyerror (char const *s)
 {
-	fprintf (stderr, "%s line: %d \n", s, num_lines2);
+	fprintf (stderr, "%s ERROR line: %d \n", s, num_lines2);
 }
 
 int main()
