@@ -87,15 +87,32 @@ input:
 	;
 
 record:
-	| CSV_FIELD {
-		csv_record.push_back($1);
+	csv_field {
+		//csv_record.push_back($1);
+		//++ num_fields2;
+		//if (header_mode2) {
+		//	header_row_map2[num_fields2] = $1;
+		//}
+	}
+	| record ',' csv_field {
+		//csv_record.push_back($3);
+		//++ num_fields2;
+		//if (header_mode2) {
+		//	header_row_map2[num_fields2] = $1;
+		//}
+	}
+	;
+
+csv_field:
+	%empty {
+		csv_record.push_back(string(""));
 		++ num_fields2;
 		if (header_mode2) {
-			header_row_map2[num_fields2] = $1;
+			header_row_map2[num_fields2] = string("");
 		}
 	}
-	| record ',' CSV_FIELD {
-		csv_record.push_back($3);
+	| CSV_FIELD {
+		csv_record.push_back($1);
 		++ num_fields2;
 		if (header_mode2) {
 			header_row_map2[num_fields2] = $1;
@@ -108,7 +125,7 @@ record:
 /* Called by yyparse on error. */
 void yyerror (char const *s)
 {
-	fprintf (stderr, "%s line: %d \n", s, num_lines2);
+	fprintf (stderr, "%s ERROR line: %d \n", s, num_lines2);
 }
 
 int main()
