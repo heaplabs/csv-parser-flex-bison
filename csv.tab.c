@@ -73,16 +73,21 @@
 	void yyerror(char const *);
 	#include <string>
 	#include <vector>
+	#include <map>
 	using std::string;
 	using std::vector;
+	using std::map;
 	vector<string> csv_record;
 	#include <iostream>
 	using std::cout;
 	using std::endl;
 
 	int num_fields2 = 0, num_lines2 = 0;
+	std::map<int, std::string> header_row_map2;
+	bool header_mode2 = true;
+	int expected_fields2 = 0;
 
-#line 86 "csv.tab.c"
+#line 91 "csv.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -508,7 +513,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    24,    24,    36,    66,    69,    70,    74
+       0,    29,    29,    44,    82,    89,    90,    97
 };
 #endif
 
@@ -1298,29 +1303,40 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 24 "csv.y"
+#line 29 "csv.y"
                     {
 		for (int i =0; i < csv_record.size(); ++i) {
 			cout << ' ' << csv_record[i] ;
 		}
 		cout << endl;
+		expected_fields2 = csv_record.size();
 		csv_record.resize(0);
 		++num_lines2;
 		cout << "new rec: " << ", num_lines2: " << num_lines2
 			<< ", num_fields2: " << num_fields2
 			<< endl;
 		num_fields2 = 0;
+		header_mode2 = false;
+		cout << "got header row" << endl;
 	}
-#line 1315 "csv.tab.c"
+#line 1323 "csv.tab.c"
     break;
 
   case 3:
-#line 36 "csv.y"
+#line 44 "csv.y"
                             {
 		for (int i =0; i < csv_record.size(); ++i) {
 			cout << ' ' << csv_record[i] ;
 		}
 		cout << endl;
+		if (csv_record.size() != expected_fields2) {
+			cout << "ERROR line: "
+				<< num_lines2
+				<< " parser expected_fields2: " 
+				<< expected_fields2 
+				<< ", actual : " << csv_record.size()
+				<< endl;
+		}
 		csv_record.resize(0);
 		++num_lines2;
 		cout << "new rec: " << ", num_lines2: " << num_lines2
@@ -1328,35 +1344,45 @@ yyreduce:
 			<< endl;
 		num_fields2 = 0;
 	}
-#line 1332 "csv.tab.c"
+#line 1348 "csv.tab.c"
     break;
 
   case 4:
-#line 66 "csv.y"
-                     { yyerrok; }
-#line 1338 "csv.tab.c"
+#line 82 "csv.y"
+                     { 
+		++num_lines2;
+		//csv_record.resize(0);
+		yyerrok; 
+	}
+#line 1358 "csv.tab.c"
     break;
 
   case 6:
-#line 70 "csv.y"
+#line 90 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
+		if (header_mode2) {
+			header_row_map2[num_fields2] = yyvsp[0];
+		}
 	}
-#line 1347 "csv.tab.c"
+#line 1370 "csv.tab.c"
     break;
 
   case 7:
-#line 74 "csv.y"
+#line 97 "csv.y"
                                {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
+		if (header_mode2) {
+			header_row_map2[num_fields2] = yyvsp[-2];
+		}
 	}
-#line 1356 "csv.tab.c"
+#line 1382 "csv.tab.c"
     break;
 
 
-#line 1360 "csv.tab.c"
+#line 1386 "csv.tab.c"
 
       default: break;
     }
@@ -1588,17 +1614,20 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 80 "csv.y"
+#line 106 "csv.y"
 
 
 /* Called by yyparse on error. */
 void yyerror (char const *s)
 {
-	fprintf (stderr, "%s\n", s);
+	fprintf (stderr, "%s line: %d \n", s, num_lines2);
 }
 
 int main()
 {
-	return yyparse();
+	int status = yyparse();
+	cout << "num_lines2: "  << num_lines2 << endl;
+	cout << "num_fields2: "  << num_fields2 << endl;
+
 }
 
