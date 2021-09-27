@@ -511,9 +511,9 @@ static const yytype_int8 yytranslate[] =
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
-static const yytype_int8 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
-       0,    29,    29,    44,    91,   100,   107,   117,   124
+       0,    29,    29,    54,   110,   119,   126,   136,   143
 };
 #endif
 
@@ -1305,26 +1305,37 @@ yyreduce:
   case 2:
 #line 29 "csv.y"
                     {
+		int total_len = 0;
 		for (int i =0; i < csv_record.size(); ++i) {
 			cout << ' ' << csv_record[i] ;
+			total_len += csv_record[i].length();
+			if (total_len >= 70) {
+				cout << endl;
+				total_len = 0;
+			}
 		}
-		cout << endl;
 		expected_fields2 = csv_record.size();
+		cout << endl << "total fields: " << expected_fields2 << endl;
 		csv_record.resize(0);
-		++num_lines2;
-		cout << "new rec: " << ", num_lines2: " << num_lines2
-			<< ", num_fields2: " << num_fields2
-			<< endl;
-		num_fields2 = 0;
+		//++num_lines2; // dont count the header row
+		//cout << ".";
+		//if (num_lines2 % 70 == 0) {
+		//	cout << " " << num_lines2 << endl;
+		//}
+		//cout << "new rec: " << ", num_lines2: " << num_lines2
+		//	<< ", num_fields2: " << num_fields2
+		//	<< endl;
+		//num_fields2 = 0;
 		header_mode2 = false;
-		cout << "header row, expected_fields2:" << expected_fields2 << endl;
+		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1323 "csv.tab.c"
+#line 1333 "csv.tab.c"
     break;
 
   case 3:
-#line 44 "csv.y"
+#line 54 "csv.y"
                             {
+
 		++num_lines2;
 		if (csv_record.size() != expected_fields2) {
 			for (int i =0; i < csv_record.size(); ++i) {
@@ -1348,27 +1359,35 @@ yyreduce:
 				<< endl;
 		}
 		csv_record.resize(0);
-		cout << "new rec: " << ", num_lines2: " << num_lines2
-			<< ", num_fields2: " << num_fields2
-			<< endl;
+		//cout << "new rec: " << ", num_lines2: " << num_lines2
+		//	<< ", num_fields2: " << num_fields2
+		//	<< endl;
+		if (num_lines2 % 10 == 0 ) {
+			cout << '+';
+		} else {
+			cout << '.';
+		}
+		if (num_lines2 % 70 == 0) {
+			cout << " " << num_lines2 << endl;
+		}
 		num_fields2 = 0;
 	}
-#line 1357 "csv.tab.c"
+#line 1376 "csv.tab.c"
     break;
 
   case 4:
-#line 91 "csv.y"
+#line 110 "csv.y"
                      { 
 		++num_lines2;
 		csv_record.resize(0);
 		cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1368 "csv.tab.c"
+#line 1387 "csv.tab.c"
     break;
 
   case 5:
-#line 100 "csv.y"
+#line 119 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1376,11 +1395,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1380 "csv.tab.c"
+#line 1399 "csv.tab.c"
     break;
 
   case 6:
-#line 107 "csv.y"
+#line 126 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1388,11 +1407,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1392 "csv.tab.c"
+#line 1411 "csv.tab.c"
     break;
 
   case 7:
-#line 117 "csv.y"
+#line 136 "csv.y"
                {
 		csv_record.push_back(string(""));
 		++ num_fields2;
@@ -1400,11 +1419,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1404 "csv.tab.c"
+#line 1423 "csv.tab.c"
     break;
 
   case 8:
-#line 124 "csv.y"
+#line 143 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1412,11 +1431,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1416 "csv.tab.c"
+#line 1435 "csv.tab.c"
     break;
 
 
-#line 1420 "csv.tab.c"
+#line 1439 "csv.tab.c"
 
       default: break;
     }
@@ -1648,7 +1667,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 133 "csv.y"
+#line 152 "csv.y"
 
 
 /* Called by yyparse on error. */
@@ -1660,8 +1679,8 @@ void yyerror (char const *s)
 int main()
 {
 	int status = yyparse();
-	cout << "num_lines2: "  << num_lines2 << endl;
-	cout << "num_fields2: "  << expected_fields2 << endl;
+	cout << endl << "num_lines2: "  << num_lines2 << endl;
+	cout << "expected_fields2: "  << expected_fields2 << endl;
 
 }
 
