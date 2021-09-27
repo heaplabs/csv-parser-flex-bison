@@ -128,15 +128,7 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-union YYSTYPE
-{
-
-  /* CSV_FIELD  */
-  string* CSV_FIELD;
-#line 137 "csv.tab.c"
-
-};
-typedef union YYSTYPE YYSTYPE;
+typedef std::string YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
@@ -508,7 +500,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    15,    15,    16,    19,    20,    21
+       0,    16,    16,    17,    20,    21,    22
 };
 #endif
 
@@ -1293,7 +1285,7 @@ yyreduce:
   switch (yyn)
     {
 
-#line 1297 "csv.tab.c"
+#line 1289 "csv.tab.c"
 
       default: break;
     }
@@ -1525,7 +1517,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 24 "csv.y"
+#line 25 "csv.y"
 
 
 /* Called by yyparse on error. */

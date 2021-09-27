@@ -6,8 +6,9 @@
 	using std::string;
 %}
 
-%define api.value.type union
-%token <string*> CSV_FIELD
+%define api.value.type {std::string}
+
+%token CSV_FIELD
 
 %%
 

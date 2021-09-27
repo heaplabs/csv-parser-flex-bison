@@ -55,15 +55,7 @@ extern int yydebug;
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-union YYSTYPE
-{
-
-  /* CSV_FIELD  */
-  string* CSV_FIELD;
-#line 64 "csv.tab.h"
-
-};
-typedef union YYSTYPE YYSTYPE;
+typedef std::string YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1
 #endif
