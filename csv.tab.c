@@ -513,7 +513,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    29,    29,    44,    82,    90,    97,   107,   114
+       0,    29,    29,    44,    82,    91,    98,   108,   115
 };
 #endif
 
@@ -1317,7 +1317,7 @@ yyreduce:
 			<< endl;
 		num_fields2 = 0;
 		header_mode2 = false;
-		cout << "got header row" << endl;
+		cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
 #line 1323 "csv.tab.c"
     break;
@@ -1352,13 +1352,14 @@ yyreduce:
                      { 
 		++num_lines2;
 		csv_record.resize(0);
+		cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1358 "csv.tab.c"
+#line 1359 "csv.tab.c"
     break;
 
   case 5:
-#line 90 "csv.y"
+#line 91 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1366,11 +1367,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1370 "csv.tab.c"
+#line 1371 "csv.tab.c"
     break;
 
   case 6:
-#line 97 "csv.y"
+#line 98 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1378,11 +1379,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1382 "csv.tab.c"
+#line 1383 "csv.tab.c"
     break;
 
   case 7:
-#line 107 "csv.y"
+#line 108 "csv.y"
                {
 		csv_record.push_back(string(""));
 		++ num_fields2;
@@ -1390,11 +1391,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1394 "csv.tab.c"
+#line 1395 "csv.tab.c"
     break;
 
   case 8:
-#line 114 "csv.y"
+#line 115 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1402,11 +1403,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1406 "csv.tab.c"
+#line 1407 "csv.tab.c"
     break;
 
 
-#line 1410 "csv.tab.c"
+#line 1411 "csv.tab.c"
 
       default: break;
     }
@@ -1638,7 +1639,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 123 "csv.y"
+#line 124 "csv.y"
 
 
 /* Called by yyparse on error. */
@@ -1651,7 +1652,7 @@ int main()
 {
 	int status = yyparse();
 	cout << "num_lines2: "  << num_lines2 << endl;
-	cout << "num_fields2: "  << num_fields2 << endl;
+	cout << "num_fields2: "  << expected_fields2 << endl;
 
 }
 

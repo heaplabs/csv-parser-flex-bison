@@ -39,7 +39,7 @@ input:
 			<< endl;
 		num_fields2 = 0;
 		header_mode2 = false;
-		cout << "got header row" << endl;
+		cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
 	| input record '\n' {
 		for (int i =0; i < csv_record.size(); ++i) {
@@ -82,6 +82,7 @@ input:
 	| error '\n' { 
 		++num_lines2;
 		csv_record.resize(0);
+		cout << "ERROR: " << endl;
 		yyerrok; 
 	}
 	;
@@ -132,7 +133,7 @@ int main()
 {
 	int status = yyparse();
 	cout << "num_lines2: "  << num_lines2 << endl;
-	cout << "num_fields2: "  << num_fields2 << endl;
+	cout << "num_fields2: "  << expected_fields2 << endl;
 
 }
 

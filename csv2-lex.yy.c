@@ -760,8 +760,8 @@ YY_RULE_SETUP
 		header_row_map[num_fields] = field;
 		header_mode = true;
 	} else {
-		cout << "field: " << index->second << ", data: "
-			<< field << endl; 
+		//cout << "field: " << index->second << ", data: "
+		//	<< field << endl; 
 	}
 	yylval = field;
 	return CSV_FIELD;
@@ -829,8 +829,8 @@ YY_RULE_SETUP
 		header_row_map[num_fields] = field;
 		header_mode = true;
 	} else {
-		cout << "field: " << index->second << ", data: "
-			<< field << endl; 
+		//cout << "field: " << index->second << ", data: "
+		//	<< field << endl; 
 	}
 	BEGIN(INITIAL);
 	//printf("got a quoted field: %s\n", buffer.c_str());
@@ -846,7 +846,7 @@ YY_RULE_SETUP
 #line 95 "csv2-lex.l"
 {
 	++num_fields;
-	printf("field separator: %d\n", num_fields);
+	//printf("field separator: %d\n", num_fields);
 	return ',';
 }
 	YY_BREAK
@@ -863,17 +863,17 @@ YY_RULE_SETUP
 #line 109 "csv2-lex.l"
 {
 	++num_lines;
-	printf("total fields :%d\n", num_fields);
+	//printf("total fields :%d\n", num_fields);
 	if (header_mode) {
 		expected_fields = num_fields;
 		header_mode = false;
 	} else if (expected_fields != num_fields) {
-		printf("line_no: %d , num_fields: %d  not matcing != expected_fields  : %d \n",
-			num_lines, num_fields, expected_fields);
+		//printf("line_no: %d , num_fields: %d  not matcing != expected_fields  : %d \n",
+		//	num_lines, num_fields, expected_fields);
 	}
 	
 	num_fields = 1;
-	printf("new Record no:%d\n", num_lines);
+	//printf("new Record no:%d\n", num_lines);
 	return '\n';
 } 
 	YY_BREAK

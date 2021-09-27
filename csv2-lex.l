@@ -33,8 +33,8 @@ int expected_fields = 0;
 		header_row_map[num_fields] = field;
 		header_mode = true;
 	} else {
-		cout << "field: " << index->second << ", data: "
-			<< field << endl; 
+		//cout << "field: " << index->second << ", data: "
+		//	<< field << endl; 
 	}
 	yylval = field;
 	return CSV_FIELD;
@@ -80,8 +80,8 @@ int expected_fields = 0;
 		header_row_map[num_fields] = field;
 		header_mode = true;
 	} else {
-		cout << "field: " << index->second << ", data: "
-			<< field << endl; 
+		//cout << "field: " << index->second << ", data: "
+		//	<< field << endl; 
 	}
 	BEGIN(INITIAL);
 	//printf("got a quoted field: %s\n", buffer.c_str());
@@ -94,7 +94,7 @@ int expected_fields = 0;
 
 ,	{
 	++num_fields;
-	printf("field separator: %d\n", num_fields);
+	//printf("field separator: %d\n", num_fields);
 	return ',';
 }
 
@@ -108,17 +108,17 @@ int expected_fields = 0;
 
 \r\n|\n\r|\r|\n {
 	++num_lines;
-	printf("total fields :%d\n", num_fields);
+	//printf("total fields :%d\n", num_fields);
 	if (header_mode) {
 		expected_fields = num_fields;
 		header_mode = false;
 	} else if (expected_fields != num_fields) {
-		printf("line_no: %d , num_fields: %d  not matcing != expected_fields  : %d \n",
-			num_lines, num_fields, expected_fields);
+		//printf("line_no: %d , num_fields: %d  not matcing != expected_fields  : %d \n",
+		//	num_lines, num_fields, expected_fields);
 	}
 	
 	num_fields = 1;
-	printf("new Record no:%d\n", num_lines);
+	//printf("new Record no:%d\n", num_lines);
 	return '\n';
 } 
 
