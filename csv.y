@@ -42,11 +42,21 @@ input:
 		cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
 	| input record '\n' {
-		for (int i =0; i < csv_record.size(); ++i) {
-			cout << ' ' << csv_record[i] ;
-		}
-		cout << endl;
+		++num_lines2;
 		if (csv_record.size() != expected_fields2) {
+			for (int i =0; i < csv_record.size(); ++i) {
+				if (i+1 <= expected_fields2) { 
+					cout 
+						<< ' ' << header_row_map2[i+1] 
+						<< " -> "
+						<< '|' << csv_record[i] << '|' ;
+				} else {
+					cout 
+						<< "out of header range: " << i + 1
+						<< '|' << csv_record[i] << '|' ;
+				}
+			}
+			cout << endl;
 			cout << "ERROR line: "
 				<< num_lines2
 				<< " parser expected_fields2: " 
@@ -55,7 +65,6 @@ input:
 				<< endl;
 		}
 		csv_record.resize(0);
-		++num_lines2;
 		cout << "new rec: " << ", num_lines2: " << num_lines2
 			<< ", num_fields2: " << num_fields2
 			<< endl;
