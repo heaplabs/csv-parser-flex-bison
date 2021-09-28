@@ -22,6 +22,8 @@
 %define api.value.type {std::string}
 
 %token CSV_FIELD
+%token QUOTED_CSV_FIELD
+%token DOUBLE_QUOTE
 
 %%
 
@@ -50,6 +52,9 @@ input:
 		//num_fields2 = 0;
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
+	}
+	| input record ',' '\n' {
+		cout<< "parsed record with empty last field" << endl;
 	}
 	| input record '\n' {
 
@@ -88,6 +93,7 @@ input:
 			cout << " " << num_lines2 << endl;
 		}
 		num_fields2 = 0;
+		cout << "parsed a record" << endl;
 	}
 	//| input record {
 	//	for (int i =0; i < csv_record.size(); ++i) {
@@ -108,6 +114,7 @@ input:
 	//	cout << endl;
 	//}
 	| input error '\n' { 
+		num_fields2 = 0;
 		++num_lines2;
 		csv_record.resize(0);
 		cout << "ERROR: " << endl;
@@ -115,6 +122,7 @@ input:
 	}
 	;
 
+/*
 record:
 	csv_field {
 		//csv_record.push_back($1);
@@ -147,6 +155,13 @@ csv_field:
 			header_row_map2[num_fields2] = $1;
 		}
 	}
+	| DOUBLE_QUOTE QUOTED_CSV_FIELD  {
+		csv_record.push_back($1);
+		++ num_fields2;
+		if (header_mode2) {
+			header_row_map2[num_fields2] = $1;
+		}
+	}
 	| CSV_FIELD error '"' {
 		cout << "ERROR field QUOTE  num_lines2 " 
 			<< num_lines2 
@@ -164,13 +179,74 @@ csv_field:
 		yyerrok;
 	}
 	;
+*/
+
+record:
+      	 %empty {
+	 	cout << "got an empty field" << endl;
+		csv_record.push_back(string(""));
+		++ num_fields2;
+		if (header_mode2) {
+			header_row_map2[num_fields2] = string("");
+		}
+	}
+      |  CSV_FIELD {
+		csv_record.push_back($1);
+		++ num_fields2;
+		if (header_mode2) {
+			header_row_map2[num_fields2] = $1;
+		}
+	}
+      |  DOUBLE_QUOTE QUOTED_CSV_FIELD {
+		csv_record.push_back($2);
+		++ num_fields2;
+		if (header_mode2) {
+			header_row_map2[num_fields2] = $1;
+		}
+	}
+      |  record ',' CSV_FIELD {
+		csv_record.push_back($3);
+		++ num_fields2;
+		if (header_mode2) {
+			header_row_map2[num_fields2] = $1;
+		}
+	}
+      |  record ',' DOUBLE_QUOTE QUOTED_CSV_FIELD {
+		csv_record.push_back($3);
+		++ num_fields2;
+		if (header_mode2) {
+			header_row_map2[num_fields2] = $3;
+		}
+		//cout << "syntax error in file - misplaced double quotes around"  << $3 << endl;
+      	    //yyerrok;
+	}
+	/*
+      |  record ',' DOUBLE_QUOTE CSV_FIELD {
+		csv_record.push_back($4);
+		++ num_fields2;
+		if (header_mode2) {
+			header_row_map2[num_fields2] = $1;
+		}
+	}
+      }
+      |  record CSV_FIELD {
+		csv_record.push_back($2);
+		++ num_fields2;
+		if (header_mode2) {
+			header_row_map2[num_fields2] = $2;
+		}
+		cout << "syntax error in file - misplaced double quotes around" << endl;
+      	    yyerrok;
+      }
+	*/
+      ;
 
 %%
 
 /* Called by yyparse on error. */
 void yyerror (char const *s)
 {
-	fprintf (stderr, "%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
+	printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
 }
 
 int main()

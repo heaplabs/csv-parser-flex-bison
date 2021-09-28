@@ -49,7 +49,9 @@ extern int yydebug;
 # define YYTOKENTYPE
   enum yytokentype
   {
-    CSV_FIELD = 258
+    CSV_FIELD = 258,
+    QUOTED_CSV_FIELD = 259,
+    DOUBLE_QUOTE = 260
   };
 #endif
 
