@@ -46,3 +46,11 @@ new rec: , num_lines2: 3, num_fields2: 2
 num_lines2: 3
 num_fields2: 2
 
+
+-- NxD --
+setup lexer special match for 
+1. csv field without quote
+2. csv field with quote
+3. detect quote if necessary in lexer
+4. in grammar - handle case of quoted field and unquoted field separately
+   if in an unquoted field you have a double quote appearing - flag as error and recover

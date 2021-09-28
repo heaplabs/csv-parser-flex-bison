@@ -107,7 +107,7 @@ input:
 	//	}
 	//	cout << endl;
 	//}
-	| error '\n' { 
+	| input error '\n' { 
 		++num_lines2;
 		csv_record.resize(0);
 		cout << "ERROR: " << endl;
@@ -147,6 +147,22 @@ csv_field:
 			header_row_map2[num_fields2] = $1;
 		}
 	}
+	| CSV_FIELD error '"' {
+		cout << "ERROR field QUOTE  num_lines2 " 
+			<< num_lines2 
+			<< ", num_fields2: "
+			<< num_fields2
+			<< endl;
+		yyerrok;
+	}
+	| CSV_FIELD error ',' {
+		cout << "ERROR field COMMA  num_lines2 " 
+			<< num_lines2 
+			<< ", num_fields2: "
+			<< num_fields2
+			<< endl;
+		yyerrok;
+	}
 	;
 
 %%
@@ -154,7 +170,7 @@ csv_field:
 /* Called by yyparse on error. */
 void yyerror (char const *s)
 {
-	fprintf (stderr, "%s ERROR line: %d \n", s, num_lines2);
+	fprintf (stderr, "%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
 }
 
 int main()
