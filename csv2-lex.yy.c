@@ -754,7 +754,7 @@ case 1:
 YY_RULE_SETUP
 #line 28 "csv2-lex.l"
 {
-	printf("CSV_FIELD got field with misplaced double quote: |%s|, field_no: %d\n", yytext, num_fields);
+	//printf("CSV_FIELD got field with misplaced double quote: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
 	if (index == header_row_map.end()) {
@@ -772,7 +772,7 @@ case 2:
 YY_RULE_SETUP
 #line 43 "csv2-lex.l"
 {
-	printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
+	//printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
 	if (index == header_row_map.end()) {
@@ -853,7 +853,7 @@ YY_RULE_SETUP
 		//	<< field << endl; 
 	}
 	BEGIN(INITIAL);
-	printf("got a QUOTED_CSV_FIELD field: %s\n", buffer.c_str());
+	//printf("got a QUOTED_CSV_FIELD field: %s\n", buffer.c_str());
 	++num_quoted_fields;
 	yylval = buffer;
 	buffer[0] = '\0';
@@ -866,7 +866,7 @@ YY_RULE_SETUP
 #line 111 "csv2-lex.l"
 {
 	++num_fields;
-	printf("field separator: %d\n", num_fields);
+	//printf("field separator: %d\n", num_fields);
 	return ',';
 }
 	YY_BREAK

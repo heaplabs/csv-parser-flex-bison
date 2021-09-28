@@ -1375,7 +1375,7 @@ yyreduce:
 			cout << " " << num_lines2 << endl;
 		}
 		num_fields2 = 0;
-		cout << "parsed a record" << endl;
+		//cout << "parsed a record" << endl;
 	}
 #line 1381 "csv.tab.c"
     break;

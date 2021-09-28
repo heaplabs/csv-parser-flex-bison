@@ -93,7 +93,7 @@ input:
 			cout << " " << num_lines2 << endl;
 		}
 		num_fields2 = 0;
-		cout << "parsed a record" << endl;
+		//cout << "parsed a record" << endl;
 	}
 	//| input record {
 	//	for (int i =0; i < csv_record.size(); ++i) {
