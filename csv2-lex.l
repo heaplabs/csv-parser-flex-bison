@@ -40,7 +40,7 @@ int expected_fields = 0;
 	return CSV_FIELD;
 }
 
-[^,\r\n"]* {
+[^,\r\n"]+ {
 	printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = header_row_map.find(num_fields);

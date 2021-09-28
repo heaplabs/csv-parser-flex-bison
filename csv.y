@@ -53,9 +53,9 @@ input:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-	| input record ',' '\n' {
-		cout<< "parsed record with empty last field" << endl;
-	}
+	//| input record ',' '\n' {
+	//	cout<< "parsed record with empty last field" << endl;
+	//}
 	| input record '\n' {
 
 		++num_lines2;
@@ -122,7 +122,6 @@ input:
 	}
 	;
 
-/*
 record:
 	csv_field {
 		//csv_record.push_back($1);
@@ -162,6 +161,7 @@ csv_field:
 			header_row_map2[num_fields2] = $1;
 		}
 	}
+	/*
 	| CSV_FIELD error '"' {
 		cout << "ERROR field QUOTE  num_lines2 " 
 			<< num_lines2 
@@ -178,9 +178,10 @@ csv_field:
 			<< endl;
 		yyerrok;
 	}
+	*/
 	;
-*/
 
+/*
 record:
       	 %empty {
 	 	cout << "got an empty field" << endl;
@@ -220,7 +221,7 @@ record:
 		//cout << "syntax error in file - misplaced double quotes around"  << $3 << endl;
       	    //yyerrok;
 	}
-	/*
+	//
       |  record ',' DOUBLE_QUOTE CSV_FIELD {
 		csv_record.push_back($4);
 		++ num_fields2;
@@ -238,8 +239,9 @@ record:
 		cout << "syntax error in file - misplaced double quotes around" << endl;
       	    yyerrok;
       }
-	*/
+	//
       ;
+*/
 
 %%
 
