@@ -1383,14 +1383,14 @@ yyreduce:
 		//cout << "new rec: " << ", num_lines2: " << num_lines2
 		//	<< ", num_fields2: " << num_fields2
 		//	<< endl;
-		if (num_lines2 % 10 == 0 ) {
-			cout << '+';
-		} else {
-			cout << '.';
-		}
-		if (num_lines2 % 70 == 0) {
-			cout << " " << num_lines2 << endl;
-		}
+		//if (num_lines2 % 10 == 0 ) {
+		//	cout << '+';
+		//} else {
+		//	cout << '.';
+		//}
+		//if (num_lines2 % 70 == 0) {
+		//	cout << " " << num_lines2 << endl;
+		//}
 		num_fields2 = 0;
 		//cout << "parsed a record" << endl;
 
@@ -1724,14 +1724,13 @@ int main(int argc, char * argv[])
 	}
 
 	int status = yyparse();
-	cout << endl << "num_lines2: "  << num_lines2 << endl;
-	cout << "expected_fields: "  << expected_fields2 << endl;
-
-	cout << "Total errors: " << error_line_nos.size() << endl;
+	//cout << endl << "num_lines2: "  << num_lines2 << endl;
+	//cout << "expected_fields: "  << expected_fields2 << endl;
+	//cout << "Total errors: " << error_line_nos.size() << endl;
 	using json = nlohmann::json;
 	json error_op;
 	if (error_line_nos.size() > 0 ) { 
-		cout << "Detailed errors: " << endl;
+		//cout << "Detailed errors: " << endl;
 		for (int i = 0; i < error_line_nos.size(); ++i) {
 			error_pos error_pos = error_line_nos[i];
 			json an_error_pos = { 
@@ -1740,18 +1739,18 @@ int main(int argc, char * argv[])
 				{"context", error_pos.error_context}
 			};
 			error_op.push_back(an_error_pos);
-			cout 
-				<< "line: "      << error_pos.row
-				<< ", n_field: " << error_pos.col << endl;
+			//cout 
+			//	<< "line: "      << error_pos.row
+			//	<< ", n_field: " << error_pos.col << endl;
 		}
-		cout << "End of error report" << endl;
+		//cout << "End of error report" << endl;
 	}
 
 	 /* For non-reentrant C scanner only. */
 	//yy_delete_buffer(YY_CURRENT_BUFFER);
 	//yy_init = 1;
 	csv2_lex_clean_up();
-	cout << "Successfully parsed records: " << all_csv_records.size() << endl;
+	//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
 	json json_op;
 	for (int i = 0; i < all_csv_records.size(); ++i) {
 		const vector<string>& v = all_csv_records[i];
@@ -1775,8 +1774,11 @@ int main(int argc, char * argv[])
 	parsed_data["parsed_data"] =  json_op;
 	parsed_data["expected_fields"] = expected_fields2;
 	parsed_data["errors"] = error_op;
+	parsed_data["total_records"] = num_lines2;
+	parsed_data["total_errors"] = error_line_nos.size() ;
+	parsed_data["successfully_parsed"] = all_csv_records.size()  ;
 	cout 
-		<< "JSON format: " << endl
-		<< parsed_data << endl;
+		//<< "JSON format: " << endl
+		<< parsed_data.dump(4) << endl;
 }
 
