@@ -29,6 +29,9 @@
 	#include <sstream>
 
 	std::stringstream error_context;
+	// disable for now, enable via cmd line option 
+	// if needed
+	bool enable_progress_report = false; 
 %}
 
 %define api.value.type {std::string}
@@ -101,14 +104,16 @@ input:
 		//cout << "new rec: " << ", num_lines2: " << num_lines2
 		//	<< ", num_fields2: " << num_fields2
 		//	<< endl;
-		//if (num_lines2 % 10 == 0 ) {
-		//	cout << '+';
-		//} else {
-		//	cout << '.';
-		//}
-		//if (num_lines2 % 70 == 0) {
-		//	cout << " " << num_lines2 << endl;
-		//}
+		if (enable_progress_report) {
+			if (num_lines2 % 10 == 0 ) {
+				cout << '+';
+			} else {
+				cout << '.';
+			}
+			if (num_lines2 % 70 == 0) {
+				cout << " " << num_lines2 << endl;
+			}
+		}
 		num_fields2 = 0;
 		//cout << "parsed a record" << endl;
 
