@@ -9,6 +9,7 @@
 	using std::vector;
 	using std::map;
 	vector<string> csv_record;
+	vector<vector<string>> all_csv_records;
 	#include <iostream>
 	using std::cout;
 	using std::endl;
@@ -17,6 +18,12 @@
 	std::map<int, std::string> header_row_map2;
 	bool header_mode2 = true;
 	int expected_fields2 = 0;
+	struct error_pos {
+		int row, col;
+		error_pos(int r, int c): row(r), col(c)
+		{}
+	};
+	vector<error_pos> error_line_nos;
 %}
 
 %define api.value.type {std::string}
@@ -80,6 +87,7 @@ input:
 				<< ", actual : " << csv_record.size()
 				<< endl;
 		}
+		all_csv_records.push_back(csv_record);
 		csv_record.resize(0);
 		//cout << "new rec: " << ", num_lines2: " << num_lines2
 		//	<< ", num_fields2: " << num_fields2
@@ -94,6 +102,7 @@ input:
 		}
 		num_fields2 = 0;
 		//cout << "parsed a record" << endl;
+
 	}
 	//| input record {
 	//	for (int i =0; i < csv_record.size(); ++i) {
@@ -114,6 +123,7 @@ input:
 	//	cout << endl;
 	//}
 	| input error '\n' { 
+		error_line_nos.push_back( error_pos(num_lines2, num_fields2));
 		num_fields2 = 0;
 		++num_lines2;
 		csv_record.resize(0);
@@ -258,10 +268,25 @@ int main()
 	cout << endl << "num_lines2: "  << num_lines2 << endl;
 	cout << "expected_fields2: "  << expected_fields2 << endl;
 
+	for (int i = 0; i < error_line_nos.size(); ++i) {
+		error_pos error_pos = error_line_nos[i];
+		cout 
+			<< "line: "      << error_pos.row
+			<< ", n_field: " << error_pos.col << endl;
+	}
+
 	 /* For non-reentrant C scanner only. */
 	//yy_delete_buffer(YY_CURRENT_BUFFER);
 	//yy_init = 1;
 	csv2_lex_clean_up();
+	cout << "parsed records: " << endl;
+	for (int i = 0; i < all_csv_records.size(); ++i) {
+		const vector<string>& v = all_csv_records[i];
+		for (int j = 0; j < v.size() - 1; ++j) {
+			cout << v[j] << "|";
+		}
+		cout << v[v.size()-1] << endl;
+	}
 
 }
 
