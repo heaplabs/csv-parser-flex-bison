@@ -33,3 +33,5 @@ csv2-lex.yy.c: csv2-lex.l
 csv2-lex.yy.o: csv2-lex.yy.c  csv.tab.h csv2-lex.l
 	g++ -c $<
 
+valgrind_check: csv2.exe
+	valgrind ./csv2.exe --leak-check=full <  csv-test-files/inp1.csv || echo "install valgrind and then run this"

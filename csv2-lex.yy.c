@@ -1911,6 +1911,10 @@ void yyfree (void * ptr )
 #line 141 "csv2-lex.l"
 
 
+void csv2_lex_clean_up() {
+	yy_delete_buffer(YY_CURRENT_BUFFER);
+	yy_init = 1;
+}
 //int main() {
 //        yylex();
 //        //printf( "# of lines = %d, # of chars = %d\n", num_lines, num_fields );

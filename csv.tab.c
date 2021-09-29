@@ -1694,11 +1694,17 @@ void yyerror (char const *s)
 	printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
 }
 
+extern  void csv2_lex_clean_up() ;
 int main()
 {
 	int status = yyparse();
 	cout << endl << "num_lines2: "  << num_lines2 << endl;
 	cout << "expected_fields2: "  << expected_fields2 << endl;
+
+	 /* For non-reentrant C scanner only. */
+	//yy_delete_buffer(YY_CURRENT_BUFFER);
+	//yy_init = 1;
+	csv2_lex_clean_up();
 
 }
 
