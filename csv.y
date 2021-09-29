@@ -19,12 +19,16 @@
 	bool header_mode2 = true;
 	int expected_fields2 = 0;
 	struct error_pos {
-		int row, col;
-		error_pos(int r, int c): row(r), col(c)
+		int row, col; string error_context;
+		error_pos(int r, int c, string err_ctx)
+			: row(r), col(c), error_context(err_ctx)
 		{}
 	};
 	vector<error_pos> error_line_nos;
 	#include <nlohmann/json.hpp>
+	#include <sstream>
+
+	std::stringstream error_context;
 %}
 
 %define api.value.type {std::string}
@@ -38,16 +42,16 @@
 input: 
 	record '\n' {
 		int total_len = 0;
-		for (int i =0; i < csv_record.size(); ++i) {
-			cout << ' ' << csv_record[i] ;
-			total_len += csv_record[i].length();
-			if (total_len >= 70) {
-				cout << endl;
-				total_len = 0;
-			}
-		}
+		//for (int i =0; i < csv_record.size(); ++i) {
+		//	cout << ' ' << csv_record[i] ;
+		//	total_len += csv_record[i].length();
+		//	if (total_len >= 70) {
+		//		cout << endl;
+		//		total_len = 0;
+		//	}
+		//}
 		expected_fields2 = csv_record.size();
-		cout << endl << "total fields: " << expected_fields2 << endl;
+		//cout << endl << "total fields: " << expected_fields2 << endl;
 		csv_record.resize(0);
 		//++num_lines2; // dont count the header row
 		//cout << ".";
@@ -70,24 +74,26 @@ input:
 		if (csv_record.size() != expected_fields2) {
 			for (int i =0; i < csv_record.size(); ++i) {
 				if (i+1 <= expected_fields2) { 
-					cout 
+					error_context 
 						<< ' ' << header_row_map2[i+1] 
 						<< " -> "
 						<< '|' << csv_record[i] << '|' ;
 				} else {
-					cout 
+					error_context 
 						<< "out of header range: " << i + 1
 						<< '|' << csv_record[i] << '|' ;
 				}
 			}
-			cout << endl;
-			cout << "ERROR line: "
+			error_context << endl;
+			error_context << "ERROR line: "
 				<< num_lines2
 				<< " parser expected_fields2: " 
 				<< expected_fields2 
 				<< ", actual : " << csv_record.size()
 				<< endl;
-			error_line_nos.push_back( error_pos(num_lines2, csv_record.size()));
+			error_line_nos.push_back(
+				error_pos(num_lines2, csv_record.size(),
+				error_context.str()));
 		} else {
 			all_csv_records.push_back(csv_record);
 		}
@@ -126,7 +132,7 @@ input:
 	//	cout << endl;
 	//}
 	| input error '\n' { 
-		error_line_nos.push_back( error_pos(num_lines2, num_fields2));
+		error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
 		num_fields2 = 0;
 		++num_lines2;
 		csv_record.resize(0);
@@ -262,7 +268,7 @@ record:
 /* Called by yyparse on error. */
 void yyerror (char const *s)
 {
-	error_line_nos.push_back( error_pos(num_lines2, num_fields2));
+	error_line_nos.push_back( error_pos(num_lines2, num_fields2, s));
 	printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
 }
 
@@ -279,10 +285,18 @@ int main(int argc, char * argv[])
 	cout << "expected_fields: "  << expected_fields2 << endl;
 
 	cout << "Total errors: " << error_line_nos.size() << endl;
+	using json = nlohmann::json;
+	json error_op;
 	if (error_line_nos.size() > 0 ) { 
 		cout << "Detailed errors: " << endl;
 		for (int i = 0; i < error_line_nos.size(); ++i) {
 			error_pos error_pos = error_line_nos[i];
+			json an_error_pos = { 
+				{"line", error_pos.row} , 
+				{"field", error_pos.col },
+				{"context", error_pos.error_context}
+			};
+			error_op.push_back(an_error_pos);
 			cout 
 				<< "line: "      << error_pos.row
 				<< ", n_field: " << error_pos.col << endl;
@@ -295,7 +309,6 @@ int main(int argc, char * argv[])
 	//yy_init = 1;
 	csv2_lex_clean_up();
 	cout << "Successfully parsed records: " << all_csv_records.size() << endl;
-	using json = nlohmann::json;
 	json json_op;
 	for (int i = 0; i < all_csv_records.size(); ++i) {
 		const vector<string>& v = all_csv_records[i];
@@ -308,8 +321,17 @@ int main(int argc, char * argv[])
 		//json arr = json::array(v);
 		json_op.push_back(v); 
 	}
+	json header_op;
+	for (int i = 1; i<= expected_fields2; ++i)  {
+		header_op.push_back(header_row_map2[i]) ;
+	}
+
+
 	json parsed_data;
+	parsed_data["header"] =  header_op;
 	parsed_data["parsed_data"] =  json_op;
+	parsed_data["expected_fields"] = expected_fields2;
+	parsed_data["errors"] = error_op;
 	cout 
 		<< "JSON format: " << endl
 		<< parsed_data << endl;
