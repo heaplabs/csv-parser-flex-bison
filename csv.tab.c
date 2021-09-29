@@ -93,8 +93,9 @@
 		{}
 	};
 	vector<error_pos> error_line_nos;
+	#include <nlohmann/json.hpp>
 
-#line 98 "csv.tab.c"
+#line 99 "csv.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -523,7 +524,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    38,    38,    66,   127,   138,   145,   155,   162,   169
+       0,    39,    39,    67,   128,   139,   146,   156,   163,   170
 };
 #endif
 
@@ -1314,7 +1315,7 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 38 "csv.y"
+#line 39 "csv.y"
                     {
 		int total_len = 0;
 		for (int i =0; i < csv_record.size(); ++i) {
@@ -1340,11 +1341,11 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1344 "csv.tab.c"
+#line 1345 "csv.tab.c"
     break;
 
   case 3:
-#line 66 "csv.y"
+#line 67 "csv.y"
                             {
 
 		++num_lines2;
@@ -1388,11 +1389,11 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1392 "csv.tab.c"
+#line 1393 "csv.tab.c"
     break;
 
   case 4:
-#line 127 "csv.y"
+#line 128 "csv.y"
                            { 
 		error_line_nos.push_back( error_pos(num_lines2, num_fields2));
 		num_fields2 = 0;
@@ -1401,11 +1402,11 @@ yyreduce:
 		cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1405 "csv.tab.c"
+#line 1406 "csv.tab.c"
     break;
 
   case 5:
-#line 138 "csv.y"
+#line 139 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1413,11 +1414,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1417 "csv.tab.c"
+#line 1418 "csv.tab.c"
     break;
 
   case 6:
-#line 145 "csv.y"
+#line 146 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1425,11 +1426,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1429 "csv.tab.c"
+#line 1430 "csv.tab.c"
     break;
 
   case 7:
-#line 155 "csv.y"
+#line 156 "csv.y"
                {
 		csv_record.push_back(string(""));
 		++ num_fields2;
@@ -1437,11 +1438,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1441 "csv.tab.c"
+#line 1442 "csv.tab.c"
     break;
 
   case 8:
-#line 162 "csv.y"
+#line 163 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1449,11 +1450,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1453 "csv.tab.c"
+#line 1454 "csv.tab.c"
     break;
 
   case 9:
-#line 169 "csv.y"
+#line 170 "csv.y"
                                          {
 		csv_record.push_back(yyvsp[-1]);
 		++ num_fields2;
@@ -1461,11 +1462,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[-1];
 		}
 	}
-#line 1465 "csv.tab.c"
+#line 1466 "csv.tab.c"
     break;
 
 
-#line 1469 "csv.tab.c"
+#line 1470 "csv.tab.c"
 
       default: break;
     }
@@ -1697,7 +1698,8 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 258 "csv.y"
+#line 259 "csv.y"
+
 
 
 /* Called by yyparse on error. */
@@ -1736,12 +1738,23 @@ int main(int argc, char * argv[])
 	//yy_init = 1;
 	csv2_lex_clean_up();
 	cout << "Successfully parsed records: " << all_csv_records.size() << endl;
+	using json = nlohmann::json;
+	json json_op;
 	for (int i = 0; i < all_csv_records.size(); ++i) {
 		const vector<string>& v = all_csv_records[i];
-		for (int j = 0; j < v.size() - 1; ++j) {
-			cout << v[j] << "|";
-		}
-		cout << v[v.size()-1] << endl;
+		//string row = "row_" + i;
+		//json_op[row] = v;
+		//for (int j = 0; j < v.size() - 1; ++j) {
+		//	cout << v[j] << "|";
+		//}
+		//cout << v[v.size()-1] << endl;
+		//json arr = json::array(v);
+		json_op.push_back(v); 
 	}
+	json parsed_data;
+	parsed_data["parsed_data"] =  json_op;
+	cout 
+		<< "JSON format: " << endl
+		<< parsed_data << endl;
 }
 

@@ -24,6 +24,7 @@
 		{}
 	};
 	vector<error_pos> error_line_nos;
+	#include <nlohmann/json.hpp>
 %}
 
 %define api.value.type {std::string}
@@ -257,6 +258,7 @@ record:
 
 %%
 
+
 /* Called by yyparse on error. */
 void yyerror (char const *s)
 {
@@ -293,12 +295,23 @@ int main(int argc, char * argv[])
 	//yy_init = 1;
 	csv2_lex_clean_up();
 	cout << "Successfully parsed records: " << all_csv_records.size() << endl;
+	using json = nlohmann::json;
+	json json_op;
 	for (int i = 0; i < all_csv_records.size(); ++i) {
 		const vector<string>& v = all_csv_records[i];
-		for (int j = 0; j < v.size() - 1; ++j) {
-			cout << v[j] << "|";
-		}
-		cout << v[v.size()-1] << endl;
+		//string row = "row_" + i;
+		//json_op[row] = v;
+		//for (int j = 0; j < v.size() - 1; ++j) {
+		//	cout << v[j] << "|";
+		//}
+		//cout << v[v.size()-1] << endl;
+		//json arr = json::array(v);
+		json_op.push_back(v); 
 	}
+	json parsed_data;
+	parsed_data["parsed_data"] =  json_op;
+	cout 
+		<< "JSON format: " << endl
+		<< parsed_data << endl;
 }
 
