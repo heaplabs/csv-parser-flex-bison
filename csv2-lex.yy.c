@@ -1915,6 +1915,19 @@ void csv2_lex_clean_up() {
 	yy_delete_buffer(YY_CURRENT_BUFFER);
 	yy_init = 1;
 }
+
+bool initialise_yylex_from_file(string file_name) {
+	yyin = fopen( file_name.c_str(), "r" );
+	if ( ! yyin ) {
+	      cout << "unable to open file: " << file_name << endl;
+	      exit(1);
+	}     
+     
+	yypush_buffer_state(yy_create_buffer( yyin, YY_BUF_SIZE ));
+	BEGIN(INITIAL);
+	return true;
+}
+
 //int main() {
 //        yylex();
 //        //printf( "# of lines = %d, # of chars = %d\n", num_lines, num_fields );

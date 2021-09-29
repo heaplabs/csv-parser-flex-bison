@@ -523,7 +523,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    38,    38,    66,   125,   136,   143,   153,   160,   167
+       0,    38,    38,    66,   127,   138,   145,   155,   162,   169
 };
 #endif
 
@@ -1368,8 +1368,10 @@ yyreduce:
 				<< expected_fields2 
 				<< ", actual : " << csv_record.size()
 				<< endl;
+			error_line_nos.push_back( error_pos(num_lines2, csv_record.size()));
+		} else {
+			all_csv_records.push_back(csv_record);
 		}
-		all_csv_records.push_back(csv_record);
 		csv_record.resize(0);
 		//cout << "new rec: " << ", num_lines2: " << num_lines2
 		//	<< ", num_fields2: " << num_fields2
@@ -1386,11 +1388,11 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1390 "csv.tab.c"
+#line 1392 "csv.tab.c"
     break;
 
   case 4:
-#line 125 "csv.y"
+#line 127 "csv.y"
                            { 
 		error_line_nos.push_back( error_pos(num_lines2, num_fields2));
 		num_fields2 = 0;
@@ -1399,11 +1401,11 @@ yyreduce:
 		cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1403 "csv.tab.c"
+#line 1405 "csv.tab.c"
     break;
 
   case 5:
-#line 136 "csv.y"
+#line 138 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1411,11 +1413,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1415 "csv.tab.c"
+#line 1417 "csv.tab.c"
     break;
 
   case 6:
-#line 143 "csv.y"
+#line 145 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1423,11 +1425,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1427 "csv.tab.c"
+#line 1429 "csv.tab.c"
     break;
 
   case 7:
-#line 153 "csv.y"
+#line 155 "csv.y"
                {
 		csv_record.push_back(string(""));
 		++ num_fields2;
@@ -1435,11 +1437,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1439 "csv.tab.c"
+#line 1441 "csv.tab.c"
     break;
 
   case 8:
-#line 160 "csv.y"
+#line 162 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1447,11 +1449,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1451 "csv.tab.c"
+#line 1453 "csv.tab.c"
     break;
 
   case 9:
-#line 167 "csv.y"
+#line 169 "csv.y"
                                          {
 		csv_record.push_back(yyvsp[-1]);
 		++ num_fields2;
@@ -1459,11 +1461,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[-1];
 		}
 	}
-#line 1463 "csv.tab.c"
+#line 1465 "csv.tab.c"
     break;
 
 
-#line 1467 "csv.tab.c"
+#line 1469 "csv.tab.c"
 
       default: break;
     }
@@ -1695,34 +1697,45 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 256 "csv.y"
+#line 258 "csv.y"
 
 
 /* Called by yyparse on error. */
 void yyerror (char const *s)
 {
+	error_line_nos.push_back( error_pos(num_lines2, num_fields2));
 	printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
 }
 
 extern  void csv2_lex_clean_up() ;
-int main()
+extern bool initialise_yylex_from_file(string file_name) ;
+int main(int argc, char * argv[])
 {
+	if (argc > 1) {
+		initialise_yylex_from_file(argv[1]);
+	}
+
 	int status = yyparse();
 	cout << endl << "num_lines2: "  << num_lines2 << endl;
-	cout << "expected_fields2: "  << expected_fields2 << endl;
+	cout << "expected_fields: "  << expected_fields2 << endl;
 
-	for (int i = 0; i < error_line_nos.size(); ++i) {
-		error_pos error_pos = error_line_nos[i];
-		cout 
-			<< "line: "      << error_pos.row
-			<< ", n_field: " << error_pos.col << endl;
+	cout << "Total errors: " << error_line_nos.size() << endl;
+	if (error_line_nos.size() > 0 ) { 
+		cout << "Detailed errors: " << endl;
+		for (int i = 0; i < error_line_nos.size(); ++i) {
+			error_pos error_pos = error_line_nos[i];
+			cout 
+				<< "line: "      << error_pos.row
+				<< ", n_field: " << error_pos.col << endl;
+		}
+		cout << "End of error report" << endl;
 	}
 
 	 /* For non-reentrant C scanner only. */
 	//yy_delete_buffer(YY_CURRENT_BUFFER);
 	//yy_init = 1;
 	csv2_lex_clean_up();
-	cout << "parsed records: " << endl;
+	cout << "Successfully parsed records: " << all_csv_records.size() << endl;
 	for (int i = 0; i < all_csv_records.size(); ++i) {
 		const vector<string>& v = all_csv_records[i];
 		for (int j = 0; j < v.size() - 1; ++j) {
@@ -1730,6 +1743,5 @@ int main()
 		}
 		cout << v[v.size()-1] << endl;
 	}
-
 }
 

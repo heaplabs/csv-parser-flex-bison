@@ -86,8 +86,10 @@ input:
 				<< expected_fields2 
 				<< ", actual : " << csv_record.size()
 				<< endl;
+			error_line_nos.push_back( error_pos(num_lines2, csv_record.size()));
+		} else {
+			all_csv_records.push_back(csv_record);
 		}
-		all_csv_records.push_back(csv_record);
 		csv_record.resize(0);
 		//cout << "new rec: " << ", num_lines2: " << num_lines2
 		//	<< ", num_fields2: " << num_fields2
@@ -258,28 +260,39 @@ record:
 /* Called by yyparse on error. */
 void yyerror (char const *s)
 {
+	error_line_nos.push_back( error_pos(num_lines2, num_fields2));
 	printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
 }
 
 extern  void csv2_lex_clean_up() ;
-int main()
+extern bool initialise_yylex_from_file(string file_name) ;
+int main(int argc, char * argv[])
 {
+	if (argc > 1) {
+		initialise_yylex_from_file(argv[1]);
+	}
+
 	int status = yyparse();
 	cout << endl << "num_lines2: "  << num_lines2 << endl;
-	cout << "expected_fields2: "  << expected_fields2 << endl;
+	cout << "expected_fields: "  << expected_fields2 << endl;
 
-	for (int i = 0; i < error_line_nos.size(); ++i) {
-		error_pos error_pos = error_line_nos[i];
-		cout 
-			<< "line: "      << error_pos.row
-			<< ", n_field: " << error_pos.col << endl;
+	cout << "Total errors: " << error_line_nos.size() << endl;
+	if (error_line_nos.size() > 0 ) { 
+		cout << "Detailed errors: " << endl;
+		for (int i = 0; i < error_line_nos.size(); ++i) {
+			error_pos error_pos = error_line_nos[i];
+			cout 
+				<< "line: "      << error_pos.row
+				<< ", n_field: " << error_pos.col << endl;
+		}
+		cout << "End of error report" << endl;
 	}
 
 	 /* For non-reentrant C scanner only. */
 	//yy_delete_buffer(YY_CURRENT_BUFFER);
 	//yy_init = 1;
 	csv2_lex_clean_up();
-	cout << "parsed records: " << endl;
+	cout << "Successfully parsed records: " << all_csv_records.size() << endl;
 	for (int i = 0; i < all_csv_records.size(); ++i) {
 		const vector<string>& v = all_csv_records[i];
 		for (int j = 0; j < v.size() - 1; ++j) {
@@ -287,6 +300,5 @@ int main()
 		}
 		cout << v[v.size()-1] << endl;
 	}
-
 }
 
