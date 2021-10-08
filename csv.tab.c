@@ -1729,6 +1729,7 @@ int main(int argc, char * argv[])
 	}
 
 	int status = yyparse();
+	if (status != 0) return 37;
 	//cout << endl << "num_lines2: "  << num_lines2 << endl;
 	//cout << "expected_fields: "  << expected_fields2 << endl;
 	//cout << "Total errors: " << error_line_nos.size() << endl;
