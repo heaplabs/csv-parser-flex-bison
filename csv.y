@@ -178,7 +178,7 @@ csv_field:
 			header_row_map2[num_fields2] = $1;
 		}
 	}
-	| DOUBLE_QUOTE QUOTED_CSV_FIELD  {
+	| QUOTED_CSV_FIELD  {
 		csv_record.push_back($1);
 		++ num_fields2;
 		if (header_mode2) {
@@ -342,5 +342,6 @@ int main(int argc, char * argv[])
 	cout 
 		//<< "JSON format: " << endl
 		<< parsed_data.dump(4) << endl;
+	return 0;
 }
 
