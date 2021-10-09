@@ -20,15 +20,15 @@ csv.tab.o: csv.tab.c
 lex.yy.o: lex.yy.c  csv.tab.h lex.l
 	$(CC) -c $<
 
-lex.yy.c: lex.l  csv.tab.h
-	flex $<
+lex.yy.c: lex.l  csv.tab.h  GNUmakefile
+	flex --backup $<
 
-csv.tab.h csv.tab.c: csv.y
+csv.tab.h csv.tab.c: csv.y GNUmakefile
 	bison --defines csv.y
 
 
 csv2-lex.yy.c: csv2-lex.l 
-	flex -o $@ $<
+	flex --backup -o $@ $<
 
 
 csv2-lex.yy.o: csv2-lex.yy.c  csv.tab.h csv2-lex.l

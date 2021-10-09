@@ -20,6 +20,7 @@ int expected_fields = 0;
 %}
 
 %option noyywrap
+%array
 
 %x quoted_field
 
@@ -55,6 +56,7 @@ int expected_fields = 0;
 	return CSV_FIELD;
 }
 
+ 	/* warning rule cant be matched because of my changes */ 
 [^,\r\n"]+\" {
 	//printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -180,7 +182,7 @@ bool initialise_yylex_from_file(string file_name) {
 	if ( ! yyin ) {
 	      cout << "unable to open file: " << file_name << endl;
 	      exit(1);
-	}     
+	}
      
 	yypush_buffer_state(yy_create_buffer( yyin, YY_BUF_SIZE ));
 	BEGIN(INITIAL);

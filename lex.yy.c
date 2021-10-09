@@ -354,8 +354,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 4
-#define YY_END_OF_BUFFER 5
+#define YY_NUM_RULES 14
+#define YY_END_OF_BUFFER 15
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -363,9 +363,11 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[10] =
+static const flex_int16_t yy_accept[25] =
     {   0,
-        1,    1,    5,    1,    3,    4,    2,    1,    0
+        0,    0,    6,    6,   15,    4,   13,   13,    5,   12,
+        6,    8,    9,   11,   10,    4,    1,    2,   13,    6,
+        7,    0,    1,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -373,8 +375,8 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    1,    2,
         1,    1,    3,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    3,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    4,    1,    1,    1,    1,    1,    1,
+        1,    1,    1,    5,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -400,31 +402,37 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static const YY_CHAR yy_meta[5] =
+static const YY_CHAR yy_meta[6] =
     {   0,
-        1,    2,    2,    2
+        1,    2,    3,    4,    5
     } ;
 
-static const flex_int16_t yy_base[11] =
+static const flex_int16_t yy_base[29] =
     {   0,
-        0,    0,    6,    0,    7,    7,    7,    0,    7,    4
+        0,    0,    5,    0,   21,   10,    0,    0,   22,   22,
+        0,   22,   22,    0,   22,    0,   15,   22,   22,    0,
+       22,    0,    0,   22,   15,   15,   12,    8
     } ;
 
-static const flex_int16_t yy_def[11] =
+static const flex_int16_t yy_def[29] =
     {   0,
-        9,    1,    9,   10,    9,    9,    9,   10,    0,    9
+       24,    1,   24,    3,   24,   24,   25,   26,   24,   24,
+       27,   24,   24,   28,   24,    6,   24,   24,   24,   27,
+       24,   17,   17,    0,   24,   24,   24,   24
     } ;
 
-static const flex_int16_t yy_nxt[12] =
+static const flex_int16_t yy_nxt[28] =
     {   0,
-        4,    5,    6,    7,    8,    9,    3,    9,    9,    9,
-        9
+        6,    7,    8,    9,   10,   11,   12,   13,   14,   15,
+       16,   21,   20,   17,   18,   22,   19,   19,   23,   18,
+       24,    5,   24,   24,   24,   24,   24
     } ;
 
-static const flex_int16_t yy_chk[12] =
+static const flex_int16_t yy_chk[28] =
     {   0,
-        1,    1,    1,    1,   10,    3,    9,    9,    9,    9,
-        9
+        1,    1,    1,    1,    1,    3,    3,    3,    3,    3,
+        6,   28,   27,    6,    6,   17,   26,   25,   17,   17,
+        5,   24,   24,   24,   24,   24,   24
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -441,18 +449,42 @@ int yy_flex_debug = 0;
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
 char *yytext;
-#line 1 "lex.l"
-#line 2 "lex.l"
+#line 1 "csv2-lex.l"
+#line 2 "csv2-lex.l"
+#include <map>
 #include <string>
-using std::string;
+#include <iostream>
 #include "csv.tab.h"
+int num_lines = 0, num_fields = 1, num_quoted_fields = 0;
+//char buffer[8192];
+//extern "C" int yylex();
 
-	//.*	return CSV_FIELD
-	int num_fields = 0;
-#line 453 "lex.yy.c"
-#line 454 "lex.yy.c"
+using std::map;
+using std::string;
+using std::cout;
+using std::endl;
+
+string buffer;
+std::map<int, std::string> header_row_map;
+bool header_mode = false;
+int expected_fields = 0;
+
+//     %option reentrant
+//%option noyyalloc noyyrealloc noyyfree
+
+ /* Initialize the allocator. */
+ /*
+ % {
+      #define YY_EXTRA_TYPE  struct allocator*
+      #define YY_USER_INIT  yyextra = allocator_create();
+ % }
+ */
+#line 483 "lex.yy.c"
+
+#line 485 "lex.yy.c"
 
 #define INITIAL 0
+#define quoted_field 1
 
 #ifndef YY_NO_UNISTD_H
 /* Special case for "unistd.h", since it is non-ANSI. We include it way
@@ -667,11 +699,10 @@ YY_DECL
 		}
 
 	{
-#line 12 "lex.l"
+#line 36 "csv2-lex.l"
 
 
-
-#line 675 "lex.yy.c"
+#line 706 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -698,13 +729,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 10 )
+				if ( yy_current_state >= 25 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 7 );
+		while ( yy_base[yy_current_state] != 22 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -730,42 +761,198 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 15 "lex.l"
+#line 38 "csv2-lex.l"
 {
-	printf("got field: |%s|, field_no: %d\n", yytext, num_fields);
-	//string field(yytext);
-	//map<int,string>::const_iterator  index = header_row_map.find(num_fields);
-	//if (index == header_row_map.end()) {
-	//	header_row_map[num_fields] = field;
-	//	header_mode = true;
-	//} else {
-	//	cout << "field: " << index->second << ", data: "
-	//		<< field << endl; 
-	//}
+	//printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, num_fields);
+	string field(yytext);
+	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
+	if (index == header_row_map.end()) {
+		header_row_map[num_fields] = field;
+		header_mode = true;
+	} else {
+		//cout << "field: " << index->second << ", data: "
+		//	<< field << endl; 
+	}
+	yylval = field;
 	return CSV_FIELD;
 }
 	YY_BREAK
 case 2:
+*yy_cp = (yy_hold_char); /* undo effects of setting up yytext */
+(yy_c_buf_p) = yy_cp -= 1;
+YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 29 "lex.l"
+#line 53 "csv2-lex.l"
 {
-	printf("got COMMA\n");
-	return ',';
+	//printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, num_fields);
+	string field(yytext);
+	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
+	if (index == header_row_map.end()) {
+		header_row_map[num_fields] = field;
+		header_mode = true;
+	} else {
+		//cout << "field: " << index->second << ", data: "
+		//	<< field << endl; 
+	}
+	yylval = field;
+	return CSV_FIELD;
 }
 	YY_BREAK
 case 3:
-/* rule 3 can match eol */
 YY_RULE_SETUP
-#line 34 "lex.l"
-return '\n';
+#line 68 "csv2-lex.l"
+{
+	//printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, num_fields);
+	string field(yytext);
+	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
+	if (index == header_row_map.end()) {
+		header_row_map[num_fields] = field;
+		header_mode = true;
+	} else {
+		//cout << "field: " << index->second << ", data: "
+		//	<< field << endl; 
+	}
+	yylval = field;
+	return CSV_FIELD;
+}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 36 "lex.l"
+#line 83 "csv2-lex.l"
+{
+	//printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
+	string field(yytext);
+	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
+	if (index == header_row_map.end()) {
+		header_row_map[num_fields] = field;
+		header_mode = true;
+	} else {
+		//cout << "field: " << index->second << ", data: "
+		//	<< field << endl; 
+	}
+	yylval = field;
+	return CSV_FIELD;
+}
+	YY_BREAK
+case 5:
+YY_RULE_SETUP
+#line 98 "csv2-lex.l"
+{
+	BEGIN(quoted_field);
+	//return DOUBLE_QUOTE;
+}
+	YY_BREAK
+case 6:
+YY_RULE_SETUP
+#line 103 "csv2-lex.l"
+{
+	//strcpy(buffer+strlen(buffer), yytext);
+	buffer += string(yytext);
+}
+	YY_BREAK
+case 7:
+YY_RULE_SETUP
+#line 108 "csv2-lex.l"
+{
+	//printf("got a double quote inside a csv field");
+	//strcpy(buffer + strlen(buffer), "\"\"");
+	buffer += string(yytext);
+}
+	YY_BREAK
+case 8:
+/* rule 8 can match eol */
+YY_RULE_SETUP
+#line 114 "csv2-lex.l"
+{
+	//printf("found a newline in a quoted field\n");
+	//strcpy(buffer + strlen(buffer), "\n");
+	buffer += string(yytext);
+}
+	YY_BREAK
+case 9:
+YY_RULE_SETUP
+#line 120 "csv2-lex.l"
+{
+	//printf("found a carriage return in a quoted field\n");
+	//strcpy(buffer + strlen(buffer), "\r");
+	buffer += string(yytext);
+}
+	YY_BREAK
+case 10:
+YY_RULE_SETUP
+#line 126 "csv2-lex.l"
+{
+	//printf("found a comma in a quoted field\n");
+	//strcpy(buffer + strlen(buffer), ",");
+	buffer += string(yytext);
+}
+	YY_BREAK
+case 11:
+YY_RULE_SETUP
+#line 132 "csv2-lex.l"
+{
+	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
+	string field(buffer);
+	if (index == header_row_map.end()) {
+		header_row_map[num_fields] = field;
+		header_mode = true;
+	} else {
+		//cout << "field: " << index->second << ", data: "
+		//	<< field << endl; 
+	}
+	BEGIN(INITIAL);
+	//printf("got a QUOTED_CSV_FIELD field: %s\n", buffer.c_str());
+	++num_quoted_fields;
+	yylval = buffer;
+	buffer[0] = '\0';
+	buffer = "";
+	return QUOTED_CSV_FIELD;
+}
+	YY_BREAK
+case 12:
+YY_RULE_SETUP
+#line 151 "csv2-lex.l"
+{
+	++num_fields;
+	//printf("field separator: %d\n", num_fields);
+	return ',';
+}
+	YY_BREAK
+/*
+	<<EOF>> {
+		static int once = 0;
+		cout << "flex - returning NEWL on EOF" << endl;
+		return once++ ? 0 : '\n';
+	}
+	*/
+case 13:
+/* rule 13 can match eol */
+YY_RULE_SETUP
+#line 165 "csv2-lex.l"
+{
+	++num_lines;
+	//printf("total fields :%d\n", num_fields);
+	if (header_mode) {
+		expected_fields = num_fields;
+		header_mode = false;
+	} else if (expected_fields != num_fields) {
+		//printf("line_no: %d , num_fields: %d  not matcing != expected_fields  : %d \n",
+		//	num_lines, num_fields, expected_fields);
+	}
+	
+	num_fields = 1;
+	//printf("new Record no:%d\n", num_lines);
+	return '\n';
+} 
+	YY_BREAK
+case 14:
+YY_RULE_SETUP
+#line 181 "csv2-lex.l"
 ECHO;
 	YY_BREAK
-#line 768 "lex.yy.c"
+#line 954 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
+case YY_STATE_EOF(quoted_field):
 	yyterminate();
 
 	case YY_END_OF_BUFFER:
@@ -1061,7 +1248,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 10 )
+			if ( yy_current_state >= 25 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1089,11 +1276,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 10 )
+		if ( yy_current_state >= 25 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 9);
+	yy_is_jam = (yy_current_state == 24);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1769,6 +1956,45 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 36 "lex.l"
+#line 181 "csv2-lex.l"
 
+
+void csv2_lex_clean_up() {
+	yy_delete_buffer(YY_CURRENT_BUFFER);
+	yy_init = 1;
+}
+
+bool initialise_yylex_from_file(string file_name) {
+	yyin = fopen( file_name.c_str(), "r" );
+	if ( ! yyin ) {
+	      cout << "unable to open file: " << file_name << endl;
+	      exit(1);
+	}
+     
+	yypush_buffer_state(yy_create_buffer( yyin, YY_BUF_SIZE ));
+	BEGIN(INITIAL);
+	return true;
+}
+
+//int main() {
+//        yylex();
+//        //printf( "# of lines = %d, # of chars = %d\n", num_lines, num_fields );
+//	printf("parsed: num_lines: %d, num_fields: %d, num_quoted_fields: %d\n",
+//		num_lines, num_fields, num_quoted_fields);
+//}
+
+ /* Provide our own implementations. */
+     void * yyalloc (size_t bytes, void* yyscanner) {
+         //return allocator_alloc (yyextra, bytes);
+	 exit(3);
+     }
+     
+     void * yyrealloc (void * ptr, size_t bytes, void* yyscanner) {
+         //return allocator_realloc (yyextra, bytes);
+	 exit(5);
+     }
+     
+     void yyfree (void * ptr, void * yyscanner) {      
+         /* Do nothing -- we leave it to the garbage collector. */
+     }
 

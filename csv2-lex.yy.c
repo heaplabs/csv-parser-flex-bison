@@ -335,11 +335,7 @@ typedef int yy_state_type;
 extern int yylineno;
 int yylineno = 1;
 
-extern char *yytext;
-#ifdef yytext_ptr
-#undef yytext_ptr
-#endif
-#define yytext_ptr yytext
+extern char yytext[];
 
 static yy_state_type yy_get_previous_state ( void );
 static yy_state_type yy_try_NUL_trans ( yy_state_type current_state  );
@@ -354,6 +350,9 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 	yyleng = (int) (yy_cp - yy_bp); \
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
+	if ( yyleng >= YYLMAX ) \
+		YY_FATAL_ERROR( "token too large, exceeds YYLMAX" ); \
+	yy_flex_strncpy( yytext, (yytext_ptr), yyleng + 1 ); \
 	(yy_c_buf_p) = yy_cp;
 #define YY_NUM_RULES 14
 #define YY_END_OF_BUFFER 15
@@ -449,7 +448,12 @@ int yy_flex_debug = 0;
 #define yymore() yymore_used_but_not_detected
 #define YY_MORE_ADJ 0
 #define YY_RESTORE_YY_MORE_OFFSET
-char *yytext;
+#ifndef YYLMAX
+#define YYLMAX 8192
+#endif
+
+char yytext[YYLMAX];
+char *yytext_ptr;
 #line 1 "csv2-lex.l"
 #line 2 "csv2-lex.l"
 #include <map>
@@ -470,9 +474,9 @@ std::map<int, std::string> header_row_map;
 bool header_mode = false;
 int expected_fields = 0;
 
-#line 474 "csv2-lex.yy.c"
+#line 478 "csv2-lex.yy.c"
 
-#line 476 "csv2-lex.yy.c"
+#line 480 "csv2-lex.yy.c"
 
 #define INITIAL 0
 #define quoted_field 1
@@ -690,10 +694,10 @@ YY_DECL
 		}
 
 	{
-#line 26 "csv2-lex.l"
+#line 27 "csv2-lex.l"
 
 
-#line 697 "csv2-lex.yy.c"
+#line 701 "csv2-lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -752,7 +756,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 28 "csv2-lex.l"
+#line 29 "csv2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -773,7 +777,7 @@ case 2:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 43 "csv2-lex.l"
+#line 44 "csv2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -789,9 +793,10 @@ YY_RULE_SETUP
 	return CSV_FIELD;
 }
 	YY_BREAK
+/* warning rule cant be matched because of my changes */ 
 case 3:
 YY_RULE_SETUP
-#line 58 "csv2-lex.l"
+#line 60 "csv2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -809,7 +814,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 73 "csv2-lex.l"
+#line 75 "csv2-lex.l"
 {
 	//printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -827,7 +832,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 88 "csv2-lex.l"
+#line 90 "csv2-lex.l"
 {
 	BEGIN(quoted_field);
 	//return DOUBLE_QUOTE;
@@ -835,7 +840,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 93 "csv2-lex.l"
+#line 95 "csv2-lex.l"
 {
 	//strcpy(buffer+strlen(buffer), yytext);
 	buffer += string(yytext);
@@ -843,7 +848,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 98 "csv2-lex.l"
+#line 100 "csv2-lex.l"
 {
 	//printf("got a double quote inside a csv field");
 	//strcpy(buffer + strlen(buffer), "\"\"");
@@ -853,7 +858,7 @@ YY_RULE_SETUP
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 104 "csv2-lex.l"
+#line 106 "csv2-lex.l"
 {
 	//printf("found a newline in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\n");
@@ -862,7 +867,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 110 "csv2-lex.l"
+#line 112 "csv2-lex.l"
 {
 	//printf("found a carriage return in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\r");
@@ -871,7 +876,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 116 "csv2-lex.l"
+#line 118 "csv2-lex.l"
 {
 	//printf("found a comma in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), ",");
@@ -880,7 +885,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 122 "csv2-lex.l"
+#line 124 "csv2-lex.l"
 {
 	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
 	string field(buffer);
@@ -902,7 +907,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 141 "csv2-lex.l"
+#line 143 "csv2-lex.l"
 {
 	++num_fields;
 	//printf("field separator: %d\n", num_fields);
@@ -919,7 +924,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 155 "csv2-lex.l"
+#line 157 "csv2-lex.l"
 {
 	++num_lines;
 	//printf("total fields :%d\n", num_fields);
@@ -938,10 +943,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 171 "csv2-lex.l"
+#line 173 "csv2-lex.l"
 ECHO;
 	YY_BREAK
-#line 945 "csv2-lex.yy.c"
+#line 950 "csv2-lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(quoted_field):
 	yyterminate();
@@ -1947,7 +1952,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 171 "csv2-lex.l"
+#line 173 "csv2-lex.l"
 
 
 void csv2_lex_clean_up() {
@@ -1960,7 +1965,7 @@ bool initialise_yylex_from_file(string file_name) {
 	if ( ! yyin ) {
 	      cout << "unable to open file: " << file_name << endl;
 	      exit(1);
-	}     
+	}
      
 	yypush_buffer_state(yy_create_buffer( yyin, YY_BUF_SIZE ));
 	BEGIN(INITIAL);
