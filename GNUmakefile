@@ -5,8 +5,10 @@ OBJ2S= csv.tab.o csv2-lex.yy.o
 SRC=csv.y csv2-lex.l
 CC=g++ -std=c++11
 
-csv2.exe: $(OBJ2S) $(SRC)
+csv2_ubuntu.exe: $(OBJ2S) $(SRC)
 	$(CC) -o $@ $(OBJ2S) 
+
+.PHONY: clean
 
 csv.exe: $(OBJS)
 	$(CC) -o $@ $(OBJS) 
@@ -43,3 +45,7 @@ valgrind_check: csv2.exe
 #verify the include is setup properly so we can include it our project
 test-nlohmann.o: test-nlohmann-json.cpp
 	g++ -c $<
+
+clean:
+	rm *.o csv.tab.[hc] csv2-lex.yy.c *.exe
+
