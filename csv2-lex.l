@@ -23,56 +23,81 @@ int expected_fields = 0;
 %array
 
 %x quoted_field
+%x misplaced_quote_field
 
 %%
 
-[^",\r\n][^,\r\n]*\" {
+[^",\r\n][^",\r\n]*\" {
 	//printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
-	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
-	if (index == header_row_map.end()) {
-		header_row_map[num_fields] = field;
-		header_mode = true;
-	} else {
-		//cout << "field: " << index->second << ", data: "
-		//	<< field << endl; 
-	}
-	yylval = field;
-	return CSV_FIELD;
+	//map<int,string>::const_iterator  index = header_row_map.find(num_fields);
+	//if (index == header_row_map.end()) {
+	//	header_row_map[num_fields] = field;
+	//	header_mode = true;
+	//} else {
+	//	//cout << "field: " << index->second << ", data: "
+	//	//	<< field << endl; 
+	//}
+	//yylval = field;
+	//return CSV_FIELD;
+	buffer = field;
+	cout << "got misplaced_quote_field: " << buffer << endl;
+	BEGIN(misplaced_quote_field);
 }
 
-[^",\r\n][^,\r\n]*/, {
-	//printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, num_fields);
+<misplaced_quote_field>[^,\r\n]* {
 	string field(yytext);
-	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
-	if (index == header_row_map.end()) {
-		header_row_map[num_fields] = field;
-		header_mode = true;
-	} else {
-		//cout << "field: " << index->second << ", data: "
-		//	<< field << endl; 
-	}
-	yylval = field;
-	return CSV_FIELD;
+	buffer += field;
+	cout << "continuing misplaced_quote_field: " << buffer << endl;
 }
 
- 	/* warning rule cant be matched because of my changes */ 
-[^,\r\n"]+\" {
-	//printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, num_fields);
-	string field(yytext);
-	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
-	if (index == header_row_map.end()) {
-		header_row_map[num_fields] = field;
-		header_mode = true;
-	} else {
-		//cout << "field: " << index->second << ", data: "
-		//	<< field << endl; 
-	}
-	yylval = field;
-	return CSV_FIELD;
+<misplaced_quote_field>, {
+	cout << "terminated misplaced_quote_field with a , (comma)" << endl;
+	yylval = buffer; buffer = "";
+	BEGIN(INITIAL);
+	return MISPLACED_QUOTED_FIELD;
 }
 
-[^,\r\n"]+ {
+<misplaced_quote_field>\r\n {
+	cout << "terminated misplaced_quote_field with a carr ret/line feed" << endl;
+	yylval = buffer; buffer = "";
+	BEGIN(INITIAL);
+	return MISPLACED_QUOTED_FIELD_NEWL;
+}
+
+<misplaced_quote_field>\r {
+	cout << "terminated misplaced_quote_field with a carr ret" << endl;
+	yylval = buffer; buffer = "";
+	BEGIN(INITIAL);
+	return MISPLACED_QUOTED_FIELD_NEWL;
+}
+
+<misplaced_quote_field>\n {
+	cout << "terminated misplaced_quote_field with a line feed" << endl;
+	yylval = buffer; buffer = "";
+	BEGIN(INITIAL);
+	return MISPLACED_QUOTED_FIELD_NEWL;
+}
+
+
+
+	/*
+	[^",\r\n]* /, {
+		string field(yytext);
+		map<int,string>::const_iterator  index = header_row_map.find(num_fields);
+		if (index == header_row_map.end()) {
+			header_row_map[num_fields] = field;
+			header_mode = true;
+		} else {
+			//cout << "field: " << index->second << ", data: "
+			//	<< field << endl; 
+		}
+		yylval = field;
+		return CSV_FIELD;
+	}
+	*/
+
+[^,"\r\n]* {
 	//printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = header_row_map.find(num_fields);

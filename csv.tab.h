@@ -51,7 +51,9 @@ extern int yydebug;
   {
     CSV_FIELD = 258,
     QUOTED_CSV_FIELD = 259,
-    DOUBLE_QUOTE = 260
+    DOUBLE_QUOTE = 260,
+    MISPLACED_QUOTED_FIELD = 261,
+    MISPLACED_QUOTED_FIELD_NEWL = 262
   };
 #endif
 

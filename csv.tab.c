@@ -152,7 +152,9 @@ extern int yydebug;
   {
     CSV_FIELD = 258,
     QUOTED_CSV_FIELD = 259,
-    DOUBLE_QUOTE = 260
+    DOUBLE_QUOTE = 260,
+    MISPLACED_QUOTED_FIELD = 261,
+    MISPLACED_QUOTED_FIELD_NEWL = 262
   };
 #endif
 
@@ -474,19 +476,19 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  6
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   17
+#define YYLAST   20
 
 /* YYNTOKENS -- Number of terminals.  */
-#define YYNTOKENS  8
+#define YYNTOKENS  10
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  9
+#define YYNRULES  12
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  14
+#define YYNSTATES  17
 
 #define YYUNDEFTOK  2
-#define YYMAXUTOK   260
+#define YYMAXUTOK   262
 
 
 /* YYTRANSLATE(TOKEN-NUM) -- Symbol number corresponding to TOKEN-NUM
@@ -499,10 +501,10 @@ union yyalloc
 static const yytype_int8 yytranslate[] =
 {
        0,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       6,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       8,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     7,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     9,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -524,14 +526,15 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4,
-       5
+       5,     6,     7
 };
 
 #if YYDEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    46,    46,    74,   139,   150,   157,   167,   174,   181
+       0,    48,    48,    73,    82,    85,   150,   161,   168,   175,
+     180,   187,   194
 };
 #endif
 
@@ -541,8 +544,8 @@ static const yytype_uint8 yyrline[] =
 static const char *const yytname[] =
 {
   "$end", "error", "$undefined", "CSV_FIELD", "QUOTED_CSV_FIELD",
-  "DOUBLE_QUOTE", "'\\n'", "','", "$accept", "input", "record",
-  "csv_field", YY_NULLPTR
+  "DOUBLE_QUOTE", "MISPLACED_QUOTED_FIELD", "MISPLACED_QUOTED_FIELD_NEWL",
+  "'\\n'", "','", "$accept", "input", "record", "csv_field", YY_NULLPTR
 };
 #endif
 
@@ -551,16 +554,16 @@ static const char *const yytname[] =
    (internal) symbol number NUM (which must be that of a token).  */
 static const yytype_int16 yytoknum[] =
 {
-       0,   256,   257,   258,   259,   260,    10,    44
+       0,   256,   257,   258,   259,   260,   261,   262,    10,    44
 };
 # endif
 
-#define YYPACT_NINF (-5)
+#define YYPACT_NINF (-7)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-8)
+#define YYTABLE_NINF (-11)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -569,8 +572,8 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       5,    -5,    -5,     0,     4,    -5,    -5,    -4,     6,    -5,
-       5,    -5,    -5,    -5
+      15,    -7,    -7,     0,     4,    -7,    -7,    -6,    -7,     8,
+      -7,    -7,    -7,    15,    -7,    -7,    -7
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -578,14 +581,14 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       7,     8,     9,     0,     0,     5,     1,     0,     0,     2,
-       7,     4,     3,     6
+      10,    11,    12,     0,     0,     7,     1,     0,     4,     0,
+       9,     3,     2,    10,     6,     5,     8
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -5,    -5,     2,     7
+      -7,    -7,     2,     7
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -599,34 +602,38 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       6,     7,    11,     1,     2,     8,    -7,    -7,     1,     2,
-       9,    10,    12,    10,     0,     0,     0,    13
+       6,     7,    14,     1,     2,     9,   -10,     8,   -10,   -10,
+      10,    11,    12,    13,    10,     0,    15,    13,     1,     2,
+      16
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     1,     6,     3,     4,     3,     6,     7,     3,     4,
-       6,     7,     6,     7,    -1,    -1,    -1,    10
+       0,     1,     8,     3,     4,     3,     6,     7,     8,     9,
+       6,     7,     8,     9,     6,    -1,     8,     9,     3,     4,
+      13
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     4,     9,    10,    11,     0,     1,    10,     6,
-       7,     6,     6,    11
+       0,     3,     4,    11,    12,    13,     0,     1,     7,    12,
+       6,     7,     8,     9,     8,     8,    13
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,     8,     9,     9,     9,    10,    10,    11,    11,    11
+       0,    10,    11,    11,    11,    11,    11,    12,    12,    12,
+      13,    13,    13
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     3,     3,     1,     3,     0,     1,     1
+       0,     2,     2,     2,     2,     3,     3,     1,     3,     2,
+       0,     1,     1
 };
 
 
@@ -1322,7 +1329,7 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 46 "csv.y"
+#line 48 "csv.y"
                     {
 		int total_len = 0;
 		//for (int i =0; i < csv_record.size(); ++i) {
@@ -1348,11 +1355,30 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1352 "csv.tab.c"
+#line 1359 "csv.tab.c"
     break;
 
   case 3:
-#line 74 "csv.y"
+#line 73 "csv.y"
+                                             {
+		cout << "got input = record MISPLACED_QUOTED_FIELD_NEWL" << endl;
+		expected_fields2 = csv_record.size();
+		csv_record.resize(0);
+		header_mode2 = false;
+	}
+#line 1370 "csv.tab.c"
+    break;
+
+  case 4:
+#line 82 "csv.y"
+                                            {
+		cout << "got input = input MISPLACED_QUOTED_FIELD_NEWL" << endl;
+	}
+#line 1378 "csv.tab.c"
+    break;
+
+  case 5:
+#line 85 "csv.y"
                             {
 
 		++num_lines2;
@@ -1400,11 +1426,11 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1404 "csv.tab.c"
+#line 1430 "csv.tab.c"
     break;
 
-  case 4:
-#line 139 "csv.y"
+  case 6:
+#line 150 "csv.y"
                            { 
 		error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
 		num_fields2 = 0;
@@ -1413,11 +1439,11 @@ yyreduce:
 		cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1417 "csv.tab.c"
+#line 1443 "csv.tab.c"
     break;
 
-  case 5:
-#line 150 "csv.y"
+  case 7:
+#line 161 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1425,11 +1451,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1429 "csv.tab.c"
+#line 1455 "csv.tab.c"
     break;
 
-  case 6:
-#line 157 "csv.y"
+  case 8:
+#line 168 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1437,11 +1463,18 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1441 "csv.tab.c"
+#line 1467 "csv.tab.c"
     break;
 
-  case 7:
-#line 167 "csv.y"
+  case 9:
+#line 175 "csv.y"
+                                        {
+	}
+#line 1474 "csv.tab.c"
+    break;
+
+  case 10:
+#line 180 "csv.y"
                {
 		csv_record.push_back(string(""));
 		++ num_fields2;
@@ -1449,11 +1482,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1453 "csv.tab.c"
+#line 1486 "csv.tab.c"
     break;
 
-  case 8:
-#line 174 "csv.y"
+  case 11:
+#line 187 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1461,11 +1494,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1465 "csv.tab.c"
+#line 1498 "csv.tab.c"
     break;
 
-  case 9:
-#line 181 "csv.y"
+  case 12:
+#line 194 "csv.y"
                             {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1473,11 +1506,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1477 "csv.tab.c"
+#line 1510 "csv.tab.c"
     break;
 
 
-#line 1481 "csv.tab.c"
+#line 1514 "csv.tab.c"
 
       default: break;
     }
@@ -1709,7 +1742,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 270 "csv.y"
+#line 283 "csv.y"
 
 
 

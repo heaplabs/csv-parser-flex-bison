@@ -39,6 +39,8 @@
 %token CSV_FIELD
 %token QUOTED_CSV_FIELD
 %token DOUBLE_QUOTE
+%token MISPLACED_QUOTED_FIELD
+%token MISPLACED_QUOTED_FIELD_NEWL
 
 %%
 
@@ -68,9 +70,18 @@ input:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
+	| record MISPLACED_QUOTED_FIELD_NEWL {
+		cout << "got input = record MISPLACED_QUOTED_FIELD_NEWL" << endl;
+		expected_fields2 = csv_record.size();
+		csv_record.resize(0);
+		header_mode2 = false;
+	}
 	//| input record ',' '\n' {
 	//	cout<< "parsed record with empty last field" << endl;
 	//}
+	| input MISPLACED_QUOTED_FIELD_NEWL {
+		cout << "got input = input MISPLACED_QUOTED_FIELD_NEWL" << endl;
+	}
 	| input record '\n' {
 
 		++num_lines2;
@@ -160,6 +171,8 @@ record:
 		//if (header_mode2) {
 		//	header_row_map2[num_fields2] = $1;
 		//}
+	}
+	| record MISPLACED_QUOTED_FIELD {
 	}
 	;
 
