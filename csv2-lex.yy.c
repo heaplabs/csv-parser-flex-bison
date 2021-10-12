@@ -951,8 +951,8 @@ int yy_flex_debug = 1;
 
 static const flex_int16_t yy_rule_linenum[13] =
     {   0,
-       32,   55,   91,  110,  121,  127,  139,  145,  151,  157,
-      183,  199
+       32,   61,   97,  116,  127,  133,  145,  151,  157,  163,
+      189,  205
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -1361,19 +1361,25 @@ YY_RULE_SETUP
 	//}
 	//yylval = field;
 	//return CSV_FIELD;
-	buffer = field;
 	//cout << "got misplaced_quote_field: " << buffer << endl;
-	if (in_quoted_field_mode) {
-		cout << "trying to enter misplaced_quoted_field mode when quoted_field_mode";
-	} else { 
-		BEGIN(misplaced_quote_field);
-		in_misplaced_quoted_field_mode = true;
+	if (field[field.length()-1] == '"') {
+		// only then accept otherwise some 8859 char is affecting us
+		if (in_quoted_field_mode) {
+			cout << "trying to enter misplaced_quoted_field mode when quoted_field_mode";
+		} else { 
+			BEGIN(misplaced_quote_field);
+			buffer = field;
+			in_misplaced_quoted_field_mode = true;
+		}
+	} else {
+		cout << "not starting misplaced_quote_field :field[field.length()-1] == "
+			<< field[field.length()-1] << endl;
 	}
 }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 55 "csv2-lex.l"
+#line 61 "csv2-lex.l"
 {
 	string field(yytext);
 	cout << "terminating misplaced_quote_field: yytext " << yytext << endl;
@@ -1408,7 +1414,7 @@ YY_RULE_SETUP
 	*/
 case 3:
 YY_RULE_SETUP
-#line 91 "csv2-lex.l"
+#line 97 "csv2-lex.l"
 {
 	printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -1430,7 +1436,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 110 "csv2-lex.l"
+#line 116 "csv2-lex.l"
 {
 	if (yytext[0]=='"') {
 		cout << "beginning of a quoted field - going into quoted field state: yytext " 
@@ -1444,7 +1450,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 121 "csv2-lex.l"
+#line 127 "csv2-lex.l"
 {
 	//strcpy(buffer+strlen(buffer), yytext);
 	buffer += string(yytext);
@@ -1453,7 +1459,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 127 "csv2-lex.l"
+#line 133 "csv2-lex.l"
 {
 	printf("<quoted_field> got an escaped double quote inside a csv field: yytext: |%s|, buffer: %s\n",
 			yytext, buffer.c_str());
@@ -1469,7 +1475,7 @@ YY_RULE_SETUP
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 139 "csv2-lex.l"
+#line 145 "csv2-lex.l"
 {
 	printf("found a newline in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\n");
@@ -1478,7 +1484,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 145 "csv2-lex.l"
+#line 151 "csv2-lex.l"
 {
 	printf("found a carriage return in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\r");
@@ -1487,7 +1493,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 151 "csv2-lex.l"
+#line 157 "csv2-lex.l"
 {
 	printf("found a comma in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), ",");
@@ -1496,7 +1502,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 157 "csv2-lex.l"
+#line 163 "csv2-lex.l"
 {
 	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
 	string field(buffer);
@@ -1525,7 +1531,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 183 "csv2-lex.l"
+#line 189 "csv2-lex.l"
 {
 	++num_fields;
 	printf("field separator #f %d, #n %d\n", num_fields, num_lines);
@@ -1544,7 +1550,7 @@ YY_RULE_SETUP
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 199 "csv2-lex.l"
+#line 205 "csv2-lex.l"
 {
 	++num_lines;
 	//printf("total fields :%d\n", num_fields);
@@ -1563,10 +1569,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 215 "csv2-lex.l"
+#line 221 "csv2-lex.l"
 ECHO;
 	YY_BREAK
-#line 1570 "csv2-lex.yy.c"
+#line 1576 "csv2-lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(quoted_field):
 case YY_STATE_EOF(misplaced_quote_field):
@@ -2712,7 +2718,7 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 215 "csv2-lex.l"
+#line 221 "csv2-lex.l"
 
 
 void csv2_lex_clean_up() {

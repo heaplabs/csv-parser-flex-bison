@@ -42,13 +42,19 @@ bool in_misplaced_quoted_field_mode = false;
 	//}
 	//yylval = field;
 	//return CSV_FIELD;
-	buffer = field;
 	//cout << "got misplaced_quote_field: " << buffer << endl;
-	if (in_quoted_field_mode) {
-		cout << "trying to enter misplaced_quoted_field mode when quoted_field_mode";
-	} else { 
-		BEGIN(misplaced_quote_field);
-		in_misplaced_quoted_field_mode = true;
+	if (field[field.length()-1] == '"') {
+		// only then accept otherwise some 8859 char is affecting us
+		if (in_quoted_field_mode) {
+			cout << "trying to enter misplaced_quoted_field mode when quoted_field_mode";
+		} else { 
+			BEGIN(misplaced_quote_field);
+			buffer = field;
+			in_misplaced_quoted_field_mode = true;
+		}
+	} else {
+		cout << "not starting misplaced_quote_field :field[field.length()-1] == "
+			<< field[field.length()-1] << endl;
 	}
 }
 
