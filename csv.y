@@ -182,6 +182,10 @@ record:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
+	| record error csv_field {
+		// continue with parse
+		printf("continuing with parse on error\n");
+	}
 	;
 
 csv_field:

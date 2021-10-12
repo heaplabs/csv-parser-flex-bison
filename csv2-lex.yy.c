@@ -952,7 +952,7 @@ int yy_flex_debug = 1;
 static const flex_int16_t yy_rule_linenum[13] =
     {   0,
        32,   55,   91,  110,  121,  127,  139,  145,  151,  157,
-      183,  197
+      183,  199
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -1529,7 +1529,9 @@ YY_RULE_SETUP
 {
 	++num_fields;
 	printf("field separator #f %d, #n %d\n", num_fields, num_lines);
-	return ',';
+	if (yytext[0] == ',') {
+		return ',';
+	} // else continue as usual
 }
 	YY_BREAK
 /*
@@ -1542,7 +1544,7 @@ YY_RULE_SETUP
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 197 "csv2-lex.l"
+#line 199 "csv2-lex.l"
 {
 	++num_lines;
 	//printf("total fields :%d\n", num_fields);
@@ -1561,10 +1563,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 213 "csv2-lex.l"
+#line 215 "csv2-lex.l"
 ECHO;
 	YY_BREAK
-#line 1568 "csv2-lex.yy.c"
+#line 1570 "csv2-lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(quoted_field):
 case YY_STATE_EOF(misplaced_quote_field):
@@ -2710,7 +2712,7 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 213 "csv2-lex.l"
+#line 215 "csv2-lex.l"
 
 
 void csv2_lex_clean_up() {

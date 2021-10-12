@@ -183,7 +183,9 @@ bool in_misplaced_quoted_field_mode = false;
 ,	{
 	++num_fields;
 	printf("field separator #f %d, #n %d\n", num_fields, num_lines);
-	return ',';
+	if (yytext[0] == ',') {
+		return ',';
+	} // else continue as usual
 }
 
 	/*
