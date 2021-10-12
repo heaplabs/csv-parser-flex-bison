@@ -89,7 +89,7 @@ bool in_misplaced_quoted_field_mode = false;
 	*/
 
 [^,"\r\n]* {
-	//printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
+	printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
 	if (index == header_row_map.end()) {
@@ -99,27 +99,41 @@ bool in_misplaced_quoted_field_mode = false;
 		//cout << "field: " << index->second << ", data: "
 		//	<< field << endl; 
 	}
-	yylval = field;
-	return CSV_FIELD;
+	if (in_quoted_field_mode) {
+		// ignore
+	} else {
+		yylval = field;
+		return CSV_FIELD;
+	}
 }
 
 \"      {
-	cout << "beginning of a quoted field - doing into quoted field state" << endl;
-	BEGIN(quoted_field);
-	in_quoted_field_mode = true;
+	if (yytext[0]=='"') {
+		cout << "beginning of a quoted field - going into quoted field state: yytext " 
+			<< yytext
+			<< endl;
+		BEGIN(quoted_field);
+		in_quoted_field_mode = true;
+	}
 	//return DOUBLE_QUOTE;
 }
 
 <quoted_field>[^,"\r\n]* {
 	//strcpy(buffer+strlen(buffer), yytext);
 	buffer += string(yytext);
-	cout << "quoted_field : matching " << buffer << endl;
+	cout << "quoted_field : extending match: " << buffer << endl;
 }
 
 <quoted_field>"\"\"" {
-	printf("got a double quote inside a csv field");
+	printf("<quoted_field> got an escaped double quote inside a csv field: yytext: |%s|, buffer: %s\n",
+			yytext, buffer.c_str());
 	//strcpy(buffer + strlen(buffer), "\"\"");
-	buffer += string(yytext);
+	string yytext_str(yytext);
+	if (yytext_str == "\"\"") {
+		buffer += yytext_str;
+	} else {
+		// ignore
+	}
 }
 
 <quoted_field>\n {
@@ -151,7 +165,7 @@ bool in_misplaced_quoted_field_mode = false;
 		//	<< field << endl; 
 	}
 	string yytext_str (yytext);
-	printf("got a QUOTED_CSV_FIELD field: %s, yytext: |%s|, len yytext: %ld\n",
+	printf("<quoted_field> got a QUOTED_CSV_FIELD field: %s, yytext: |%s|, len yytext: %ld\n",
 		buffer.c_str(), yytext, yytext_str.length());
 	cout << " yytext[0] == '\"'" << (yytext[0] == '"') << endl;
 	if (yytext[0] == '"')  {
@@ -161,8 +175,9 @@ bool in_misplaced_quoted_field_mode = false;
 		buffer[0] = '\0';
 		buffer = "";
 		in_quoted_field_mode = false;
+		printf("coming out of quoted field mode\n");
 		return QUOTED_CSV_FIELD;
-	} // just continue reading stuff otherwise
+	} // else just continue reading stuff otherwise
 }
 
 ,	{

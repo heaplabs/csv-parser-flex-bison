@@ -951,8 +951,8 @@ int yy_flex_debug = 1;
 
 static const flex_int16_t yy_rule_linenum[13] =
     {   0,
-       32,   55,   91,  106,  113,  119,  125,  131,  137,  143,
-      168,  182
+       32,   55,   91,  110,  121,  127,  139,  145,  151,  157,
+      183,  197
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -1410,7 +1410,7 @@ case 3:
 YY_RULE_SETUP
 #line 91 "csv2-lex.l"
 {
-	//printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
+	printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
 	if (index == header_row_map.end()) {
@@ -1420,42 +1420,56 @@ YY_RULE_SETUP
 		//cout << "field: " << index->second << ", data: "
 		//	<< field << endl; 
 	}
-	yylval = field;
-	return CSV_FIELD;
+	if (in_quoted_field_mode) {
+		// ignore
+	} else {
+		yylval = field;
+		return CSV_FIELD;
+	}
 }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 106 "csv2-lex.l"
+#line 110 "csv2-lex.l"
 {
-	cout << "beginning of a quoted field - doing into quoted field state" << endl;
-	BEGIN(quoted_field);
-	in_quoted_field_mode = true;
+	if (yytext[0]=='"') {
+		cout << "beginning of a quoted field - going into quoted field state: yytext " 
+			<< yytext
+			<< endl;
+		BEGIN(quoted_field);
+		in_quoted_field_mode = true;
+	}
 	//return DOUBLE_QUOTE;
 }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 113 "csv2-lex.l"
+#line 121 "csv2-lex.l"
 {
 	//strcpy(buffer+strlen(buffer), yytext);
 	buffer += string(yytext);
-	cout << "quoted_field : matching " << buffer << endl;
+	cout << "quoted_field : extending match: " << buffer << endl;
 }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 119 "csv2-lex.l"
+#line 127 "csv2-lex.l"
 {
-	printf("got a double quote inside a csv field");
+	printf("<quoted_field> got an escaped double quote inside a csv field: yytext: |%s|, buffer: %s\n",
+			yytext, buffer.c_str());
 	//strcpy(buffer + strlen(buffer), "\"\"");
-	buffer += string(yytext);
+	string yytext_str(yytext);
+	if (yytext_str == "\"\"") {
+		buffer += yytext_str;
+	} else {
+		// ignore
+	}
 }
 	YY_BREAK
 case 7:
 /* rule 7 can match eol */
 YY_RULE_SETUP
-#line 125 "csv2-lex.l"
+#line 139 "csv2-lex.l"
 {
 	printf("found a newline in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\n");
@@ -1464,7 +1478,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 131 "csv2-lex.l"
+#line 145 "csv2-lex.l"
 {
 	printf("found a carriage return in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\r");
@@ -1473,7 +1487,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 137 "csv2-lex.l"
+#line 151 "csv2-lex.l"
 {
 	printf("found a comma in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), ",");
@@ -1482,7 +1496,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 143 "csv2-lex.l"
+#line 157 "csv2-lex.l"
 {
 	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
 	string field(buffer);
@@ -1494,7 +1508,7 @@ YY_RULE_SETUP
 		//	<< field << endl; 
 	}
 	string yytext_str (yytext);
-	printf("got a QUOTED_CSV_FIELD field: %s, yytext: |%s|, len yytext: %ld\n",
+	printf("<quoted_field> got a QUOTED_CSV_FIELD field: %s, yytext: |%s|, len yytext: %ld\n",
 		buffer.c_str(), yytext, yytext_str.length());
 	cout << " yytext[0] == '\"'" << (yytext[0] == '"') << endl;
 	if (yytext[0] == '"')  {
@@ -1504,13 +1518,14 @@ YY_RULE_SETUP
 		buffer[0] = '\0';
 		buffer = "";
 		in_quoted_field_mode = false;
+		printf("coming out of quoted field mode\n");
 		return QUOTED_CSV_FIELD;
-	} // just continue reading stuff otherwise
+	} // else just continue reading stuff otherwise
 }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 168 "csv2-lex.l"
+#line 183 "csv2-lex.l"
 {
 	++num_fields;
 	printf("field separator #f %d, #n %d\n", num_fields, num_lines);
@@ -1527,7 +1542,7 @@ YY_RULE_SETUP
 case 12:
 /* rule 12 can match eol */
 YY_RULE_SETUP
-#line 182 "csv2-lex.l"
+#line 197 "csv2-lex.l"
 {
 	++num_lines;
 	//printf("total fields :%d\n", num_fields);
@@ -1546,10 +1561,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 198 "csv2-lex.l"
+#line 213 "csv2-lex.l"
 ECHO;
 	YY_BREAK
-#line 1553 "csv2-lex.yy.c"
+#line 1568 "csv2-lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(quoted_field):
 case YY_STATE_EOF(misplaced_quote_field):
@@ -2695,7 +2710,7 @@ void yyfree (void * ptr )
 
 /* %ok-for-header */
 
-#line 198 "csv2-lex.l"
+#line 213 "csv2-lex.l"
 
 
 void csv2_lex_clean_up() {
