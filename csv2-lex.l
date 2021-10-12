@@ -48,40 +48,19 @@ int expected_fields = 0;
 <misplaced_quote_field>[^,\r\n]* {
 	string field(yytext);
 	buffer += field;
-	cout << "continuing misplaced_quote_field: " << buffer << endl;
-}
-
-<misplaced_quote_field>, {
-	cout << "terminated misplaced_quote_field with a , (comma)" << endl;
+	cout << "terminating misplaced_quote_field: " << buffer << endl;
 	yylval = buffer; buffer = "";
 	BEGIN(INITIAL);
 	return MISPLACED_QUOTED_FIELD;
 }
 
-<misplaced_quote_field>\r\n {
-	cout << "terminated misplaced_quote_field with a carr ret/line feed" << endl;
-	yylval = buffer; buffer = "";
-	BEGIN(INITIAL);
-	return MISPLACED_QUOTED_FIELD_NEWL;
-}
-
-<misplaced_quote_field>\r {
-	cout << "terminated misplaced_quote_field with a carr ret" << endl;
-	yylval = buffer; buffer = "";
-	BEGIN(INITIAL);
-	return MISPLACED_QUOTED_FIELD_NEWL;
-}
-
-<misplaced_quote_field>\n {
-	cout << "terminated misplaced_quote_field with a line feed" << endl;
-	yylval = buffer; buffer = "";
-	BEGIN(INITIAL);
-	return MISPLACED_QUOTED_FIELD_NEWL;
-}
 
 
 
 	/*
+	<misplaced_quote_field>, {
+		cout << "terminated misplaced_quote_field with a , (comma)" << endl;
+	}
 	[^",\r\n]* /, {
 		string field(yytext);
 		map<int,string>::const_iterator  index = header_row_map.find(num_fields);

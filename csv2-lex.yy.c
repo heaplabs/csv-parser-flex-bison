@@ -354,8 +354,8 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
 		YY_FATAL_ERROR( "token too large, exceeds YYLMAX" ); \
 	yy_flex_strncpy( yytext, (yytext_ptr), yyleng + 1 ); \
 	(yy_c_buf_p) = yy_cp;
-#define YY_NUM_RULES 17
-#define YY_END_OF_BUFFER 18
+#define YY_NUM_RULES 13
+#define YY_END_OF_BUFFER 14
 /* This struct is not used in this scanner,
    but its presence is necessary. */
 struct yy_trans_info
@@ -363,11 +363,11 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[30] =
+static const flex_int16_t yy_accept[27] =
     {   0,
-        7,    7,    9,    9,    2,    2,   18,    7,   16,   16,
-        8,   15,    9,   11,   12,   14,   13,    2,    6,    5,
-        3,    7,    1,   16,    9,   10,    2,    4,    0
+        3,    3,    5,    5,    2,    2,   14,    3,   12,   12,
+        4,   11,    5,    7,    8,   10,    9,    2,   13,    3,
+        1,   12,    5,    6,    2,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -407,36 +407,36 @@ static const YY_CHAR yy_meta[6] =
         1,    2,    3,    4,    5
     } ;
 
-static const flex_int16_t yy_base[36] =
+static const flex_int16_t yy_base[33] =
     {   0,
-        0,    0,    5,    0,   10,    0,   25,   15,    0,    0,
-       26,   26,    0,   26,   26,    0,   26,    0,   26,    0,
-       26,    0,   26,   26,    0,   26,    0,   26,   26,   21,
-       20,   20,   14,   19,   15
+        0,    0,    5,    0,   10,   14,   20,   18,    0,    0,
+       32,   32,    0,   32,   32,    0,   32,    0,   32,    0,
+       32,   32,    0,   32,    0,   32,   22,   14,   14,   12,
+        8,   27
     } ;
 
-static const flex_int16_t yy_def[36] =
+static const flex_int16_t yy_def[33] =
     {   0,
-       29,    1,   29,    3,   29,    5,   29,   29,   30,   31,
-       29,   29,   32,   29,   29,   33,   29,   34,   29,   35,
-       29,    8,   29,   29,   32,   29,   34,   29,    0,   29,
-       29,   29,   29,   29,   29
+       26,    1,   26,    3,   27,   27,   26,   26,   28,   29,
+       26,   26,   30,   26,   26,   31,   26,   32,   26,    8,
+       26,   26,   30,   26,   32,    0,   26,   26,   26,   26,
+       26,   26
     } ;
 
-static const flex_int16_t yy_nxt[32] =
+static const flex_int16_t yy_nxt[38] =
     {   0,
         8,    9,   10,   11,   12,   13,   14,   15,   16,   17,
-       18,   19,   20,   18,   21,   22,   28,   26,   23,   27,
-       25,   24,   27,   24,   29,    7,   29,   29,   29,   29,
-       29
+       18,   24,   23,   18,   18,   22,   22,   18,   20,   26,
+       26,   21,   19,   19,   19,   19,   19,   25,   26,   26,
+       25,    7,   26,   26,   26,   26,   26
     } ;
 
-static const flex_int16_t yy_chk[32] =
+static const flex_int16_t yy_chk[38] =
     {   0,
         1,    1,    1,    1,    1,    3,    3,    3,    3,    3,
-        5,    5,    5,    5,    5,    8,   35,   33,    8,   34,
-       32,   31,   34,   30,    7,   29,   29,   29,   29,   29,
-       29
+        5,   31,   30,    5,    6,   29,   28,    6,    8,    7,
+        0,    8,   27,   27,   27,   27,   27,   32,    0,    0,
+       32,   26,   26,   26,   26,   26,   26
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -729,13 +729,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 30 )
+				if ( yy_current_state >= 27 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 26 );
+		while ( yy_base[yy_current_state] != 32 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -786,52 +786,16 @@ YY_RULE_SETUP
 {
 	string field(yytext);
 	buffer += field;
-	cout << "continuing misplaced_quote_field: " << buffer << endl;
-}
-	YY_BREAK
-case 3:
-YY_RULE_SETUP
-#line 54 "csv2-lex.l"
-{
-	cout << "terminated misplaced_quote_field with a , (comma)" << endl;
+	cout << "terminating misplaced_quote_field: " << buffer << endl;
 	yylval = buffer; buffer = "";
 	BEGIN(INITIAL);
 	return MISPLACED_QUOTED_FIELD;
 }
 	YY_BREAK
-case 4:
-/* rule 4 can match eol */
-YY_RULE_SETUP
-#line 61 "csv2-lex.l"
-{
-	cout << "terminated misplaced_quote_field with a carr ret/line feed" << endl;
-	yylval = buffer; buffer = "";
-	BEGIN(INITIAL);
-	return MISPLACED_QUOTED_FIELD_NEWL;
-}
-	YY_BREAK
-case 5:
-YY_RULE_SETUP
-#line 68 "csv2-lex.l"
-{
-	cout << "terminated misplaced_quote_field with a carr ret" << endl;
-	yylval = buffer; buffer = "";
-	BEGIN(INITIAL);
-	return MISPLACED_QUOTED_FIELD_NEWL;
-}
-	YY_BREAK
-case 6:
-/* rule 6 can match eol */
-YY_RULE_SETUP
-#line 75 "csv2-lex.l"
-{
-	cout << "terminated misplaced_quote_field with a line feed" << endl;
-	yylval = buffer; buffer = "";
-	BEGIN(INITIAL);
-	return MISPLACED_QUOTED_FIELD_NEWL;
-}
-	YY_BREAK
 /*
+	<misplaced_quote_field>, {
+		cout << "terminated misplaced_quote_field with a , (comma)" << endl;
+	}
 	[^",\r\n]* /, {
 		string field(yytext);
 		map<int,string>::const_iterator  index = header_row_map.find(num_fields);
@@ -846,9 +810,9 @@ YY_RULE_SETUP
 		return CSV_FIELD;
 	}
 	*/
-case 7:
+case 3:
 YY_RULE_SETUP
-#line 100 "csv2-lex.l"
+#line 79 "csv2-lex.l"
 {
 	//printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -864,62 +828,62 @@ YY_RULE_SETUP
 	return CSV_FIELD;
 }
 	YY_BREAK
-case 8:
+case 4:
 YY_RULE_SETUP
-#line 115 "csv2-lex.l"
+#line 94 "csv2-lex.l"
 {
 	BEGIN(quoted_field);
 	//return DOUBLE_QUOTE;
 }
 	YY_BREAK
-case 9:
+case 5:
 YY_RULE_SETUP
-#line 120 "csv2-lex.l"
+#line 99 "csv2-lex.l"
 {
 	//strcpy(buffer+strlen(buffer), yytext);
 	buffer += string(yytext);
 }
 	YY_BREAK
-case 10:
+case 6:
 YY_RULE_SETUP
-#line 125 "csv2-lex.l"
+#line 104 "csv2-lex.l"
 {
 	//printf("got a double quote inside a csv field");
 	//strcpy(buffer + strlen(buffer), "\"\"");
 	buffer += string(yytext);
 }
 	YY_BREAK
-case 11:
-/* rule 11 can match eol */
+case 7:
+/* rule 7 can match eol */
 YY_RULE_SETUP
-#line 131 "csv2-lex.l"
+#line 110 "csv2-lex.l"
 {
 	//printf("found a newline in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\n");
 	buffer += string(yytext);
 }
 	YY_BREAK
-case 12:
+case 8:
 YY_RULE_SETUP
-#line 137 "csv2-lex.l"
+#line 116 "csv2-lex.l"
 {
 	//printf("found a carriage return in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\r");
 	buffer += string(yytext);
 }
 	YY_BREAK
-case 13:
+case 9:
 YY_RULE_SETUP
-#line 143 "csv2-lex.l"
+#line 122 "csv2-lex.l"
 {
 	//printf("found a comma in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), ",");
 	buffer += string(yytext);
 }
 	YY_BREAK
-case 14:
+case 10:
 YY_RULE_SETUP
-#line 149 "csv2-lex.l"
+#line 128 "csv2-lex.l"
 {
 	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
 	string field(buffer);
@@ -939,9 +903,9 @@ YY_RULE_SETUP
 	return QUOTED_CSV_FIELD;
 }
 	YY_BREAK
-case 15:
+case 11:
 YY_RULE_SETUP
-#line 168 "csv2-lex.l"
+#line 147 "csv2-lex.l"
 {
 	++num_fields;
 	//printf("field separator: %d\n", num_fields);
@@ -955,10 +919,10 @@ YY_RULE_SETUP
 		return once++ ? 0 : '\n';
 	}
 	*/
-case 16:
-/* rule 16 can match eol */
+case 12:
+/* rule 12 can match eol */
 YY_RULE_SETUP
-#line 182 "csv2-lex.l"
+#line 161 "csv2-lex.l"
 {
 	++num_lines;
 	//printf("total fields :%d\n", num_fields);
@@ -975,12 +939,12 @@ YY_RULE_SETUP
 	return '\n';
 } 
 	YY_BREAK
-case 17:
+case 13:
 YY_RULE_SETUP
-#line 198 "csv2-lex.l"
+#line 177 "csv2-lex.l"
 ECHO;
 	YY_BREAK
-#line 984 "csv2-lex.yy.c"
+#line 948 "csv2-lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(quoted_field):
 case YY_STATE_EOF(misplaced_quote_field):
@@ -1279,7 +1243,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 30 )
+			if ( yy_current_state >= 27 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1307,11 +1271,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 30 )
+		if ( yy_current_state >= 27 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 29);
+	yy_is_jam = (yy_current_state == 26);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }
@@ -1987,7 +1951,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 198 "csv2-lex.l"
+#line 177 "csv2-lex.l"
 
 
 void csv2_lex_clean_up() {
