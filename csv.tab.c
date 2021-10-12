@@ -102,7 +102,13 @@
 	// if needed
 	bool enable_progress_report = false; 
 
-#line 106 "csv.tab.c"
+	void print(struct error_pos err_pos) {
+		cout << "Error row: " << err_pos.row << ", col: " << err_pos.col
+			<< ", error_context: " << err_pos.error_context
+			<< endl;
+	}
+
+#line 112 "csv.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -476,16 +482,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  7
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   17
+#define YYLAST   10
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  10
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  10
+#define YYNRULES  9
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  15
+#define YYNSTATES  12
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   262
@@ -533,8 +539,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    48,    48,    78,   143,   154,   161,   171,   178,   185,
-     192
+       0,    54,    54,    84,   171,   178,   188,   195,   202,   209
 };
 #endif
 
@@ -563,7 +568,7 @@ static const yytype_int16 yytoknum[] =
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-8)
+#define YYTABLE_NINF (-1)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -572,8 +577,8 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       7,    -7,    -7,    -7,     0,     6,    -7,    -7,    -6,     8,
-      -7,     7,    -7,    -7,    -7
+      -2,    -7,    -7,    -7,     0,    -6,    -7,    -7,    -2,    -2,
+      -6,    -7
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -581,14 +586,14 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       7,     8,     9,    10,     0,     0,     5,     1,     0,     0,
-       2,     7,     4,     3,     6
+       6,     7,     8,     9,     0,     2,     4,     1,     6,     6,
+       3,     5
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -7,    -7,     1,    -4
+      -7,    -7,    -3,     1
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -602,36 +607,34 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       7,     8,    12,     1,     2,     9,     3,    14,    -7,    -7,
-       1,     2,     0,     3,    10,    11,    13,    11
+       7,     1,     2,     9,     3,    10,     0,     0,     8,     0,
+      11
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     1,     8,     3,     4,     4,     6,    11,     8,     9,
-       3,     4,    -1,     6,     8,     9,     8,     9
+       0,     3,     4,     9,     6,     8,    -1,    -1,     8,    -1,
+       9
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
      symbol of state STATE-NUM.  */
 static const yytype_int8 yystos[] =
 {
-       0,     3,     4,     6,    11,    12,    13,     0,     1,    12,
-       8,     9,     8,     8,    13
+       0,     3,     4,     6,    11,    12,    13,     0,     8,     9,
+      12,    13
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,    10,    11,    11,    11,    12,    12,    13,    13,    13,
-      13
+       0,    10,    11,    11,    12,    12,    13,    13,    13,    13
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     3,     3,     1,     3,     0,     1,     1,
-       1
+       0,     2,     1,     3,     1,     3,     0,     1,     1,     1
 };
 
 
@@ -1327,8 +1330,8 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 48 "csv.y"
-                    {
+#line 54 "csv.y"
+                {
 		int total_len = 0;
 		//for (int i =0; i < csv_record.size(); ++i) {
 		//	cout << ' ' << csv_record[i] ;
@@ -1353,12 +1356,12 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1357 "csv.tab.c"
+#line 1360 "csv.tab.c"
     break;
 
   case 3:
-#line 78 "csv.y"
-                            {
+#line 84 "csv.y"
+                             {
 
 		++num_lines2;
 		if (csv_record.size() != expected_fields2) {
@@ -1405,24 +1408,11 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1409 "csv.tab.c"
+#line 1412 "csv.tab.c"
     break;
 
   case 4:
-#line 143 "csv.y"
-                           { 
-		error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
-		num_fields2 = 0;
-		++num_lines2;
-		csv_record.resize(0);
-		cout << "ERROR: " << endl;
-		yyerrok; 
-	}
-#line 1422 "csv.tab.c"
-    break;
-
-  case 5:
-#line 154 "csv.y"
+#line 171 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1430,11 +1420,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1434 "csv.tab.c"
+#line 1424 "csv.tab.c"
     break;
 
-  case 6:
-#line 161 "csv.y"
+  case 5:
+#line 178 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1442,11 +1432,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1446 "csv.tab.c"
+#line 1436 "csv.tab.c"
     break;
 
-  case 7:
-#line 171 "csv.y"
+  case 6:
+#line 188 "csv.y"
                {
 		csv_record.push_back(string(""));
 		++ num_fields2;
@@ -1454,11 +1444,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1458 "csv.tab.c"
+#line 1448 "csv.tab.c"
     break;
 
-  case 8:
-#line 178 "csv.y"
+  case 7:
+#line 195 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1466,11 +1456,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1470 "csv.tab.c"
+#line 1460 "csv.tab.c"
     break;
 
-  case 9:
-#line 185 "csv.y"
+  case 8:
+#line 202 "csv.y"
                             {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1478,11 +1468,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1482 "csv.tab.c"
+#line 1472 "csv.tab.c"
     break;
 
-  case 10:
-#line 192 "csv.y"
+  case 9:
+#line 209 "csv.y"
                                  {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1490,11 +1480,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1494 "csv.tab.c"
+#line 1484 "csv.tab.c"
     break;
 
 
-#line 1498 "csv.tab.c"
+#line 1488 "csv.tab.c"
 
       default: break;
     }
@@ -1726,7 +1716,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 281 "csv.y"
+#line 298 "csv.y"
 
 
 
@@ -1739,6 +1729,88 @@ void yyerror (char const *s)
 
 extern  void csv2_lex_clean_up() ;
 extern bool initialise_yylex_from_file(string file_name) ;
+
+// https://stackoverflow.com/questions/1031645/how-to-detect-utf-8-in-plain-c
+bool is_utf8(const char * a_string)
+{
+    if(!a_string)
+        return 0;
+
+    const unsigned char * bytes = (const unsigned char *)a_string;
+    while(*bytes)
+    {
+        if( (// ASCII
+             // use bytes[0] <= 0x7F to allow ASCII control characters
+                bytes[0] == 0x09 ||
+                bytes[0] == 0x0A ||
+                bytes[0] == 0x0D ||
+                (0x20 <= bytes[0] && bytes[0] <= 0x7E)
+            )
+        ) {
+            bytes += 1;
+            continue;
+        }
+
+        if( (// non-overlong 2-byte
+                (0xC2 <= bytes[0] && bytes[0] <= 0xDF) &&
+                (0x80 <= bytes[1] && bytes[1] <= 0xBF)
+            )
+        ) {
+            bytes += 2;
+            continue;
+        }
+
+        if( (// excluding overlongs
+                bytes[0] == 0xE0 &&
+                (0xA0 <= bytes[1] && bytes[1] <= 0xBF) &&
+                (0x80 <= bytes[2] && bytes[2] <= 0xBF)
+            ) ||
+            (// straight 3-byte
+                ((0xE1 <= bytes[0] && bytes[0] <= 0xEC) ||
+                    bytes[0] == 0xEE ||
+                    bytes[0] == 0xEF) &&
+                (0x80 <= bytes[1] && bytes[1] <= 0xBF) &&
+                (0x80 <= bytes[2] && bytes[2] <= 0xBF)
+            ) ||
+            (// excluding surrogates
+                bytes[0] == 0xED &&
+                (0x80 <= bytes[1] && bytes[1] <= 0x9F) &&
+                (0x80 <= bytes[2] && bytes[2] <= 0xBF)
+            )
+        ) {
+            bytes += 3;
+            continue;
+        }
+
+        if( (// planes 1-3
+                bytes[0] == 0xF0 &&
+                (0x90 <= bytes[1] && bytes[1] <= 0xBF) &&
+                (0x80 <= bytes[2] && bytes[2] <= 0xBF) &&
+                (0x80 <= bytes[3] && bytes[3] <= 0xBF)
+            ) ||
+            (// planes 4-15
+                (0xF1 <= bytes[0] && bytes[0] <= 0xF3) &&
+                (0x80 <= bytes[1] && bytes[1] <= 0xBF) &&
+                (0x80 <= bytes[2] && bytes[2] <= 0xBF) &&
+                (0x80 <= bytes[3] && bytes[3] <= 0xBF)
+            ) ||
+            (// plane 16
+                bytes[0] == 0xF4 &&
+                (0x80 <= bytes[1] && bytes[1] <= 0x8F) &&
+                (0x80 <= bytes[2] && bytes[2] <= 0xBF) &&
+                (0x80 <= bytes[3] && bytes[3] <= 0xBF)
+            )
+        ) {
+            bytes += 4;
+            continue;
+        }
+
+        return 0;
+    }
+
+    return 1;
+}
+
 int main(int argc, char * argv[])
 {
 	if (argc > 1) {
@@ -1753,7 +1825,7 @@ int main(int argc, char * argv[])
 	using json = nlohmann::json;
 	json error_op;
 	if (error_line_nos.size() > 0 ) { 
-		//cout << "Detailed errors: " << endl;
+		cout << "Detailed errors for : # " << error_line_nos.size() << " follow" << endl;
 		for (int i = 0; i < error_line_nos.size(); ++i) {
 			error_pos error_pos = error_line_nos[i];
 			json an_error_pos = { 
@@ -1762,6 +1834,7 @@ int main(int argc, char * argv[])
 				{"context", error_pos.error_context}
 			};
 			error_op.push_back(an_error_pos);
+			print(error_pos);
 			//cout 
 			//	<< "line: "      << error_pos.row
 			//	<< ", n_field: " << error_pos.col << endl;
@@ -1779,12 +1852,15 @@ int main(int argc, char * argv[])
 		const vector<string>& v = all_csv_records[i];
 		//string row = "row_" + i;
 		//json_op[row] = v;
-		//for (int j = 0; j < v.size() - 1; ++j) {
-		//	cout << v[j] << "|";
-		//}
+		bool all_ok = true;
+		for (int j = 0; j < v.size() - 1; ++j) {
+			//cout << v[j] << "|";
+			all_ok &= is_utf8(v[j].c_str());
+		}
 		//cout << v[v.size()-1] << endl;
 		//json arr = json::array(v);
-		json_op.push_back(v); 
+		if (all_ok) json_op.push_back(v); 
+		else cout << "skipping non-utf:" << i << endl;
 	}
 	json header_op;
 	for (int i = 1; i<= expected_fields2; ++i)  {
@@ -1796,7 +1872,7 @@ int main(int argc, char * argv[])
 	parsed_data["header"] =  header_op;
 	parsed_data["parsed_data"] =  json_op;
 	parsed_data["expected_fields"] = expected_fields2;
-	parsed_data["errors"] = error_op;
+	//parsed_data["errors"] = error_op;
 	parsed_data["total_records"] = num_lines2;
 	parsed_data["total_errors"] = error_line_nos.size() ;
 	parsed_data["successfully_parsed"] = all_csv_records.size()  ;

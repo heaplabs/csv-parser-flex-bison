@@ -28,7 +28,7 @@ int expected_fields = 0;
 %%
 
 [^",\r\n][^",\r\n]*\" {
-	//printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, num_fields);
+	printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
 	//map<int,string>::const_iterator  index = header_row_map.find(num_fields);
 	//if (index == header_row_map.end()) {
@@ -41,16 +41,20 @@ int expected_fields = 0;
 	//yylval = field;
 	//return CSV_FIELD;
 	buffer = field;
-	cout << "got misplaced_quote_field: " << buffer << endl;
+	//cout << "got misplaced_quote_field: " << buffer << endl;
 	BEGIN(misplaced_quote_field);
 }
 
-<misplaced_quote_field>[^,\r\n]* {
+<misplaced_quote_field>[^,\r\n]*, {
 	string field(yytext);
-	buffer += field;
+	cout << "terminating misplaced_quote_field: yytext " << yytext << endl;
+	if (field.length() > 1) {
+		buffer += field.substr(0, field.length()-1);
+	}
 	cout << "terminating misplaced_quote_field: " << buffer << endl;
 	yylval = buffer; buffer = "";
 	BEGIN(INITIAL);
+	unput(',');
 	return MISPLACED_QUOTED_FIELD;
 }
 
@@ -146,7 +150,7 @@ int expected_fields = 0;
 
 ,	{
 	++num_fields;
-	//printf("field separator: %d\n", num_fields);
+	printf("field separator #f %d, #n %d\n", num_fields, num_lines);
 	return ',';
 }
 

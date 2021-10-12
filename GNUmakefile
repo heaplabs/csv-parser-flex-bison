@@ -23,14 +23,14 @@ lex.yy.o: lex.yy.c  csv.tab.h lex.l
 	$(CC) -c $<
 
 lex.yy.c: lex.l  csv.tab.h  GNUmakefile
-	flex --backup $<
+	flex -Cf --backup $<
 
 csv.tab.h csv.tab.c: csv.y GNUmakefile
 	bison --defines csv.y
 
 
 csv2-lex.yy.c: csv2-lex.l 
-	flex --backup -o $@ $<
+	flex -Cf --backup -o $@ $<
 
 
 csv2-lex.yy.o: csv2-lex.yy.c  csv.tab.h csv2-lex.l

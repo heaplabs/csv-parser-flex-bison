@@ -32,6 +32,12 @@
 	// disable for now, enable via cmd line option 
 	// if needed
 	bool enable_progress_report = false; 
+
+	void print(struct error_pos err_pos) {
+		cout << "Error row: " << err_pos.row << ", col: " << err_pos.col
+			<< ", error_context: " << err_pos.error_context
+			<< endl;
+	}
 %}
 
 %define api.value.type {std::string}
@@ -45,7 +51,7 @@
 %%
 
 input: 
-	record '\n' {
+	record  {
 		int total_len = 0;
 		//for (int i =0; i < csv_record.size(); ++i) {
 		//	cout << ' ' << csv_record[i] ;
@@ -75,7 +81,7 @@ input:
 	//	cout<< "parsed record with empty last field" << endl;
 	//}
 
-	| input record '\n' {
+	| input '\n' record  {
 
 		++num_lines2;
 		if (csv_record.size() != expected_fields2) {
@@ -140,6 +146,15 @@ input:
 	//	}
 	//	cout << endl;
 	//}
+	/*
+	| input error '\r' '\n' { 
+		error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
+		num_fields2 = 0;
+		++num_lines2;
+		csv_record.resize(0);
+		cout << "ERROR: " << endl;
+		yyerrok; 
+	}
 	| input error '\n' { 
 		error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
 		num_fields2 = 0;
@@ -148,6 +163,8 @@ input:
 		cout << "ERROR: " << endl;
 		yyerrok; 
 	}
+	*/
+
 	;
 
 record:
@@ -290,6 +307,88 @@ void yyerror (char const *s)
 
 extern  void csv2_lex_clean_up() ;
 extern bool initialise_yylex_from_file(string file_name) ;
+
+// https://stackoverflow.com/questions/1031645/how-to-detect-utf-8-in-plain-c
+bool is_utf8(const char * a_string)
+{
+    if(!a_string)
+        return 0;
+
+    const unsigned char * bytes = (const unsigned char *)a_string;
+    while(*bytes)
+    {
+        if( (// ASCII
+             // use bytes[0] <= 0x7F to allow ASCII control characters
+                bytes[0] == 0x09 ||
+                bytes[0] == 0x0A ||
+                bytes[0] == 0x0D ||
+                (0x20 <= bytes[0] && bytes[0] <= 0x7E)
+            )
+        ) {
+            bytes += 1;
+            continue;
+        }
+
+        if( (// non-overlong 2-byte
+                (0xC2 <= bytes[0] && bytes[0] <= 0xDF) &&
+                (0x80 <= bytes[1] && bytes[1] <= 0xBF)
+            )
+        ) {
+            bytes += 2;
+            continue;
+        }
+
+        if( (// excluding overlongs
+                bytes[0] == 0xE0 &&
+                (0xA0 <= bytes[1] && bytes[1] <= 0xBF) &&
+                (0x80 <= bytes[2] && bytes[2] <= 0xBF)
+            ) ||
+            (// straight 3-byte
+                ((0xE1 <= bytes[0] && bytes[0] <= 0xEC) ||
+                    bytes[0] == 0xEE ||
+                    bytes[0] == 0xEF) &&
+                (0x80 <= bytes[1] && bytes[1] <= 0xBF) &&
+                (0x80 <= bytes[2] && bytes[2] <= 0xBF)
+            ) ||
+            (// excluding surrogates
+                bytes[0] == 0xED &&
+                (0x80 <= bytes[1] && bytes[1] <= 0x9F) &&
+                (0x80 <= bytes[2] && bytes[2] <= 0xBF)
+            )
+        ) {
+            bytes += 3;
+            continue;
+        }
+
+        if( (// planes 1-3
+                bytes[0] == 0xF0 &&
+                (0x90 <= bytes[1] && bytes[1] <= 0xBF) &&
+                (0x80 <= bytes[2] && bytes[2] <= 0xBF) &&
+                (0x80 <= bytes[3] && bytes[3] <= 0xBF)
+            ) ||
+            (// planes 4-15
+                (0xF1 <= bytes[0] && bytes[0] <= 0xF3) &&
+                (0x80 <= bytes[1] && bytes[1] <= 0xBF) &&
+                (0x80 <= bytes[2] && bytes[2] <= 0xBF) &&
+                (0x80 <= bytes[3] && bytes[3] <= 0xBF)
+            ) ||
+            (// plane 16
+                bytes[0] == 0xF4 &&
+                (0x80 <= bytes[1] && bytes[1] <= 0x8F) &&
+                (0x80 <= bytes[2] && bytes[2] <= 0xBF) &&
+                (0x80 <= bytes[3] && bytes[3] <= 0xBF)
+            )
+        ) {
+            bytes += 4;
+            continue;
+        }
+
+        return 0;
+    }
+
+    return 1;
+}
+
 int main(int argc, char * argv[])
 {
 	if (argc > 1) {
@@ -304,7 +403,7 @@ int main(int argc, char * argv[])
 	using json = nlohmann::json;
 	json error_op;
 	if (error_line_nos.size() > 0 ) { 
-		//cout << "Detailed errors: " << endl;
+		cout << "Detailed errors for : # " << error_line_nos.size() << " follow" << endl;
 		for (int i = 0; i < error_line_nos.size(); ++i) {
 			error_pos error_pos = error_line_nos[i];
 			json an_error_pos = { 
@@ -313,6 +412,7 @@ int main(int argc, char * argv[])
 				{"context", error_pos.error_context}
 			};
 			error_op.push_back(an_error_pos);
+			print(error_pos);
 			//cout 
 			//	<< "line: "      << error_pos.row
 			//	<< ", n_field: " << error_pos.col << endl;
@@ -330,12 +430,15 @@ int main(int argc, char * argv[])
 		const vector<string>& v = all_csv_records[i];
 		//string row = "row_" + i;
 		//json_op[row] = v;
-		//for (int j = 0; j < v.size() - 1; ++j) {
-		//	cout << v[j] << "|";
-		//}
+		bool all_ok = true;
+		for (int j = 0; j < v.size() - 1; ++j) {
+			//cout << v[j] << "|";
+			all_ok &= is_utf8(v[j].c_str());
+		}
 		//cout << v[v.size()-1] << endl;
 		//json arr = json::array(v);
-		json_op.push_back(v); 
+		if (all_ok) json_op.push_back(v); 
+		else cout << "skipping non-utf:" << i << endl;
 	}
 	json header_op;
 	for (int i = 1; i<= expected_fields2; ++i)  {
@@ -347,7 +450,7 @@ int main(int argc, char * argv[])
 	parsed_data["header"] =  header_op;
 	parsed_data["parsed_data"] =  json_op;
 	parsed_data["expected_fields"] = expected_fields2;
-	parsed_data["errors"] = error_op;
+	//parsed_data["errors"] = error_op;
 	parsed_data["total_records"] = num_lines2;
 	parsed_data["total_errors"] = error_line_nos.size() ;
 	parsed_data["successfully_parsed"] = all_csv_records.size()  ;
