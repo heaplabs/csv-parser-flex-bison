@@ -16,6 +16,8 @@ string buffer;
 std::map<int, std::string> header_row_map;
 bool header_mode = false;
 int expected_fields = 0;
+bool in_quoted_field_mode = false;
+bool in_misplaced_quoted_field_mode = false;
 
 %}
 
@@ -28,7 +30,7 @@ int expected_fields = 0;
 %%
 
 [^",\r\n][^",\r\n]*\" {
-	printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, num_fields);
+	printf("BEGIN misplaced_quote_field quote0: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
 	//map<int,string>::const_iterator  index = header_row_map.find(num_fields);
 	//if (index == header_row_map.end()) {
@@ -42,7 +44,12 @@ int expected_fields = 0;
 	//return CSV_FIELD;
 	buffer = field;
 	//cout << "got misplaced_quote_field: " << buffer << endl;
-	BEGIN(misplaced_quote_field);
+	if (in_quoted_field_mode) {
+		cout << "trying to enter misplaced_quoted_field mode when quoted_field_mode";
+	} else { 
+		BEGIN(misplaced_quote_field);
+		in_misplaced_quoted_field_mode = true;
+	}
 }
 
 <misplaced_quote_field>[^,\r\n]*, {
@@ -55,6 +62,7 @@ int expected_fields = 0;
 	yylval = buffer; buffer = "";
 	BEGIN(INITIAL);
 	unput(',');
+	in_misplaced_quoted_field_mode = false;
 	return MISPLACED_QUOTED_FIELD;
 }
 
@@ -96,35 +104,38 @@ int expected_fields = 0;
 }
 
 \"      {
+	cout << "beginning of a quoted field - doing into quoted field state" << endl;
 	BEGIN(quoted_field);
+	in_quoted_field_mode = true;
 	//return DOUBLE_QUOTE;
 }
 
 <quoted_field>[^,"\r\n]* {
 	//strcpy(buffer+strlen(buffer), yytext);
 	buffer += string(yytext);
+	cout << "quoted_field : matching " << buffer << endl;
 }
 
 <quoted_field>"\"\"" {
-	//printf("got a double quote inside a csv field");
+	printf("got a double quote inside a csv field");
 	//strcpy(buffer + strlen(buffer), "\"\"");
 	buffer += string(yytext);
 }
 
 <quoted_field>\n {
-	//printf("found a newline in a quoted field\n");
+	printf("found a newline in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\n");
 	buffer += string(yytext);
 }
 
 <quoted_field>\r {
-	//printf("found a carriage return in a quoted field\n");
+	printf("found a carriage return in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\r");
 	buffer += string(yytext);
 }
 
 <quoted_field>, {
-	//printf("found a comma in a quoted field\n");
+	printf("found a comma in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), ",");
 	buffer += string(yytext);
 }
@@ -139,13 +150,19 @@ int expected_fields = 0;
 		//cout << "field: " << index->second << ", data: "
 		//	<< field << endl; 
 	}
-	BEGIN(INITIAL);
-	//printf("got a QUOTED_CSV_FIELD field: %s\n", buffer.c_str());
-	++num_quoted_fields;
-	yylval = buffer;
-	buffer[0] = '\0';
-	buffer = "";
-	return QUOTED_CSV_FIELD;
+	string yytext_str (yytext);
+	printf("got a QUOTED_CSV_FIELD field: %s, yytext: |%s|, len yytext: %ld\n",
+		buffer.c_str(), yytext, yytext_str.length());
+	cout << " yytext[0] == '\"'" << (yytext[0] == '"') << endl;
+	if (yytext[0] == '"')  {
+		BEGIN(INITIAL);
+		++num_quoted_fields;
+		yylval = buffer;
+		buffer[0] = '\0';
+		buffer = "";
+		in_quoted_field_mode = false;
+		return QUOTED_CSV_FIELD;
+	} // just continue reading stuff otherwise
 }
 
 ,	{
