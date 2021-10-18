@@ -136,16 +136,20 @@ input:
 	//	}
 	//	cout << endl;
 	//}
-	| input error '\n' { 
-		error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
-		num_fields2 = 0;
-		++num_lines2;
-		csv_record.resize(0);
-		//cout << "ERROR: " << endl;
-		yyerrok; 
-	}
+	//| input error '\n' { 
+	//	error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
+	//	num_fields2 = 0;
+	//	++num_lines2;
+	//	csv_record.resize(0);
+	//	//cout << "ERROR: " << endl;
+	//	yyerrok; 
+	//}
 	| input error  { 
-		error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
+		if (num_fields2 == expected_fields2) {
+			all_csv_records.push_back(csv_record);
+		} else {
+			error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
+		}
 		num_fields2 = 0;
 		++num_lines2;
 		csv_record.resize(0);
@@ -287,6 +291,106 @@ void yyerror (char const *s)
 
 extern  void csv2_lex_clean_up() ;
 extern bool initialise_yylex_from_file(string file_name) ;
+
+// https://stackoverflow.com/questions/1031645/how-to-detect-utf-8-in-plain-c
+string rectify_utf8(const string& a_str)
+{
+    //const char * a_string = a_str.c_str();
+    string duplicate(a_str);
+    if(!duplicate.length() > 0)
+        return 0;
+
+    //const unsigned char * bytes = (const unsigned char *)a_string;
+    int i = 0;
+    while(i < duplicate.length())
+    {
+        if( (// ASCII
+             // use bytes[0] <= 0x7F to allow ASCII control characters
+                duplicate[i] == 0x09 ||
+                duplicate[i] == 0x0A ||
+                duplicate[i] == 0x0D ||
+                (0x20 <= duplicate[i] && duplicate[i] <= 0x7E)
+            )
+        ) {
+            i += 1;
+            continue;
+        }
+
+        if( (// non-overlong 2-byte
+                (0xC2 <= duplicate[i+ 0] && duplicate[i+0] <= 0xDF) &&
+		(i+1 < duplicate.length()) &&
+                (0x80 <= duplicate[i+1] && duplicate[i+1] <= 0xBF)
+            )
+        ) {
+            i += 2;
+            continue;
+        }
+
+        if( (// excluding overlongs
+                duplicate[i+0] == 0xE0 &&
+		(i + 1 < duplicate.length()) &&
+                (0xA0 <= duplicate[i+1] && duplicate[i+1] <= 0xBF) &&
+		(i + 2 < duplicate.length()) &&
+                (0x80 <= duplicate[i+2] && duplicate[i+2] <= 0xBF)
+            ) ||
+            (// straight 3-byte
+                ((0xE1 <= duplicate[i+0] && duplicate[i+0] <= 0xEC) ||
+                    duplicate[i+0] == 0xEE ||
+                    duplicate[i+0] == 0xEF) &&
+		(i + 1 < duplicate.length()) &&
+                (0x80 <= duplicate[i+1] && duplicate[i+1] <= 0xBF) &&
+		(i + 2 < duplicate.length()) &&
+                (0x80 <= duplicate[i+2] && duplicate[i+2] <= 0xBF)
+            ) ||
+            (// excluding surrogates
+                duplicate[0] == 0xED &&
+                (0x80 <= duplicate[i+1] && duplicate[i+1] <= 0x9F) &&
+                (0x80 <= duplicate[i+2] && duplicate[i+2] <= 0xBF)
+            )
+        ) {
+            i += 3;
+            continue;
+        }
+
+        if( (// planes 1-3
+                duplicate[i+0] == 0xF0 &&
+		(i + 1 < duplicate.length()) &&
+                (0x90 <= duplicate[i+1] && duplicate[i+1] <= 0xBF) &&
+		(i + 2 < duplicate.length()) &&
+                (0x80 <= duplicate[i+2] && duplicate[i+2] <= 0xBF) &&
+		(i + 3 < duplicate.length()) &&
+                (0x80 <= duplicate[i+3] && duplicate[i+3] <= 0xBF)
+            ) ||
+            (// planes 4-15
+                (0xF1 <= duplicate[i+0] && duplicate[i+0] <= 0xF3) &&
+		(i + 1 < duplicate.length()) &&
+                (0x80 <= duplicate[i+1] && duplicate[i+1] <= 0xBF) &&
+		(i + 2 < duplicate.length()) &&
+                (0x80 <= duplicate[i+2] && duplicate[i+2] <= 0xBF) &&
+		(i + 3 < duplicate.length()) &&
+                (0x80 <= duplicate[i+3] && duplicate[i+3] <= 0xBF)
+            ) ||
+            (// plane 16
+                duplicate[i+0] == 0xF4 &&
+		(i + 1 < duplicate.length()) &&
+                (0x80 <= duplicate[i+1] && duplicate[i+1] <= 0x8F) &&
+		(i + 2 < duplicate.length()) &&
+                (0x80 <= duplicate[i+2] && duplicate[i+2] <= 0xBF) &&
+		(i + 3 < duplicate.length()) &&
+                (0x80 <= duplicate[i+3] && duplicate[i+3] <= 0xBF)
+            )
+        ) {
+            i += 4;
+            continue;
+        }
+
+        //return 0;
+	duplicate[i] = '_'; i += 1;
+    }
+
+    return duplicate;
+}
+
 int main(int argc, char * argv[])
 {
 	if (argc > 1) {
@@ -321,18 +425,59 @@ int main(int argc, char * argv[])
 	//yy_delete_buffer(YY_CURRENT_BUFFER);
 	//yy_init = 1;
 	csv2_lex_clean_up();
-	//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
+	cout << "Successfully parsed records: " << all_csv_records.size() << endl;
 	json json_op;
 	for (int i = 0; i < all_csv_records.size(); ++i) {
 		const vector<string>& v = all_csv_records[i];
+		cout << "line " << i + 1 << ", v.size(): " << v.size() << endl;
 		//string row = "row_" + i;
 		//json_op[row] = v;
 		//for (int j = 0; j < v.size() - 1; ++j) {
 		//	cout << v[j] << "|";
 		//}
+		bool all_ok = true;
+		vector<string> rectified_vec;
+		int all_lengths = 0;
+		for (int j = 0; j < v.size() ; ++j) {
+			cout << "|" << v[j] << "|" << endl;
+			if (v[j].length() > 0) {
+				//string rectified = rectify_utf8(v[j]);
+				//if (v[j] == rectified)  {
+				//	rectified_vec.push_back(rectified);
+				//} else {
+				//	cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
+				//	rectified_vec.push_back(rectified);
+				//}
+				all_lengths += v[j].length();
+			}
+		}
+		cout << "line no:" << i + 2 <<  ", all_lengths: " << all_lengths << endl;
+		if (all_lengths > 0) {
+			for (int j = 0; j < v.size() ; ++j) {
+				//cout << v[j] << "|";
+				if (v[j].length() > 0) {
+					string rectified = rectify_utf8(v[j]);
+					if (v[j] == rectified)  {
+						rectified_vec.push_back(rectified);
+					} else {
+						cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
+						rectified_vec.push_back(rectified);
+					}
+				} else {
+					rectified_vec.push_back("");
+				}
+			}
+		} else {
+			cout << "line no : " << i + 2 << " all fields are empty not adding "  << endl; 
+		}
 		//cout << v[v.size()-1] << endl;
 		//json arr = json::array(v);
-		json_op.push_back(v); 
+		// json_op.push_back(v); 
+		//if (all_ok) json_op.push_back(v); 
+		//else cout << "skipping non-utf:" << i << endl;
+		if (rectified_vec.size() > 0) {
+			json_op.push_back(rectified_vec);
+		}
 	}
 	json header_op;
 	for (int i = 1; i<= expected_fields2; ++i)  {

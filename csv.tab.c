@@ -474,16 +474,16 @@ union yyalloc
 /* YYFINAL -- State number of the termination state.  */
 #define YYFINAL  6
 /* YYLAST -- Last index in YYTABLE.  */
-#define YYLAST   17
+#define YYLAST   13
 
 /* YYNTOKENS -- Number of terminals.  */
 #define YYNTOKENS  8
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  10
+#define YYNRULES  9
 /* YYNSTATES -- Number of states.  */
-#define YYNSTATES  14
+#define YYNSTATES  13
 
 #define YYUNDEFTOK  2
 #define YYMAXUTOK   260
@@ -531,8 +531,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    46,    46,    74,   139,   147,   158,   165,   175,   182,
-     189
+       0,    46,    46,    74,   147,   162,   169,   179,   186,   193
 };
 #endif
 
@@ -556,12 +555,12 @@ static const yytype_int16 yytoknum[] =
 };
 # endif
 
-#define YYPACT_NINF (-5)
+#define YYPACT_NINF (-6)
 
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-9)
+#define YYTABLE_NINF (-8)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -570,8 +569,8 @@ static const yytype_int16 yytoknum[] =
      STATE-NUM.  */
 static const yytype_int8 yypact[] =
 {
-       5,    -5,    -5,     0,     4,    -5,    -5,    -4,     6,    -5,
-       5,    -5,    -5,    -5
+       5,    -6,    -6,     0,     4,    -6,    -6,    -6,     6,    -6,
+       5,    -6,    -6
 };
 
   /* YYDEFACT[STATE-NUM] -- Default reduction number in state STATE-NUM.
@@ -579,14 +578,14 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       8,     9,    10,     0,     0,     6,     1,     5,     0,     2,
-       8,     4,     3,     7
+       7,     8,     9,     0,     0,     5,     1,     4,     0,     2,
+       7,     3,     6
 };
 
   /* YYPGOTO[NTERM-NUM].  */
 static const yytype_int8 yypgoto[] =
 {
-      -5,    -5,     2,     7
+      -6,    -6,    -1,    -5
 };
 
   /* YYDEFGOTO[NTERM-NUM].  */
@@ -600,14 +599,14 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       6,     7,    11,     1,     2,     8,    -8,    -8,     1,     2,
-       9,    10,    12,    10,     0,     0,     0,    13
+       6,     7,     8,     1,     2,    12,    -7,    -7,     1,     2,
+       9,    10,    11,    10
 };
 
 static const yytype_int8 yycheck[] =
 {
-       0,     1,     6,     3,     4,     3,     6,     7,     3,     4,
-       6,     7,     6,     7,    -1,    -1,    -1,    10
+       0,     1,     3,     3,     4,    10,     6,     7,     3,     4,
+       6,     7,     6,     7
 };
 
   /* YYSTOS[STATE-NUM] -- The (internal number of the) accessing
@@ -615,21 +614,19 @@ static const yytype_int8 yycheck[] =
 static const yytype_int8 yystos[] =
 {
        0,     3,     4,     9,    10,    11,     0,     1,    10,     6,
-       7,     6,     6,    11
+       7,     6,    11
 };
 
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,     8,     9,     9,     9,     9,    10,    10,    11,    11,
-      11
+       0,     8,     9,     9,     9,    10,    10,    11,    11,    11
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     3,     3,     2,     1,     3,     0,     1,
-       1
+       0,     2,     2,     3,     2,     1,     3,     0,     1,     1
 };
 
 
@@ -1351,7 +1348,7 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1355 "csv.tab.c"
+#line 1352 "csv.tab.c"
     break;
 
   case 3:
@@ -1403,39 +1400,42 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1407 "csv.tab.c"
+#line 1404 "csv.tab.c"
     break;
 
   case 4:
-#line 139 "csv.y"
-                           { 
-		error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
+#line 147 "csv.y"
+                       { 
+		if (num_fields2 == expected_fields2) {
+			all_csv_records.push_back(csv_record);
+		} else {
+			error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
+		}
 		num_fields2 = 0;
 		++num_lines2;
 		csv_record.resize(0);
 		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1420 "csv.tab.c"
+#line 1421 "csv.tab.c"
     break;
 
   case 5:
-#line 147 "csv.y"
-                       { 
-		error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
-		num_fields2 = 0;
-		++num_lines2;
-		csv_record.resize(0);
-		//cout << "ERROR: " << endl;
-		yyerrok; 
+#line 162 "csv.y"
+                  {
+		//csv_record.push_back($1);
+		//++ num_fields2;
+		//if (header_mode2) {
+		//	header_row_map2[num_fields2] = $1;
+		//}
 	}
 #line 1433 "csv.tab.c"
     break;
 
   case 6:
-#line 158 "csv.y"
-                  {
-		//csv_record.push_back($1);
+#line 169 "csv.y"
+                               {
+		//csv_record.push_back($3);
 		//++ num_fields2;
 		//if (header_mode2) {
 		//	header_row_map2[num_fields2] = $1;
@@ -1445,19 +1445,7 @@ yyreduce:
     break;
 
   case 7:
-#line 165 "csv.y"
-                               {
-		//csv_record.push_back($3);
-		//++ num_fields2;
-		//if (header_mode2) {
-		//	header_row_map2[num_fields2] = $1;
-		//}
-	}
-#line 1457 "csv.tab.c"
-    break;
-
-  case 8:
-#line 175 "csv.y"
+#line 179 "csv.y"
                {
 		csv_record.push_back(string(""));
 		++ num_fields2;
@@ -1465,12 +1453,24 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
+#line 1457 "csv.tab.c"
+    break;
+
+  case 8:
+#line 186 "csv.y"
+                    {
+		csv_record.push_back(yyvsp[0]);
+		++ num_fields2;
+		if (header_mode2) {
+			header_row_map2[num_fields2] = yyvsp[0];
+		}
+	}
 #line 1469 "csv.tab.c"
     break;
 
   case 9:
-#line 182 "csv.y"
-                    {
+#line 193 "csv.y"
+                            {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
 		if (header_mode2) {
@@ -1480,20 +1480,8 @@ yyreduce:
 #line 1481 "csv.tab.c"
     break;
 
-  case 10:
-#line 189 "csv.y"
-                            {
-		csv_record.push_back(yyvsp[0]);
-		++ num_fields2;
-		if (header_mode2) {
-			header_row_map2[num_fields2] = yyvsp[0];
-		}
-	}
-#line 1493 "csv.tab.c"
-    break;
 
-
-#line 1497 "csv.tab.c"
+#line 1485 "csv.tab.c"
 
       default: break;
     }
@@ -1725,7 +1713,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 278 "csv.y"
+#line 282 "csv.y"
 
 
 
@@ -1738,6 +1726,106 @@ void yyerror (char const *s)
 
 extern  void csv2_lex_clean_up() ;
 extern bool initialise_yylex_from_file(string file_name) ;
+
+// https://stackoverflow.com/questions/1031645/how-to-detect-utf-8-in-plain-c
+string rectify_utf8(const string& a_str)
+{
+    //const char * a_string = a_str.c_str();
+    string duplicate(a_str);
+    if(!duplicate.length() > 0)
+        return 0;
+
+    //const unsigned char * bytes = (const unsigned char *)a_string;
+    int i = 0;
+    while(i < duplicate.length())
+    {
+        if( (// ASCII
+             // use bytes[0] <= 0x7F to allow ASCII control characters
+                duplicate[i] == 0x09 ||
+                duplicate[i] == 0x0A ||
+                duplicate[i] == 0x0D ||
+                (0x20 <= duplicate[i] && duplicate[i] <= 0x7E)
+            )
+        ) {
+            i += 1;
+            continue;
+        }
+
+        if( (// non-overlong 2-byte
+                (0xC2 <= duplicate[i+ 0] && duplicate[i+0] <= 0xDF) &&
+		(i+1 < duplicate.length()) &&
+                (0x80 <= duplicate[i+1] && duplicate[i+1] <= 0xBF)
+            )
+        ) {
+            i += 2;
+            continue;
+        }
+
+        if( (// excluding overlongs
+                duplicate[i+0] == 0xE0 &&
+		(i + 1 < duplicate.length()) &&
+                (0xA0 <= duplicate[i+1] && duplicate[i+1] <= 0xBF) &&
+		(i + 2 < duplicate.length()) &&
+                (0x80 <= duplicate[i+2] && duplicate[i+2] <= 0xBF)
+            ) ||
+            (// straight 3-byte
+                ((0xE1 <= duplicate[i+0] && duplicate[i+0] <= 0xEC) ||
+                    duplicate[i+0] == 0xEE ||
+                    duplicate[i+0] == 0xEF) &&
+		(i + 1 < duplicate.length()) &&
+                (0x80 <= duplicate[i+1] && duplicate[i+1] <= 0xBF) &&
+		(i + 2 < duplicate.length()) &&
+                (0x80 <= duplicate[i+2] && duplicate[i+2] <= 0xBF)
+            ) ||
+            (// excluding surrogates
+                duplicate[0] == 0xED &&
+                (0x80 <= duplicate[i+1] && duplicate[i+1] <= 0x9F) &&
+                (0x80 <= duplicate[i+2] && duplicate[i+2] <= 0xBF)
+            )
+        ) {
+            i += 3;
+            continue;
+        }
+
+        if( (// planes 1-3
+                duplicate[i+0] == 0xF0 &&
+		(i + 1 < duplicate.length()) &&
+                (0x90 <= duplicate[i+1] && duplicate[i+1] <= 0xBF) &&
+		(i + 2 < duplicate.length()) &&
+                (0x80 <= duplicate[i+2] && duplicate[i+2] <= 0xBF) &&
+		(i + 3 < duplicate.length()) &&
+                (0x80 <= duplicate[i+3] && duplicate[i+3] <= 0xBF)
+            ) ||
+            (// planes 4-15
+                (0xF1 <= duplicate[i+0] && duplicate[i+0] <= 0xF3) &&
+		(i + 1 < duplicate.length()) &&
+                (0x80 <= duplicate[i+1] && duplicate[i+1] <= 0xBF) &&
+		(i + 2 < duplicate.length()) &&
+                (0x80 <= duplicate[i+2] && duplicate[i+2] <= 0xBF) &&
+		(i + 3 < duplicate.length()) &&
+                (0x80 <= duplicate[i+3] && duplicate[i+3] <= 0xBF)
+            ) ||
+            (// plane 16
+                duplicate[i+0] == 0xF4 &&
+		(i + 1 < duplicate.length()) &&
+                (0x80 <= duplicate[i+1] && duplicate[i+1] <= 0x8F) &&
+		(i + 2 < duplicate.length()) &&
+                (0x80 <= duplicate[i+2] && duplicate[i+2] <= 0xBF) &&
+		(i + 3 < duplicate.length()) &&
+                (0x80 <= duplicate[i+3] && duplicate[i+3] <= 0xBF)
+            )
+        ) {
+            i += 4;
+            continue;
+        }
+
+        //return 0;
+	duplicate[i] = '_'; i += 1;
+    }
+
+    return duplicate;
+}
+
 int main(int argc, char * argv[])
 {
 	if (argc > 1) {
@@ -1772,18 +1860,59 @@ int main(int argc, char * argv[])
 	//yy_delete_buffer(YY_CURRENT_BUFFER);
 	//yy_init = 1;
 	csv2_lex_clean_up();
-	//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
+	cout << "Successfully parsed records: " << all_csv_records.size() << endl;
 	json json_op;
 	for (int i = 0; i < all_csv_records.size(); ++i) {
 		const vector<string>& v = all_csv_records[i];
+		cout << "line " << i + 1 << ", v.size(): " << v.size() << endl;
 		//string row = "row_" + i;
 		//json_op[row] = v;
 		//for (int j = 0; j < v.size() - 1; ++j) {
 		//	cout << v[j] << "|";
 		//}
+		bool all_ok = true;
+		vector<string> rectified_vec;
+		int all_lengths = 0;
+		for (int j = 0; j < v.size() ; ++j) {
+			cout << "|" << v[j] << "|" << endl;
+			if (v[j].length() > 0) {
+				//string rectified = rectify_utf8(v[j]);
+				//if (v[j] == rectified)  {
+				//	rectified_vec.push_back(rectified);
+				//} else {
+				//	cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
+				//	rectified_vec.push_back(rectified);
+				//}
+				all_lengths += v[j].length();
+			}
+		}
+		cout << "line no:" << i + 2 <<  ", all_lengths: " << all_lengths << endl;
+		if (all_lengths > 0) {
+			for (int j = 0; j < v.size() ; ++j) {
+				//cout << v[j] << "|";
+				if (v[j].length() > 0) {
+					string rectified = rectify_utf8(v[j]);
+					if (v[j] == rectified)  {
+						rectified_vec.push_back(rectified);
+					} else {
+						cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
+						rectified_vec.push_back(rectified);
+					}
+				} else {
+					rectified_vec.push_back("");
+				}
+			}
+		} else {
+			cout << "line no : " << i + 2 << " all fields are empty not adding "  << endl; 
+		}
 		//cout << v[v.size()-1] << endl;
 		//json arr = json::array(v);
-		json_op.push_back(v); 
+		// json_op.push_back(v); 
+		//if (all_ok) json_op.push_back(v); 
+		//else cout << "skipping non-utf:" << i << endl;
+		if (rectified_vec.size() > 0) {
+			json_op.push_back(rectified_vec);
+		}
 	}
 	json header_op;
 	for (int i = 1; i<= expected_fields2; ++i)  {
