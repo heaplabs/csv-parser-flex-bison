@@ -481,7 +481,7 @@ union yyalloc
 /* YYNNTS -- Number of nonterminals.  */
 #define YYNNTS  4
 /* YYNRULES -- Number of rules.  */
-#define YYNRULES  9
+#define YYNRULES  10
 /* YYNSTATES -- Number of states.  */
 #define YYNSTATES  14
 
@@ -531,7 +531,8 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    46,    46,    74,   139,   150,   157,   167,   174,   181
+       0,    46,    46,    74,   139,   147,   158,   165,   175,   182,
+     189
 };
 #endif
 
@@ -560,7 +561,7 @@ static const yytype_int16 yytoknum[] =
 #define yypact_value_is_default(Yyn) \
   ((Yyn) == YYPACT_NINF)
 
-#define YYTABLE_NINF (-8)
+#define YYTABLE_NINF (-9)
 
 #define yytable_value_is_error(Yyn) \
   0
@@ -578,8 +579,8 @@ static const yytype_int8 yypact[] =
      means the default is an error.  */
 static const yytype_int8 yydefact[] =
 {
-       7,     8,     9,     0,     0,     5,     1,     0,     0,     2,
-       7,     4,     3,     6
+       8,     9,    10,     0,     0,     6,     1,     5,     0,     2,
+       8,     4,     3,     7
 };
 
   /* YYPGOTO[NTERM-NUM].  */
@@ -599,7 +600,7 @@ static const yytype_int8 yydefgoto[] =
      number is the opposite.  If YYTABLE_NINF, syntax error.  */
 static const yytype_int8 yytable[] =
 {
-       6,     7,    11,     1,     2,     8,    -7,    -7,     1,     2,
+       6,     7,    11,     1,     2,     8,    -8,    -8,     1,     2,
        9,    10,    12,    10,     0,     0,     0,    13
 };
 
@@ -620,13 +621,15 @@ static const yytype_int8 yystos[] =
   /* YYR1[YYN] -- Symbol number of symbol that rule YYN derives.  */
 static const yytype_int8 yyr1[] =
 {
-       0,     8,     9,     9,     9,    10,    10,    11,    11,    11
+       0,     8,     9,     9,     9,     9,    10,    10,    11,    11,
+      11
 };
 
   /* YYR2[YYN] -- Number of symbols on the right hand side of rule YYN.  */
 static const yytype_int8 yyr2[] =
 {
-       0,     2,     2,     3,     3,     1,     3,     0,     1,     1
+       0,     2,     2,     3,     3,     2,     1,     3,     0,     1,
+       1
 };
 
 
@@ -1348,7 +1351,7 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1352 "csv.tab.c"
+#line 1355 "csv.tab.c"
     break;
 
   case 3:
@@ -1400,7 +1403,7 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1404 "csv.tab.c"
+#line 1407 "csv.tab.c"
     break;
 
   case 4:
@@ -1410,14 +1413,27 @@ yyreduce:
 		num_fields2 = 0;
 		++num_lines2;
 		csv_record.resize(0);
-		cout << "ERROR: " << endl;
+		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1417 "csv.tab.c"
+#line 1420 "csv.tab.c"
     break;
 
   case 5:
-#line 150 "csv.y"
+#line 147 "csv.y"
+                       { 
+		error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
+		num_fields2 = 0;
+		++num_lines2;
+		csv_record.resize(0);
+		//cout << "ERROR: " << endl;
+		yyerrok; 
+	}
+#line 1433 "csv.tab.c"
+    break;
+
+  case 6:
+#line 158 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1425,11 +1441,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1429 "csv.tab.c"
+#line 1445 "csv.tab.c"
     break;
 
-  case 6:
-#line 157 "csv.y"
+  case 7:
+#line 165 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1437,11 +1453,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1441 "csv.tab.c"
+#line 1457 "csv.tab.c"
     break;
 
-  case 7:
-#line 167 "csv.y"
+  case 8:
+#line 175 "csv.y"
                {
 		csv_record.push_back(string(""));
 		++ num_fields2;
@@ -1449,11 +1465,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1453 "csv.tab.c"
+#line 1469 "csv.tab.c"
     break;
 
-  case 8:
-#line 174 "csv.y"
+  case 9:
+#line 182 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1461,11 +1477,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1465 "csv.tab.c"
+#line 1481 "csv.tab.c"
     break;
 
-  case 9:
-#line 181 "csv.y"
+  case 10:
+#line 189 "csv.y"
                             {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1473,11 +1489,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1477 "csv.tab.c"
+#line 1493 "csv.tab.c"
     break;
 
 
-#line 1481 "csv.tab.c"
+#line 1497 "csv.tab.c"
 
       default: break;
     }
@@ -1709,7 +1725,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 270 "csv.y"
+#line 278 "csv.y"
 
 
 
@@ -1717,7 +1733,7 @@ yyreturn:
 void yyerror (char const *s)
 {
 	error_line_nos.push_back( error_pos(num_lines2, num_fields2, s));
-	printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
+	//printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
 }
 
 extern  void csv2_lex_clean_up() ;

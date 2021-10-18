@@ -141,7 +141,15 @@ input:
 		num_fields2 = 0;
 		++num_lines2;
 		csv_record.resize(0);
-		cout << "ERROR: " << endl;
+		//cout << "ERROR: " << endl;
+		yyerrok; 
+	}
+	| input error  { 
+		error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
+		num_fields2 = 0;
+		++num_lines2;
+		csv_record.resize(0);
+		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
 	;
@@ -274,7 +282,7 @@ record:
 void yyerror (char const *s)
 {
 	error_line_nos.push_back( error_pos(num_lines2, num_fields2, s));
-	printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
+	//printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
 }
 
 extern  void csv2_lex_clean_up() ;
