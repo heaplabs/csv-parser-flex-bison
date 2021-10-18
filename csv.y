@@ -141,7 +141,7 @@ input:
 	//	num_fields2 = 0;
 	//	++num_lines2;
 	//	csv_record.resize(0);
-	//	//cout << "ERROR: " << endl;
+	//	cout << "ERROR: " << endl;
 	//	yyerrok; 
 	//}
 	| input error  { 
