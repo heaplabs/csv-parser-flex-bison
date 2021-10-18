@@ -1860,11 +1860,11 @@ int main(int argc, char * argv[])
 	//yy_delete_buffer(YY_CURRENT_BUFFER);
 	//yy_init = 1;
 	csv2_lex_clean_up();
-	cout << "Successfully parsed records: " << all_csv_records.size() << endl;
+	//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
 	json json_op;
 	for (int i = 0; i < all_csv_records.size(); ++i) {
 		const vector<string>& v = all_csv_records[i];
-		cout << "line " << i + 1 << ", v.size(): " << v.size() << endl;
+		//cout << "line " << i + 1 << ", v.size(): " << v.size() << endl;
 		//string row = "row_" + i;
 		//json_op[row] = v;
 		//for (int j = 0; j < v.size() - 1; ++j) {
@@ -1874,7 +1874,7 @@ int main(int argc, char * argv[])
 		vector<string> rectified_vec;
 		int all_lengths = 0;
 		for (int j = 0; j < v.size() ; ++j) {
-			cout << "|" << v[j] << "|" << endl;
+			//cout << "|" << v[j] << "|" << endl;
 			if (v[j].length() > 0) {
 				//string rectified = rectify_utf8(v[j]);
 				//if (v[j] == rectified)  {
@@ -1886,7 +1886,7 @@ int main(int argc, char * argv[])
 				all_lengths += v[j].length();
 			}
 		}
-		cout << "line no:" << i + 2 <<  ", all_lengths: " << all_lengths << endl;
+		//cout << "line no:" << i + 2 <<  ", all_lengths: " << all_lengths << endl;
 		if (all_lengths > 0) {
 			for (int j = 0; j < v.size() ; ++j) {
 				//cout << v[j] << "|";
@@ -1895,7 +1895,7 @@ int main(int argc, char * argv[])
 					if (v[j] == rectified)  {
 						rectified_vec.push_back(rectified);
 					} else {
-						cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
+						//cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
 						rectified_vec.push_back(rectified);
 					}
 				} else {
@@ -1903,7 +1903,7 @@ int main(int argc, char * argv[])
 				}
 			}
 		} else {
-			cout << "line no : " << i + 2 << " all fields are empty not adding "  << endl; 
+			//cout << "line no : " << i + 2 << " all fields are empty not adding "  << endl; 
 		}
 		//cout << v[v.size()-1] << endl;
 		//json arr = json::array(v);
