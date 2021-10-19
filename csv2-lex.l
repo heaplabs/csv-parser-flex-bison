@@ -2,6 +2,7 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <algorithm>
 #include "csv.tab.h"
 int num_lines = 0, num_fields = 1, num_quoted_fields = 0;
 //char buffer[8192];
@@ -16,6 +17,7 @@ string buffer;
 std::map<int, std::string> header_row_map;
 bool header_mode = false;
 int expected_fields = 0;
+int semi_colon_count = 0;
 
 %}
 
@@ -37,6 +39,7 @@ int expected_fields = 0;
 		//cout << "field: " << index->second << ", data: "
 		//	<< field << endl; 
 	}
+	semi_colon_count += std::count(field.begin(), field.end(), ';');
 	yylval = field;
 	return CSV_FIELD;
 }
@@ -52,6 +55,7 @@ int expected_fields = 0;
 		//cout << "field: " << index->second << ", data: "
 		//	<< field << endl; 
 	}
+	semi_colon_count += std::count(field.begin(), field.end(), ';');
 	yylval = field;
 	return CSV_FIELD;
 }
@@ -68,6 +72,7 @@ int expected_fields = 0;
 		//cout << "field: " << index->second << ", data: "
 		//	<< field << endl; 
 	}
+	semi_colon_count += std::count(field.begin(), field.end(), ';');
 	yylval = field;
 	return CSV_FIELD;
 }
@@ -83,6 +88,7 @@ int expected_fields = 0;
 		//cout << "field: " << index->second << ", data: "
 		//	<< field << endl; 
 	}
+	semi_colon_count += std::count(field.begin(), field.end(), ';');
 	yylval = field;
 	return CSV_FIELD;
 }
@@ -134,6 +140,7 @@ int expected_fields = 0;
 	BEGIN(INITIAL);
 	//printf("got a QUOTED_CSV_FIELD field: %s\n", buffer.c_str());
 	++num_quoted_fields;
+	semi_colon_count += std::count(buffer.begin(), buffer.end(), ';');
 	yylval = buffer;
 	buffer[0] = '\0';
 	buffer = "";
