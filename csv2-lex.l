@@ -200,9 +200,9 @@ bool initialise_yylex_from_file(string file_name) {
 	if (ch1 == 0xef && ch2 == 0xbb && ch3 == 0xbf) {
 		// got the byte order mark so we skip over those
 		// 3 bytes
-		cout << "skipping over byte order mark" << endl;
+		//cout << "skipping over byte order mark" << endl;
 	} else {
-		cout << "rewinding to start of file - no byte order mark" << endl;
+		//cout << "rewinding to start of file - no byte order mark" << endl;
 		fseek(yyin, 0, SEEK_SET);
 	}
      
