@@ -21,7 +21,7 @@ int semi_colon_count = 0;
 
 %}
 
-%option noyywrap
+%option noyywrap 8bit
 %array
 
 %x quoted_field
@@ -189,6 +189,21 @@ bool initialise_yylex_from_file(string file_name) {
 	if ( ! yyin ) {
 	      cout << "unable to open file: " << file_name << endl;
 	      exit(1);
+	}
+	unsigned char buffer[100] ; // for the byte order mark
+	for (int i = 0; i < 100; ++i) {
+		buffer[i] = 0;
+	}
+	int n_read = fread(buffer, sizeof(char), 3, yyin);
+	unsigned char ch1 = buffer[0], ch2 = buffer[1], ch3 = buffer[2];
+	printf("%x %x %x\n", buffer[0], buffer[1], buffer[2]);
+	if (ch1 == 0xef && ch2 == 0xbb && ch3 == 0xbf) {
+		// got the byte order mark so we skip over those
+		// 3 bytes
+		cout << "skipping over byte order mark" << endl;
+	} else {
+		cout << "rewinding to start of file - no byte order mark" << endl;
+		fseek(yyin, 0, SEEK_SET);
 	}
      
 	yypush_buffer_state(yy_create_buffer( yyin, YY_BUF_SIZE ));
