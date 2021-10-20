@@ -398,6 +398,7 @@ int main(int argc, char * argv[])
 	}
 
 	int status = yyparse();
+	//cout << "Parse finished" << endl;
 	if (status != 0) return 37;
 	extern int semi_colon_count;
 	if (semi_colon_count > 0) {
@@ -445,49 +446,49 @@ int main(int argc, char * argv[])
 		//for (int j = 0; j < v.size() - 1; ++j) {
 		//	cout << v[j] << "|";
 		//}
-		bool all_ok = true;
-		vector<string> rectified_vec;
-		int all_lengths = 0;
-		for (int j = 0; j < v.size() ; ++j) {
-			//cout << "|" << v[j] << "|" << endl;
-			if (v[j].length() > 0) {
-				//string rectified = rectify_utf8(v[j]);
-				//if (v[j] == rectified)  {
-				//	rectified_vec.push_back(rectified);
-				//} else {
-				//	cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
-				//	rectified_vec.push_back(rectified);
-				//}
-				all_lengths += v[j].length();
-			}
-		}
-		//cout << "line no:" << i + 2 <<  ", all_lengths: " << all_lengths << endl;
-		if (all_lengths > 0) {
-			for (int j = 0; j < v.size() ; ++j) {
-				//cout << v[j] << "|";
-				if (v[j].length() > 0) {
-					string rectified = rectify_utf8(v[j]);
-					if (v[j] == rectified)  {
-						rectified_vec.push_back(rectified);
-					} else {
-						//cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
-						rectified_vec.push_back(rectified);
-					}
-				} else {
-					rectified_vec.push_back("");
-				}
-			}
-		} else {
-			//cout << "line no : " << i + 2 << " all fields are empty not adding "  << endl; 
-		}
+		// bool all_ok = true;
+		// vector<string> rectified_vec;
+		// int all_lengths = 0;
+		// for (int j = 0; j < v.size() ; ++j) {
+		// 	//cout << "|" << v[j] << "|" << endl;
+		// 	if (v[j].length() > 0) {
+		// 		//string rectified = rectify_utf8(v[j]);
+		// 		//if (v[j] == rectified)  {
+		// 		//	rectified_vec.push_back(rectified);
+		// 		//} else {
+		// 		//	cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
+		// 		//	rectified_vec.push_back(rectified);
+		// 		//}
+		// 		all_lengths += v[j].length();
+		// 	}
+		// }
+		// //cout << "line no:" << i + 2 <<  ", all_lengths: " << all_lengths << endl;
+		// if (all_lengths > 0) {
+		// 	for (int j = 0; j < v.size() ; ++j) {
+		// 		//cout << v[j] << "|";
+		// 		if (v[j].length() > 0) {
+		// 			string rectified = rectify_utf8(v[j]);
+		// 			if (v[j] == rectified)  {
+		// 				rectified_vec.push_back(rectified);
+		// 			} else {
+		// 				//cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
+		// 				rectified_vec.push_back(rectified);
+		// 			}
+		// 		} else {
+		// 			rectified_vec.push_back("");
+		// 		}
+		// 	}
+		// } else {
+		// 	//cout << "line no : " << i + 2 << " all fields are empty not adding "  << endl; 
+		// }
 		//cout << v[v.size()-1] << endl;
 		//json arr = json::array(v);
-		// json_op.push_back(v); 
+		json_op.push_back(v); 
 		//if (all_ok) json_op.push_back(v); 
 		//else cout << "skipping non-utf:" << i << endl;
-		if (rectified_vec.size() > 0) {
-			json_op.push_back(rectified_vec);
-		}
+		//if (rectified_vec.size() > 0) {
+		//	json_op.push_back(rectified_vec);
+		//}
 	}
 	json header_op;
 	for (int i = 1; i<= expected_fields2; ++i)  {
