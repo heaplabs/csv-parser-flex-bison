@@ -394,6 +394,9 @@ string rectify_utf8(const string& a_str)
 }
 
 
+int n_utf8_longer_than_1byte = 0;
+int n_wincp1252 = 0;
+int n_iso_8859_1 = 0;
 std::pair<int, std::string> json_print(std::string const & s)
 {
 	using std::cout;
@@ -446,6 +449,7 @@ std::pair<int, std::string> json_print(std::string const & s)
 			//cout << "4 byte unicode point" << endl;
 			ss << s[i] << s[i+1] << s[i+2] << s[i+3];
 			i+=3;
+			++n_utf8_longer_than_1byte;
 		}
 
 		else if ( ((s[i  ] & 0b11110000) >> 4) == 0b1110 && 
@@ -457,6 +461,7 @@ std::pair<int, std::string> json_print(std::string const & s)
 			//cout << "3 byte unicode" << endl;
 			ss << s[i] << s[i+1] << s[i+2];
 			i+=2;
+			++n_utf8_longer_than_1byte;
 		}
 
 		else if (   ((s[i  ] & 0b11100000) >> 5) == 0b110 && 
@@ -467,6 +472,7 @@ std::pair<int, std::string> json_print(std::string const & s)
 			//cout << "2 byte unicode" << endl;
 			ss << s[i] << s[i+1];
 			i+=1;
+			++n_utf8_longer_than_1byte;
 		}
 
 		else if (s[i] >= 0 && s[i] < 32) {
@@ -513,15 +519,22 @@ std::pair<int, std::string> json_print(std::string const & s)
 
 		else 
 		{
-			// 4 byte unicode character
+			// non unicode character
+			//cout << "else clause non-utf8 char: " << (std::bitset<8>(s[i])) << endl;
+			unsigned char ch = (unsigned char) s[i];
+			if (ch >= 127 && ch <= 159) {
+				++n_wincp1252;
+			} else if (ch >= 160 && ch <= 255) {
+				++n_iso_8859_1; // note: all iso part of wincp1252
+			}
 			if ((unsigned char)s[i] == 160 ) {
 				//cout << "detected non-breaking space in windows codepage 1252" << endl;
 			} else {
 				cout << "else clause non-utf8 char: " << (std::bitset<8>(s[i])) << endl;
+				++no_errors;
 			}
 			//ss << s[i] << s[i+1] << s[i+2] << s[i+3];
 			ss << s[i];
-			++no_errors;
 		}
 	}
 	//string res2 = ss.str();
@@ -641,12 +654,15 @@ int main(int argc, char * argv[])
 
 	json parsed_data;
 	parsed_data["header"] =  header_op;
-	parsed_data["parsed_data"] =  json_op;
+	//parsed_data["parsed_data"] =  json_op;
 	parsed_data["expected_fields"] = expected_fields2;
 	//parsed_data["errors"] = error_op;
 	parsed_data["total_records"] = num_lines2;
 	parsed_data["total_errors"] = error_line_nos.size() ;
 	parsed_data["successfully_parsed"] = all_csv_records.size()  ;
+	parsed_data["n_utf8_longer_than_1byte"] = n_utf8_longer_than_1byte  ;
+	parsed_data["n_iso_8859_1"] = n_iso_8859_1  ;
+	parsed_data["n_wincp1252"] = n_wincp1252  ;
 	cout 
 		//<< "JSON format: " << endl
 		<< parsed_data.dump(4) << endl;

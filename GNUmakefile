@@ -3,7 +3,7 @@
 OBJS= csv.tab.o lex.yy.o
 OBJ2S= csv.tab.o csv2-lex.yy.o
 SRC=csv.y csv2-lex.l
-CC=g++ -g -std=c++11
+CC=g++ -g -O2 -std=c++11
 
 csv2_ubuntu.exe: $(OBJ2S) $(SRC)
 	$(CC) -o $@ $(OBJ2S) 
