@@ -694,7 +694,7 @@ int main(int argc, char * argv[])
 
 	json parsed_data;
 	parsed_data["header"] =  header_op;
-	//parsed_data["parsed_data"] =  json_op;
+	parsed_data["parsed_data"] =  json_op;
 	parsed_data["expected_fields"] = expected_fields2;
 	//parsed_data["errors"] = error_op;
 	parsed_data["total_records"] = num_lines2;
@@ -731,8 +731,8 @@ string print_key_value(map<string, int> & kv) {
 	return ss.str();
 }
 
-string print_array(string key, vector<string> v) {
-	cout << "print_array v.size(): " << v.size() << endl;
+string print_array(const string key, const vector<string> & v) {
+	//cout << "print_array v.size(): " << v.size() << endl;
 	std::stringstream ss;
 	ss
 		<< '"' << key << '"'
@@ -746,6 +746,35 @@ string print_array(string key, vector<string> v) {
 	ss << " ] " << endl;
 	return ss.str();
 }
+
+string print_array(const vector<string>& v)
+{
+	//cout << "print_array v.size(): " << v.size() << endl;
+	std::stringstream ss;
+	ss
+			<< " [ " << endl;
+
+	for (int i = 0; i < v.size()-1; ++i) {
+		ss << "    " << '"' << v[i] << '"' << ',' << endl;
+	}
+	ss << "    " << '"' << v[v.size()-1] << '"' << endl;
+	ss << " ] " ;
+	return ss.str();
+}
+
+string print_parsed_data(
+	const vector<vector<string>> & all_csv_records)
+{
+	std::stringstream ss;
+	ss << '"' << "parsed_data" << '"' << ':' << '[' << endl;
+	for (int i = 0; i < all_csv_records.size()-1; ++i) {
+		ss << print_array(all_csv_records[i]) << ","<< endl;
+	}
+	ss << print_array(all_csv_records[all_csv_records.size()-1]);
+	ss << ']' ;
+	return ss.str();
+}
+
 
 vector<string> convert_header_to_vec( 
 	const std::map<int, std::string> & header_row_map2)
@@ -787,9 +816,16 @@ string print_csv_as_json(
 	res	
 		<< "," << endl
 		<< print_array("header", headers_in_order)
+		;
+
+	// step 2 - print the body
+	res 
+		<< "," << endl
+		<< print_parsed_data(all_csv_records);
+	// step 3 - print the summary chars
+	res
 		<< "}"
 		<< endl;
-	// step 2 - print the body
-	// step 3 - print the summary chars
 	return res.str();
 }
+
