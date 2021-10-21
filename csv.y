@@ -419,11 +419,12 @@ struct StringCodePageAnalysisResult {
 };
 
 string print_csv_as_json(
-	StringCodePageAnalysisResult total_cp_res,
-	vector<vector<string>> all_csv_records,
-	std::map<int, std::string> header_row_map2,
+	const StringCodePageAnalysisResult & total_cp_res,
+	const vector<vector<string>> & all_csv_records,
+	const std::map<int, std::string> & header_row_map2,
 	int expected_fields2 
 );
+
 // todo - these globals need to disappear
 //int n_utf8_longer_than_1byte = 0;
 //int n_wincp1252 = 0;
@@ -686,6 +687,8 @@ int main(int argc, char * argv[])
 	string csv_as_json = print_csv_as_json(total_cp_res, 
 		all_csv_records, header_row_map2, 
 		expected_fields2);
+	cout << "custom csv_as_json: "
+		<< csv_as_json << endl;
 
 
 
@@ -706,12 +709,87 @@ int main(int argc, char * argv[])
 	return 0;
 }
 
-string print_csv_as_json(
-	StringCodePageAnalysisResult total_cp_res,
-	vector<vector<string>> all_csv_records,
-	std::map<int, std::string> header_row_map2,
-	int expected_fields2 
-)
+string print_key_value(map<string, int> & kv) {
+	std::stringstream ss;
+	map<string, int>::const_iterator ci = kv.begin();
+	map<string, int>::const_iterator ci_end = kv.end();
+	map<string, int>::const_iterator last_but_one = --ci_end;
+
+	for (; ci != last_but_one; ++ci) {
+		ss
+			<< '"' << ci->first << '"'
+			<< " : "
+			<< '"' << ci->second << '"'
+			<< ","
+			<< endl;
+	}
+	ss
+		<< '"' << last_but_one->first << '"'
+		<< " : "
+		<< '"' << last_but_one->second << '"' ;
+
+	return ss.str();
+}
+
+string print_array(string key, vector<string> v) {
+	cout << "print_array v.size(): " << v.size() << endl;
+	std::stringstream ss;
+	ss
+		<< '"' << key << '"'
+			<< " : "
+			<< " [ " << endl;
+
+	for (int i = 0; i < v.size()-1; ++i) {
+		ss << "    " << '"' << v[i] << '"' << ',' << endl;
+	}
+	ss << "    " << '"' << v[v.size()-1] << '"' << endl;
+	ss << " ] " << endl;
+	return ss.str();
+}
+
+vector<string> convert_header_to_vec( 
+	const std::map<int, std::string> & header_row_map2)
 {
-	return string("");
+	vector<string> v;
+	v.reserve(header_row_map2.size());
+	for (map<int, string>::const_iterator ci = header_row_map2.begin(); 
+		ci != header_row_map2.end(); ++ci) {
+		cout << ci->first << ":" << ci->second << endl;
+		v.push_back(ci->second);
+	}
+	return v;
+}
+
+string print_csv_as_json(
+	const StringCodePageAnalysisResult & total_cp_res,
+	const vector<vector<string>> & all_csv_records,
+	const std::map<int, std::string> & header_row_map2,
+	int expected_fields2)
+{
+	std::stringstream res;
+	map<string, int> analysis_kv;
+	analysis_kv["expected_fields"] = expected_fields2;
+	analysis_kv["n_iso_8859_1"] = total_cp_res.n_iso_8859_1;
+	analysis_kv["n_utf8_longer_than_1byte"] = total_cp_res.n_utf8_longer_than_1byte;
+	analysis_kv["n_wincp1252"] = total_cp_res.n_wincp1252;
+	analysis_kv["test"] = 1;
+	analysis_kv["test2"] = 2;
+	string analysis_res = 
+		print_key_value(analysis_kv);
+	
+	// step 0 - declare our inferences
+	res
+		<< "{" << endl
+		<< analysis_res;
+	// step 1 - print the headers
+	vector<string> headers_in_order = 
+		convert_header_to_vec(header_row_map2);	 
+	res	
+		<< "," << endl
+		<< print_array("header", headers_in_order)
+		<< "}"
+		<< endl;
+	// step 2 - print the body
+	// step 3 - print the summary chars
+	return res.str();
 }
