@@ -74,12 +74,14 @@
 	#include <string>
 	#include <vector>
 	#include <map>
+	#include <bitset>
 	using std::string;
 	using std::vector;
 	using std::map;
 	vector<string> csv_record;
 	vector<vector<string>> all_csv_records;
 	#include <iostream>
+	#include <utility>
 	using std::cout;
 	using std::endl;
 
@@ -102,7 +104,7 @@
 	// if needed
 	bool enable_progress_report = false; 
 
-#line 106 "csv.tab.c"
+#line 108 "csv.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -531,7 +533,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    46,    46,    74,   147,   162,   169,   179,   186,   193
+       0,    48,    48,    76,   149,   164,   171,   181,   188,   195
 };
 #endif
 
@@ -1322,7 +1324,7 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 46 "csv.y"
+#line 48 "csv.y"
                     {
 		int total_len = 0;
 		//for (int i =0; i < csv_record.size(); ++i) {
@@ -1348,11 +1350,11 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1352 "csv.tab.c"
+#line 1354 "csv.tab.c"
     break;
 
   case 3:
-#line 74 "csv.y"
+#line 76 "csv.y"
                             {
 
 		++num_lines2;
@@ -1400,11 +1402,11 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1404 "csv.tab.c"
+#line 1406 "csv.tab.c"
     break;
 
   case 4:
-#line 147 "csv.y"
+#line 149 "csv.y"
                        { 
 		if (num_fields2 == expected_fields2) {
 			all_csv_records.push_back(csv_record);
@@ -1417,11 +1419,11 @@ yyreduce:
 		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1421 "csv.tab.c"
+#line 1423 "csv.tab.c"
     break;
 
   case 5:
-#line 162 "csv.y"
+#line 164 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1429,11 +1431,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1433 "csv.tab.c"
+#line 1435 "csv.tab.c"
     break;
 
   case 6:
-#line 169 "csv.y"
+#line 171 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1441,11 +1443,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1445 "csv.tab.c"
+#line 1447 "csv.tab.c"
     break;
 
   case 7:
-#line 179 "csv.y"
+#line 181 "csv.y"
                {
 		csv_record.push_back(string(""));
 		++ num_fields2;
@@ -1453,11 +1455,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1457 "csv.tab.c"
+#line 1459 "csv.tab.c"
     break;
 
   case 8:
-#line 186 "csv.y"
+#line 188 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1465,11 +1467,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1469 "csv.tab.c"
+#line 1471 "csv.tab.c"
     break;
 
   case 9:
-#line 193 "csv.y"
+#line 195 "csv.y"
                             {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1477,11 +1479,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1481 "csv.tab.c"
+#line 1483 "csv.tab.c"
     break;
 
 
-#line 1485 "csv.tab.c"
+#line 1487 "csv.tab.c"
 
       default: break;
     }
@@ -1713,7 +1715,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 282 "csv.y"
+#line 284 "csv.y"
 
 
 
@@ -1826,6 +1828,141 @@ string rectify_utf8(const string& a_str)
     return duplicate;
 }
 
+
+std::pair<int, std::string> json_print(std::string const & s)
+{
+	using std::cout;
+	using std::endl;
+	std::stringstream ss;
+	int no_errors = 0;
+	int len = s.length();
+	for (int i = 0; i < len; ++i) {
+		// control characters
+		// cout << "s["<< i << "]: "
+		// 	<< (std::bitset<8>(s[i]))
+		// 	<< " (s[i  ] & 0b11110000): "
+		// 	<< (std::bitset<8>(s[i  ] & 0b11110000) )
+		// 	<< ", ((s[i  ] & 0b11110000) >> 4) : "
+		// 	<< std::bitset<8>((s[i  ] & 0b11110000) >> 4) 
+		// 	<< ", ((s[i  ] & 0b11110000) >> 4 == 0b1110): "
+		// 	<< ((s[i  ] & 0b11110000) >> 4 == 0b1110)
+		// 	<< endl;
+		// if (i + 1 < len) {
+		// 	cout << "s["<< i+1 << "]: "
+		// 		<< (std::bitset<8>(s[i+1])) << endl;
+		// 	unsigned char c1 = s[i+1] & 0b10111111;
+		// 	cout << "c1: " << (std::bitset<8>(c1)) << endl;
+		// 	cout << " (c1 >> 6 == 0b10): " <<  ( (c1 >> 6) == 0b10) << endl;
+		// }
+		// if (i + 2 < len) {
+		// 	cout << "s["<< i+2 << "]: "
+		// 		<< (std::bitset<8>(s[i+2])) << endl;
+		// 	unsigned char c2 = s[i+2] & 0b10111111;
+		// 	cout << "c2: " << (std::bitset<8>(c2)) << endl;
+		// 	cout << " (c2 >> 6 == 0b10): " <<  ( (c2 >> 6) == 0b10) << endl;
+		// 	//s[i+2] 
+		// }
+		// if (i + 3 < len) {
+		// 	cout << "s["<< i+3 << "]: "
+		// 		<< (std::bitset<8>(s[i+3])) << endl;
+		// 	unsigned char c3 = s[i+2] & 0b10111111;
+		// 	cout << "c3: " << (std::bitset<8>(c3)) << endl;
+		// 	cout << " (c3 >> 6 == 0b10): " <<  ( (c3 >> 6) == 0b10) << endl;
+		// }
+		// unsigned char ch = s[i] & 0b1110000;
+		// cout << " bitwise and with 0b11011111 "	<< (ch) << endl;
+
+		if ( ((s[i  ] & 0b11111000) >> 3) == 0b11110 && 
+			    i + 3 < len &&
+			    ((s[i+1] & 0b11000000) >> 6) == 0b10 &&
+			    ((s[i+2] & 0b11000000) >> 6) == 0b10 &&
+			    ((s[i+3] & 0b11000000) >> 6) == 0b10 
+				) {
+			//cout << "4 byte unicode point" << endl;
+			ss << s[i] << s[i+1] << s[i+2] << s[i+3];
+			i+=3;
+		}
+
+		else if ( ((s[i  ] & 0b11110000) >> 4) == 0b1110 && 
+			    i + 2 < len &&
+			    ((s[i+1] & 0b11000000) >> 6) == 0b10 &&
+			    ((s[i+2] & 0b11000000) >> 6) == 0b10 
+				) {
+			// 3 byte unicode character
+			//cout << "3 byte unicode" << endl;
+			ss << s[i] << s[i+1] << s[i+2];
+			i+=2;
+		}
+
+		else if (   ((s[i  ] & 0b11100000) >> 5) == 0b110 && 
+			    i + 1 < len &&
+			    ((s[i+1] & 0b11000000) >> 6) == 0b10
+				) {
+			// 2 byte unicode character
+			//cout << "2 byte unicode" << endl;
+			ss << s[i] << s[i+1];
+			i+=1;
+		}
+
+		else if (s[i] >= 0 && s[i] < 32) {
+			// control characters
+			// some control chars need special handling
+			// https://www.cs.cmu.edu/~pattis/15-1XX/common/handouts/ascii.html
+			// https://www.json.org/json-en.html
+			//cout << "ascii control char: " << s[i] << endl;
+			if        (s[i] ==  8) { // backspace
+				ss << "\\b"; 
+			} else if (s[i] ==  9) { // tab
+				ss << "\\t";
+			} else if (s[i] == 10) { // linefeed
+				ss << "\\n";
+			} else if (s[i] == 12) { // form feed
+				ss << "\\f";
+			} else if (s[i] == 13) { // carriage return
+				ss << "\\r";
+			} else {
+				ss << s[i];
+			}
+		} else if (s[i] >= 32 && s[i] <= 127) {
+			//cout << "std ascii" << endl;
+			//cout << "ascii printable char: |" << s[i] << "|" << endl;
+			// todo - bring back later
+			//if (s[i] == '"' || s[i] == '\\' || s[i] == '/') {
+			//	ss << "\\" << s[i];
+			//} else {
+				ss << s[i];
+			//}
+		}
+
+		// else if ( ((s[i  ] & 0b11111011) >> 2) == 0b111110 && 
+		// 	    i + 4 < len &&
+		// 	    ((s[i+1] & 0b10111111) >> 6) == 0b10 &&
+		// 	    ((s[i+2] & 0b10111111) >> 6) == 0b10 &&
+		// 	    ((s[i+3] & 0b10111111) >> 6) == 0b10 &&
+		// 	    ((s[i+4] & 0b10111111) >> 6) == 0b10 
+		// 		) {
+		// 	cout << "5 byte unicode" << endl;
+		// 	ss << s[i] << s[i+1] << s[i+2] << s[i+3];
+		// 	i+=4;
+		// } 
+
+		else 
+		{
+			// 4 byte unicode character
+			if ((unsigned char)s[i] == 160 ) {
+				//cout << "detected non-breaking space in windows codepage 1252" << endl;
+			} else {
+				cout << "else clause non-utf8 char: " << (std::bitset<8>(s[i])) << endl;
+			}
+			//ss << s[i] << s[i+1] << s[i+2] << s[i+3];
+			ss << s[i];
+			++no_errors;
+		}
+	}
+	//string res2 = ss.str();
+	return std::pair<int, string>(no_errors, ss.str());
+}
+
 int main(int argc, char * argv[])
 {
 	if (argc > 1) {
@@ -1882,40 +2019,46 @@ int main(int argc, char * argv[])
 		//	cout << v[j] << "|";
 		//}
 		// bool all_ok = true;
-		// vector<string> rectified_vec;
-		// int all_lengths = 0;
-		// for (int j = 0; j < v.size() ; ++j) {
-		// 	//cout << "|" << v[j] << "|" << endl;
-		// 	if (v[j].length() > 0) {
-		// 		//string rectified = rectify_utf8(v[j]);
-		// 		//if (v[j] == rectified)  {
-		// 		//	rectified_vec.push_back(rectified);
-		// 		//} else {
-		// 		//	cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
-		// 		//	rectified_vec.push_back(rectified);
-		// 		//}
-		// 		all_lengths += v[j].length();
-		// 	}
-		// }
+		vector<string> rectified_vec;
+		int all_lengths = 0;
+		for (int j = 0; j < v.size() ; ++j) {
+			//cout << "|" << v[j] << "|" << endl;
+			if (v[j].length() > 0) {
+				//string rectified = rectify_utf8(v[j]);
+				//if (v[j] == rectified)  {
+				//	rectified_vec.push_back(rectified);
+				//} else {
+				//	cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
+				//	rectified_vec.push_back(rectified);
+				//}
+				all_lengths += v[j].length();
+			}
+		}
 		// //cout << "line no:" << i + 2 <<  ", all_lengths: " << all_lengths << endl;
-		// if (all_lengths > 0) {
-		// 	for (int j = 0; j < v.size() ; ++j) {
-		// 		//cout << v[j] << "|";
-		// 		if (v[j].length() > 0) {
-		// 			string rectified = rectify_utf8(v[j]);
-		// 			if (v[j] == rectified)  {
-		// 				rectified_vec.push_back(rectified);
-		// 			} else {
-		// 				//cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
-		// 				rectified_vec.push_back(rectified);
-		// 			}
-		// 		} else {
-		// 			rectified_vec.push_back("");
-		// 		}
-		// 	}
-		// } else {
-		// 	//cout << "line no : " << i + 2 << " all fields are empty not adding "  << endl; 
-		// }
+		if (all_lengths > 0) {
+			for (int j = 0; j < v.size() ; ++j) {
+				//cout << v[j] << "|";
+				if (v[j].length() > 0) {
+					//string rectified = rectify_utf8(v[j]);
+					std::pair<int, string > result = json_print(v[j]);
+					int no_errors = result.first;
+					string rectified = result.second;
+					if (no_errors > 0)  {
+						cout << "line no : " << i + 2 << " has a utf8 issue, compare: " << endl
+							<< v[j] << endl
+							<< "vs" << endl
+							<< rectified << endl; 
+						rectified_vec.push_back(rectified);
+					} else {
+						rectified_vec.push_back(rectified);
+					}
+				} else {
+					rectified_vec.push_back("");
+				}
+			}
+		} else {
+			//cout << "line no : " << i + 2 << " all fields are empty not adding "  << endl; 
+		}
 		//cout << v[v.size()-1] << endl;
 		//json arr = json::array(v);
 		json_op.push_back(v); 
@@ -1935,7 +2078,7 @@ int main(int argc, char * argv[])
 	parsed_data["header"] =  header_op;
 	parsed_data["parsed_data"] =  json_op;
 	parsed_data["expected_fields"] = expected_fields2;
-	parsed_data["errors"] = error_op;
+	//parsed_data["errors"] = error_op;
 	parsed_data["total_records"] = num_lines2;
 	parsed_data["total_errors"] = error_line_nos.size() ;
 	parsed_data["successfully_parsed"] = all_csv_records.size()  ;
