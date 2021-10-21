@@ -393,12 +393,44 @@ string rectify_utf8(const string& a_str)
     return duplicate;
 }
 
+struct StringCodePageAnalysisResult {
+	int n_utf8_longer_than_1byte = 0;
+	int n_wincp1252 = 0;
+	int n_iso_8859_1 = 0;
+	string rectified;
+	StringCodePageAnalysisResult(): 
+		n_utf8_longer_than_1byte(0),
+		n_wincp1252(0),
+		n_iso_8859_1(0),
+		rectified()
+	{}
 
-int n_utf8_longer_than_1byte = 0;
-int n_wincp1252 = 0;
-int n_iso_8859_1 = 0;
-std::pair<int, std::string> json_print(std::string const & s)
+	StringCodePageAnalysisResult(
+		int p_n_utf8_longer_than_1byte,
+		int p_n_wincp1252,
+		int p_n_iso_8859_1,
+		string p_rectified
+	): 
+		n_utf8_longer_than_1byte(p_n_utf8_longer_than_1byte),
+		n_wincp1252(p_n_wincp1252),
+		n_iso_8859_1(p_n_iso_8859_1),
+		rectified(p_rectified)
+	{}
+};
+
+string print_csv_as_json(
+	StringCodePageAnalysisResult total_cp_res,
+	vector<vector<string>> all_csv_records,
+	std::map<int, std::string> header_row_map2,
+	int expected_fields2 
+);
+// todo - these globals need to disappear
+//int n_utf8_longer_than_1byte = 0;
+//int n_wincp1252 = 0;
+//int n_iso_8859_1 = 0;
+StringCodePageAnalysisResult json_print(std::string const & s)
 {
+	StringCodePageAnalysisResult res ;
 	using std::cout;
 	using std::endl;
 	std::stringstream ss;
@@ -449,7 +481,7 @@ std::pair<int, std::string> json_print(std::string const & s)
 			//cout << "4 byte unicode point" << endl;
 			ss << s[i] << s[i+1] << s[i+2] << s[i+3];
 			i+=3;
-			++n_utf8_longer_than_1byte;
+			++res.n_utf8_longer_than_1byte;
 		}
 
 		else if ( ((s[i  ] & 0b11110000) >> 4) == 0b1110 && 
@@ -461,7 +493,7 @@ std::pair<int, std::string> json_print(std::string const & s)
 			//cout << "3 byte unicode" << endl;
 			ss << s[i] << s[i+1] << s[i+2];
 			i+=2;
-			++n_utf8_longer_than_1byte;
+			++res.n_utf8_longer_than_1byte;
 		}
 
 		else if (   ((s[i  ] & 0b11100000) >> 5) == 0b110 && 
@@ -472,7 +504,7 @@ std::pair<int, std::string> json_print(std::string const & s)
 			//cout << "2 byte unicode" << endl;
 			ss << s[i] << s[i+1];
 			i+=1;
-			++n_utf8_longer_than_1byte;
+			++res.n_utf8_longer_than_1byte;
 		}
 
 		else if (s[i] >= 0 && s[i] < 32) {
@@ -523,22 +555,17 @@ std::pair<int, std::string> json_print(std::string const & s)
 			//cout << "else clause non-utf8 char: " << (std::bitset<8>(s[i])) << endl;
 			unsigned char ch = (unsigned char) s[i];
 			if (ch >= 127 && ch <= 159) {
-				++n_wincp1252;
+				++res.n_wincp1252;
 			} else if (ch >= 160 && ch <= 255) {
-				++n_iso_8859_1; // note: all iso part of wincp1252
-			}
-			if ((unsigned char)s[i] == 160 ) {
-				//cout << "detected non-breaking space in windows codepage 1252" << endl;
-			} else {
-				cout << "else clause non-utf8 char: " << (std::bitset<8>(s[i])) << endl;
-				++no_errors;
+				++res.n_iso_8859_1; // note: all iso part of wincp1252
 			}
 			//ss << s[i] << s[i+1] << s[i+2] << s[i+3];
 			ss << s[i];
 		}
 	}
 	//string res2 = ss.str();
-	return std::pair<int, string>(no_errors, ss.str());
+	res.rectified = ss.str();
+	return res;
 }
 
 int main(int argc, char * argv[])
@@ -586,6 +613,7 @@ int main(int argc, char * argv[])
 	//yy_delete_buffer(YY_CURRENT_BUFFER);
 	//yy_init = 1;
 	csv2_lex_clean_up();
+	StringCodePageAnalysisResult total_cp_res;
 	//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
 	json json_op;
 	for (int i = 0; i < all_csv_records.size(); ++i) {
@@ -618,18 +646,22 @@ int main(int argc, char * argv[])
 				//cout << v[j] << "|";
 				if (v[j].length() > 0) {
 					//string rectified = rectify_utf8(v[j]);
-					std::pair<int, string > result = json_print(v[j]);
-					int no_errors = result.first;
-					string rectified = result.second;
-					if (no_errors > 0)  {
-						cout << "line no : " << i + 2 << " has a utf8 issue, compare: " << endl
-							<< v[j] << endl
-							<< "vs" << endl
-							<< rectified << endl; 
-						rectified_vec.push_back(rectified);
-					} else {
-						rectified_vec.push_back(rectified);
-					}
+					StringCodePageAnalysisResult result = json_print(v[j]);
+					total_cp_res.n_utf8_longer_than_1byte += result.n_utf8_longer_than_1byte;
+					total_cp_res.n_wincp1252 += result.n_wincp1252;
+					total_cp_res.n_iso_8859_1 += result.n_iso_8859_1;
+					string rectified = result.rectified;
+
+					//if (no_errors > 0)  {
+					//	cout << "line no : " << i + 2 << " has a utf8 issue, compare: " << endl
+					//		<< v[j] << endl
+					//		<< "vs" << endl
+					//		<< rectified << endl; 
+					//	rectified_vec.push_back(rectified);
+					//} else {
+					//	rectified_vec.push_back(rectified);
+					//}
+					rectified_vec.push_back(rectified);
 				} else {
 					rectified_vec.push_back("");
 				}
@@ -651,6 +683,11 @@ int main(int argc, char * argv[])
 		header_op.push_back(header_row_map2[i]) ;
 	}
 
+	string csv_as_json = print_csv_as_json(total_cp_res, 
+		all_csv_records, header_row_map2, 
+		expected_fields2);
+
+
 
 	json parsed_data;
 	parsed_data["header"] =  header_op;
@@ -660,12 +697,21 @@ int main(int argc, char * argv[])
 	parsed_data["total_records"] = num_lines2;
 	parsed_data["total_errors"] = error_line_nos.size() ;
 	parsed_data["successfully_parsed"] = all_csv_records.size()  ;
-	parsed_data["n_utf8_longer_than_1byte"] = n_utf8_longer_than_1byte  ;
-	parsed_data["n_iso_8859_1"] = n_iso_8859_1  ;
-	parsed_data["n_wincp1252"] = n_wincp1252  ;
+	parsed_data["n_utf8_longer_than_1byte"] = total_cp_res.n_utf8_longer_than_1byte  ;
+	parsed_data["n_iso_8859_1"] = total_cp_res.n_iso_8859_1  ;
+	parsed_data["n_wincp1252"] = total_cp_res.n_wincp1252  ;
 	cout 
 		//<< "JSON format: " << endl
 		<< parsed_data.dump(4) << endl;
 	return 0;
 }
 
+string print_csv_as_json(
+	StringCodePageAnalysisResult total_cp_res,
+	vector<vector<string>> all_csv_records,
+	std::map<int, std::string> header_row_map2,
+	int expected_fields2 
+)
+{
+	return string("");
+}
