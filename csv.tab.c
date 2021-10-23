@@ -1966,11 +1966,11 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			//cout << "std ascii" << endl;
 			//cout << "ascii printable char: |" << s[i] << "|" << endl;
 			// todo - bring back later
-			//if (s[i] == '"' || s[i] == '\\' || s[i] == '/') {
-			//	ss << "\\" << s[i];
-			//} else {
+			if (s[i] == '"' || s[i] == '\\' || s[i] == '/') {
+				ss << "\\" << s[i];
+			} else {
 				ss << s[i];
-			//}
+			}
 		}
 
 		// else if ( ((s[i  ] & 0b11111011) >> 2) == 0b111110 && 
@@ -2052,6 +2052,8 @@ int main(int argc, char * argv[])
 	StringCodePageAnalysisResult total_cp_res;
 	//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
 	json json_op;
+	vector<vector<string> > json_escaped_records;
+	json_escaped_records.reserve(all_csv_records.size());
 	for (int i = 0; i < all_csv_records.size(); ++i) {
 		const vector<string>& v = all_csv_records[i];
 		//cout << "line " << i + 1 << ", v.size(): " << v.size() << endl;
@@ -2108,6 +2110,7 @@ int main(int argc, char * argv[])
 		//cout << v[v.size()-1] << endl;
 		//json arr = json::array(v);
 		json_op.push_back(v); 
+		json_escaped_records.push_back(rectified_vec);
 		//if (all_ok) json_op.push_back(v); 
 		//else cout << "skipping non-utf:" << i << endl;
 		//if (rectified_vec.size() > 0) {
@@ -2120,9 +2123,9 @@ int main(int argc, char * argv[])
 	}
 
 	string csv_as_json = print_csv_as_json(total_cp_res, 
-		all_csv_records, header_row_map2, 
+		json_escaped_records, header_row_map2, 
 		expected_fields2);
-	cout << "custom csv_as_json: "
+	cout //<< "\"csv_as_json\" : "
 		<< csv_as_json << endl;
 
 
@@ -2138,9 +2141,9 @@ int main(int argc, char * argv[])
 	parsed_data["n_utf8_longer_than_1byte"] = total_cp_res.n_utf8_longer_than_1byte  ;
 	parsed_data["n_iso_8859_1"] = total_cp_res.n_iso_8859_1  ;
 	parsed_data["n_wincp1252"] = total_cp_res.n_wincp1252  ;
-	cout 
-		//<< "JSON format: " << endl
-		<< parsed_data.dump(4) << endl;
+	//cout 
+	//	//<< "JSON format: " << endl
+	//	<< parsed_data.dump(4) << endl;
 	return 0;
 }
 
@@ -2218,7 +2221,7 @@ vector<string> convert_header_to_vec(
 	v.reserve(header_row_map2.size());
 	for (map<int, string>::const_iterator ci = header_row_map2.begin(); 
 		ci != header_row_map2.end(); ++ci) {
-		cout << ci->first << ":" << ci->second << endl;
+		//cout << ci->first << ":" << ci->second << endl;
 		v.push_back(ci->second);
 	}
 	return v;
@@ -2236,8 +2239,6 @@ string print_csv_as_json(
 	analysis_kv["n_iso_8859_1"] = total_cp_res.n_iso_8859_1;
 	analysis_kv["n_utf8_longer_than_1byte"] = total_cp_res.n_utf8_longer_than_1byte;
 	analysis_kv["n_wincp1252"] = total_cp_res.n_wincp1252;
-	analysis_kv["test"] = 1;
-	analysis_kv["test2"] = 2;
 	string analysis_res = 
 		print_key_value(analysis_kv);
 	
@@ -2248,7 +2249,7 @@ string print_csv_as_json(
 	// step 1 - print the headers
 	vector<string> headers_in_order = 
 		convert_header_to_vec(header_row_map2);	 
-	res	
+	res
 		<< "," << endl
 		<< print_array("header", headers_in_order)
 		;
