@@ -2189,14 +2189,18 @@ string print_array(const vector<string>& v)
 {
 	//cout << "print_array v.size(): " << v.size() << endl;
 	std::stringstream ss;
-	ss
+	if (v.size() > 0) {
+		ss
 			<< " [ " << endl;
 
-	for (int i = 0; i < v.size()-1; ++i) {
-		ss << "    " << '"' << v[i] << '"' << ',' << endl;
+		for (int i = 0; i < v.size()-1; ++i) {
+			ss << "    " << '"' << v[i] << '"' << ',' << endl;
+		}
+		ss << "    " << '"' << v[v.size()-1] << '"' << endl;
+		ss << " ] " ;
+	} else {
+		ss << "[]";
 	}
-	ss << "    " << '"' << v[v.size()-1] << '"' << endl;
-	ss << " ] " ;
 	return ss.str();
 }
 
@@ -2205,10 +2209,25 @@ string print_parsed_data(
 {
 	std::stringstream ss;
 	ss << '"' << "parsed_data" << '"' << ':' << '[' << endl;
+	bool should_print_comma = (all_csv_records.size() >= 2) ? true : false;
+	bool has_output_one_row = false;
 	for (int i = 0; i < all_csv_records.size()-1; ++i) {
-		ss << print_array(all_csv_records[i]) << ","<< endl;
+		if (all_csv_records[i].size() > 0) {
+			if (all_csv_records[i].size() > 0 && should_print_comma && has_output_one_row) {
+				ss << ",";
+			}
+			if (all_csv_records[i].size() > 0 ) {
+				ss << print_array(all_csv_records[i]) << endl;
+				has_output_one_row = true;
+			}
+		}
 	}
-	ss << print_array(all_csv_records[all_csv_records.size()-1]);
+	if (all_csv_records[all_csv_records.size()-1].size() > 0 && should_print_comma && has_output_one_row) {
+		ss << ",";
+	}
+	if (all_csv_records[all_csv_records.size()-1].size() > 0) {
+		ss << print_array(all_csv_records[all_csv_records.size()-1]);
+	}
 	ss << ']' ;
 	return ss.str();
 }
@@ -2239,6 +2258,9 @@ string print_csv_as_json(
 	analysis_kv["n_iso_8859_1"] = total_cp_res.n_iso_8859_1;
 	analysis_kv["n_utf8_longer_than_1byte"] = total_cp_res.n_utf8_longer_than_1byte;
 	analysis_kv["n_wincp1252"] = total_cp_res.n_wincp1252;
+	analysis_kv["total_records"] = num_lines2;
+	analysis_kv["total_errors"] = error_line_nos.size() ;
+	analysis_kv["successfully_parsed"] = all_csv_records.size()  ;
 	string analysis_res = 
 		print_key_value(analysis_kv);
 	
