@@ -2225,14 +2225,14 @@ string print_key_value(map<string, int> & kv) {
 		ss
 			<< '"' << ci->first << '"'
 			<< " : "
-			<< '"' << ci->second << '"'
+			<< ci->second
 			<< ","
 			<< endl;
 	}
 	ss
 		<< '"' << last_but_one->first << '"'
 		<< " : "
-		<< '"' << last_but_one->second << '"' ;
+		<< last_but_one->second  ;
 
 	return ss.str();
 }
