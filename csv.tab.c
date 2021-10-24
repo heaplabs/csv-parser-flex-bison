@@ -74,12 +74,14 @@
 	#include <string>
 	#include <vector>
 	#include <map>
+	#include <bitset>
 	using std::string;
 	using std::vector;
 	using std::map;
 	vector<string> csv_record;
 	vector<vector<string>> all_csv_records;
 	#include <iostream>
+	#include <utility>
 	using std::cout;
 	using std::endl;
 
@@ -94,7 +96,7 @@
 		{}
 	};
 	vector<error_pos> error_line_nos;
-	#include <nlohmann/json.hpp>
+	//#include <nlohmann/json.hpp>
 	#include <sstream>
 
 	std::stringstream error_context;
@@ -102,7 +104,7 @@
 	// if needed
 	bool enable_progress_report = false; 
 
-#line 106 "csv.tab.c"
+#line 108 "csv.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -531,7 +533,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    46,    46,    74,   147,   162,   169,   179,   186,   193
+       0,    48,    48,    96,   179,   195,   202,   212,   219,   226
 };
 #endif
 
@@ -1322,7 +1324,7 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 46 "csv.y"
+#line 48 "csv.y"
                     {
 		int total_len = 0;
 		//for (int i =0; i < csv_record.size(); ++i) {
@@ -1333,7 +1335,27 @@ yyreduce:
 		//		total_len = 0;
 		//	}
 		//}
-		expected_fields2 = csv_record.size();
+		vector<int> bad_headers ;
+		for (int i = 0; i < csv_record.size(); ++i) {
+			if (csv_record[i].size() == 0) {
+				error_context << "header field of len 0 at position i=" << i << endl;
+				bad_headers.push_back(i);
+			}
+		}
+		// we'll do only 1 optimisation
+		// - IF there is only 1 bad header
+		// -    AND it is the last header
+		// - THEN we drop it
+		if (bad_headers.size () == 1 && bad_headers[0] == csv_record.size()-1) {
+			error_context << "resetting expected_fields2: from " << csv_record.size()
+				<< " to " << csv_record.size() - 1 << endl;
+			expected_fields2 = csv_record.size() - 1;
+			error_line_nos.push_back(
+				error_pos(num_lines2, csv_record.size(),
+				error_context.str()));
+		} else {
+			expected_fields2 = csv_record.size();
+		}
 		//cout << endl << "total fields: " << expected_fields2 << endl;
 		csv_record.resize(0);
 		//++num_lines2; // dont count the header row
@@ -1348,15 +1370,18 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1352 "csv.tab.c"
+#line 1374 "csv.tab.c"
     break;
 
   case 3:
-#line 74 "csv.y"
+#line 96 "csv.y"
                             {
 
 		++num_lines2;
 		if (csv_record.size() != expected_fields2) {
+			//cout << "error: csv_record.size " << csv_record.size() 
+			//	<< ", expected_fields2: " << expected_fields2
+			//	<< endl;
 			for (int i =0; i < csv_record.size(); ++i) {
 				if (i+1 <= expected_fields2) { 
 					error_context 
@@ -1379,13 +1404,20 @@ yyreduce:
 			error_line_nos.push_back(
 				error_pos(num_lines2, csv_record.size(),
 				error_context.str()));
+			error_context.clear();
 		} else {
+			//cout << "parsed record: " ;
+			//for (int i = 0; i < csv_record.size(); ++i ) {
+			//	cout << ", " << csv_record[i] ;
+			//}
+			//cout << endl;
 			all_csv_records.push_back(csv_record);
 		}
 		csv_record.resize(0);
-		//cout << "new rec: " << ", num_lines2: " << num_lines2
-		//	<< ", num_fields2: " << num_fields2
-		//	<< endl;
+		// cout << "new rec: " << ", num_lines2: " << num_lines2
+		// 	<< ", num_fields2: " << num_fields2
+		// 	<< ", no_errors: " << error_line_nos.size()
+		// 	<< endl;
 		if (enable_progress_report) {
 			if (num_lines2 % 10 == 0 ) {
 				cout << '+';
@@ -1400,11 +1432,11 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1404 "csv.tab.c"
+#line 1436 "csv.tab.c"
     break;
 
   case 4:
-#line 147 "csv.y"
+#line 179 "csv.y"
                        { 
 		if (num_fields2 == expected_fields2) {
 			all_csv_records.push_back(csv_record);
@@ -1414,14 +1446,15 @@ yyreduce:
 		num_fields2 = 0;
 		++num_lines2;
 		csv_record.resize(0);
+		error_context.clear();
 		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1421 "csv.tab.c"
+#line 1454 "csv.tab.c"
     break;
 
   case 5:
-#line 162 "csv.y"
+#line 195 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1429,11 +1462,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1433 "csv.tab.c"
+#line 1466 "csv.tab.c"
     break;
 
   case 6:
-#line 169 "csv.y"
+#line 202 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1441,11 +1474,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1445 "csv.tab.c"
+#line 1478 "csv.tab.c"
     break;
 
   case 7:
-#line 179 "csv.y"
+#line 212 "csv.y"
                {
 		csv_record.push_back(string(""));
 		++ num_fields2;
@@ -1453,11 +1486,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1457 "csv.tab.c"
+#line 1490 "csv.tab.c"
     break;
 
   case 8:
-#line 186 "csv.y"
+#line 219 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1465,11 +1498,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1469 "csv.tab.c"
+#line 1502 "csv.tab.c"
     break;
 
   case 9:
-#line 193 "csv.y"
+#line 226 "csv.y"
                             {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1477,11 +1510,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1481 "csv.tab.c"
+#line 1514 "csv.tab.c"
     break;
 
 
-#line 1485 "csv.tab.c"
+#line 1518 "csv.tab.c"
 
       default: break;
     }
@@ -1713,7 +1746,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 282 "csv.y"
+#line 315 "csv.y"
 
 
 
@@ -1826,6 +1859,215 @@ string rectify_utf8(const string& a_str)
     return duplicate;
 }
 
+struct StringCodePageAnalysisResult {
+	int n_utf8_longer_than_1byte = 0;
+	int n_wincp1252 = 0;
+	int n_iso_8859_1 = 0;
+	string rectified;
+	StringCodePageAnalysisResult(): 
+		n_utf8_longer_than_1byte(0),
+		n_wincp1252(0),
+		n_iso_8859_1(0),
+		rectified()
+	{}
+
+	StringCodePageAnalysisResult(
+		int p_n_utf8_longer_than_1byte,
+		int p_n_wincp1252,
+		int p_n_iso_8859_1,
+		string p_rectified
+	): 
+		n_utf8_longer_than_1byte(p_n_utf8_longer_than_1byte),
+		n_wincp1252(p_n_wincp1252),
+		n_iso_8859_1(p_n_iso_8859_1),
+		rectified(p_rectified)
+	{}
+};
+
+string print_csv_as_json(
+	const StringCodePageAnalysisResult & total_cp_res,
+	const vector<vector<string>> & all_csv_records,
+	const std::map<int, std::string> & header_row_map2,
+	int expected_fields2,
+	const vector<error_pos> & error_line_nos
+	);
+
+// todo - these globals need to disappear
+//int n_utf8_longer_than_1byte = 0;
+//int n_wincp1252 = 0;
+//int n_iso_8859_1 = 0;
+StringCodePageAnalysisResult json_print(std::string const & s)
+{
+	StringCodePageAnalysisResult res ;
+	using std::cout;
+	using std::endl;
+	std::stringstream ss;
+	int no_errors = 0;
+	int len = s.length();
+	for (int i = 0; i < len; ++i) {
+		// control characters
+		// cout << "s["<< i << "]: "
+		// 	<< (std::bitset<8>(s[i]))
+		// 	<< " (s[i  ] & 0b11110000): "
+		// 	<< (std::bitset<8>(s[i  ] & 0b11110000) )
+		// 	<< ", ((s[i  ] & 0b11110000) >> 4) : "
+		// 	<< std::bitset<8>((s[i  ] & 0b11110000) >> 4) 
+		// 	<< ", ((s[i  ] & 0b11110000) >> 4 == 0b1110): "
+		// 	<< ((s[i  ] & 0b11110000) >> 4 == 0b1110)
+		// 	<< endl;
+		// if (i + 1 < len) {
+		// 	cout << "s["<< i+1 << "]: "
+		// 		<< (std::bitset<8>(s[i+1])) << endl;
+		// 	unsigned char c1 = s[i+1] & 0b10111111;
+		// 	cout << "c1: " << (std::bitset<8>(c1)) << endl;
+		// 	cout << " (c1 >> 6 == 0b10): " <<  ( (c1 >> 6) == 0b10) << endl;
+		// }
+		// if (i + 2 < len) {
+		// 	cout << "s["<< i+2 << "]: "
+		// 		<< (std::bitset<8>(s[i+2])) << endl;
+		// 	unsigned char c2 = s[i+2] & 0b10111111;
+		// 	cout << "c2: " << (std::bitset<8>(c2)) << endl;
+		// 	cout << " (c2 >> 6 == 0b10): " <<  ( (c2 >> 6) == 0b10) << endl;
+		// 	//s[i+2] 
+		// }
+		// if (i + 3 < len) {
+		// 	cout << "s["<< i+3 << "]: "
+		// 		<< (std::bitset<8>(s[i+3])) << endl;
+		// 	unsigned char c3 = s[i+2] & 0b10111111;
+		// 	cout << "c3: " << (std::bitset<8>(c3)) << endl;
+		// 	cout << " (c3 >> 6 == 0b10): " <<  ( (c3 >> 6) == 0b10) << endl;
+		// }
+		// unsigned char ch = s[i] & 0b1110000;
+		// cout << " bitwise and with 0b11011111 "	<< (ch) << endl;
+
+		if ( ((s[i  ] & 0b11111000) >> 3) == 0b11110 && 
+			    i + 3 < len &&
+			    ((s[i+1] & 0b11000000) >> 6) == 0b10 &&
+			    ((s[i+2] & 0b11000000) >> 6) == 0b10 &&
+			    ((s[i+3] & 0b11000000) >> 6) == 0b10 
+				) {
+			//cout << "4 byte unicode point" << endl;
+			ss << s[i] << s[i+1] << s[i+2] << s[i+3];
+			i+=3;
+			++res.n_utf8_longer_than_1byte;
+		}
+
+		else if ( ((s[i  ] & 0b11110000) >> 4) == 0b1110 && 
+			    i + 2 < len &&
+			    ((s[i+1] & 0b11000000) >> 6) == 0b10 &&
+			    ((s[i+2] & 0b11000000) >> 6) == 0b10 
+				) {
+			// 3 byte unicode character
+			//cout << "3 byte unicode" << endl;
+			ss << s[i] << s[i+1] << s[i+2];
+			i+=2;
+			++res.n_utf8_longer_than_1byte;
+		}
+
+		else if (   ((s[i  ] & 0b11100000) >> 5) == 0b110 && 
+			    i + 1 < len &&
+			    ((s[i+1] & 0b11000000) >> 6) == 0b10
+				) {
+			// 2 byte unicode character
+			//cout << "2 byte unicode" << endl;
+			ss << s[i] << s[i+1];
+			i+=1;
+			++res.n_utf8_longer_than_1byte;
+		}
+
+		else if (s[i] >= 0 && s[i] < 32) {
+			// control characters
+			// some control chars need special handling
+			// https://www.cs.cmu.edu/~pattis/15-1XX/common/handouts/ascii.html
+			// https://www.json.org/json-en.html
+			//cout << "ascii control char: " << s[i] << endl;
+			if        (s[i] ==  8) { // backspace
+				ss << "\\b"; 
+			} else if (s[i] ==  9) { // tab
+				ss << "\\t";
+			} else if (s[i] == 10) { // linefeed
+				ss << "\\n";
+			} else if (s[i] == 12) { // form feed
+				ss << "\\f";
+			} else if (s[i] == 13) { // carriage return
+				ss << "\\r";
+			} else {
+				ss << s[i];
+			}
+		} else if (s[i] >= 32 && s[i] <= 127) {
+			//cout << "std ascii" << endl;
+			//cout << "ascii printable char: |" << s[i] << "|" << endl;
+			// todo - bring back later
+			if (s[i] == '"' || s[i] == '\\' || s[i] == '/') {
+				ss << "\\" << s[i];
+			} else {
+				ss << s[i];
+			}
+		}
+
+		// else if ( ((s[i  ] & 0b11111011) >> 2) == 0b111110 && 
+		// 	    i + 4 < len &&
+		// 	    ((s[i+1] & 0b10111111) >> 6) == 0b10 &&
+		// 	    ((s[i+2] & 0b10111111) >> 6) == 0b10 &&
+		// 	    ((s[i+3] & 0b10111111) >> 6) == 0b10 &&
+		// 	    ((s[i+4] & 0b10111111) >> 6) == 0b10 
+		// 		) {
+		// 	cout << "5 byte unicode" << endl;
+		// 	ss << s[i] << s[i+1] << s[i+2] << s[i+3];
+		// 	i+=4;
+		// } 
+
+		else 
+		{
+			// non unicode character
+			//cout << "else clause non-utf8 char: " << (std::bitset<8>(s[i])) << endl;
+			unsigned char ch = (unsigned char) s[i];
+			if (ch >= 127 && ch <= 159) {
+				++res.n_wincp1252;
+			} else if (ch >= 160 && ch <= 255) {
+				++res.n_iso_8859_1; // note: all iso part of wincp1252
+			}
+			//ss << s[i] << s[i+1] << s[i+2] << s[i+3];
+			ss << s[i];
+		}
+	}
+	//string res2 = ss.str();
+	res.rectified = ss.str();
+	return res;
+}
+
+string print_error_info(const vector<error_pos> & error_line_nos) {
+	std::stringstream res;
+	if (error_line_nos.size() > 0) {
+		res << "\"errors\"" << ':' << "[";
+		for (int i = 0; i < error_line_nos.size() - 1; ++i) {
+			const error_pos & ep = error_line_nos[i];
+			res << "{";
+			res
+				<< "\"line\" : " << ep.row << "," << endl
+				<< "\"field\" : " << ep.col << "," << endl
+				<< "\"context\" : \"";
+			StringCodePageAnalysisResult result = json_print(ep.error_context);
+			res << result.rectified << "\"";
+			res << "}," << endl;
+		}
+		{
+			const error_pos & ep = error_line_nos[error_line_nos.size()-1];
+			res << "{";
+			res
+				<< "\"line\" : " << ep.row << "," << endl
+				<< "\"field\" : " << ep.col << "," << endl
+				<< "\"context\" : \"";
+			StringCodePageAnalysisResult result = json_print(ep.error_context);
+			res << result.rectified << "\"";
+			res << "}" << endl;
+		}
+
+		res << "]";
+	}
+	return res.str();
+}
+
 int main(int argc, char * argv[])
 {
 	if (argc > 1) {
@@ -1845,34 +2087,40 @@ int main(int argc, char * argv[])
 			return 41;
 		}
 	}
-	//cout << endl << "num_lines2: "  << num_lines2 << endl;
-	//cout << "expected_fields: "  << expected_fields2 << endl;
-	//cout << "Total errors: " << error_line_nos.size() << endl;
-	using json = nlohmann::json;
-	json error_op;
-	if (error_line_nos.size() > 0 ) { 
-		//cout << "Detailed errors: " << endl;
-		for (int i = 0; i < error_line_nos.size(); ++i) {
-			error_pos error_pos = error_line_nos[i];
-			json an_error_pos = { 
-				{"line", error_pos.row} , 
-				{"field", error_pos.col },
-				{"context", error_pos.error_context}
-			};
-			error_op.push_back(an_error_pos);
-			//cout 
-			//	<< "line: "      << error_pos.row
-			//	<< ", n_field: " << error_pos.col << endl;
-		}
-		//cout << "End of error report" << endl;
-	}
+	// cout << endl << "num_lines2: "  << num_lines2 << endl;
+	// cout << "expected_fields: "  << expected_fields2 << endl;
+	// cout << "Total errors: " << error_line_nos.size() << endl;
+	//using json = nlohmann::json;
+	//json error_op;
+	//if (error_line_nos.size() > 0 ) { 
+	//	//cout << "Detailed errors: " << endl;
+	//	for (int i = 0; i < error_line_nos.size(); ++i) {
+	//		error_pos error_pos = error_line_nos[i];
+	//		json an_error_pos = { 
+	//			{"line", error_pos.row} , 
+	//			{"field", error_pos.col },
+	//			{"context", error_pos.error_context}
+	//		};
+	//		error_op.push_back(an_error_pos);
+	//		//cout 
+	//		//	<< "line: "      << error_pos.row
+	//		//	<< ", n_field: " << error_pos.col << endl;
+	//	}
+	//	//cout << "End of error report" << endl;
+	//}
 
 	 /* For non-reentrant C scanner only. */
 	//yy_delete_buffer(YY_CURRENT_BUFFER);
 	//yy_init = 1;
 	csv2_lex_clean_up();
+	StringCodePageAnalysisResult total_cp_res;
 	//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
-	json json_op;
+	//json json_op;
+	// todo - extract out as a method
+	//vector<vector<string> > json_escaped_records = json_escape_records(all_csv_records);
+
+	vector<vector<string> > json_escaped_records;
+	json_escaped_records.reserve(all_csv_records.size());
 	for (int i = 0; i < all_csv_records.size(); ++i) {
 		const vector<string>& v = all_csv_records[i];
 		//cout << "line " << i + 1 << ", v.size(): " << v.size() << endl;
@@ -1882,66 +2130,236 @@ int main(int argc, char * argv[])
 		//	cout << v[j] << "|";
 		//}
 		// bool all_ok = true;
-		// vector<string> rectified_vec;
-		// int all_lengths = 0;
-		// for (int j = 0; j < v.size() ; ++j) {
-		// 	//cout << "|" << v[j] << "|" << endl;
-		// 	if (v[j].length() > 0) {
-		// 		//string rectified = rectify_utf8(v[j]);
-		// 		//if (v[j] == rectified)  {
-		// 		//	rectified_vec.push_back(rectified);
-		// 		//} else {
-		// 		//	cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
-		// 		//	rectified_vec.push_back(rectified);
-		// 		//}
-		// 		all_lengths += v[j].length();
-		// 	}
-		// }
+		int all_lengths = 0;
+		for (int j = 0; j < v.size() ; ++j) {
+			//cout << "|" << v[j] << "|" << endl;
+			if (v[j].length() > 0) {
+				//string rectified = rectify_utf8(v[j]);
+				//if (v[j] == rectified)  {
+				//	rectified_vec.push_back(rectified);
+				//} else {
+				//	cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
+				//	rectified_vec.push_back(rectified);
+				//}
+				all_lengths += v[j].length();
+			}
+		}
 		// //cout << "line no:" << i + 2 <<  ", all_lengths: " << all_lengths << endl;
-		// if (all_lengths > 0) {
-		// 	for (int j = 0; j < v.size() ; ++j) {
-		// 		//cout << v[j] << "|";
-		// 		if (v[j].length() > 0) {
-		// 			string rectified = rectify_utf8(v[j]);
-		// 			if (v[j] == rectified)  {
-		// 				rectified_vec.push_back(rectified);
-		// 			} else {
-		// 				//cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
-		// 				rectified_vec.push_back(rectified);
-		// 			}
-		// 		} else {
-		// 			rectified_vec.push_back("");
-		// 		}
-		// 	}
-		// } else {
-		// 	//cout << "line no : " << i + 2 << " all fields are empty not adding "  << endl; 
-		// }
+		if (all_lengths > 0) {
+			vector<string> rectified_vec; 
+			rectified_vec.reserve(v.size());
+			for (int j = 0; j < v.size() ; ++j) {
+				//cout << v[j] << "|";
+				if (v[j].length() > 0) {
+					//string rectified = rectify_utf8(v[j]);
+					StringCodePageAnalysisResult result = json_print(v[j]);
+					total_cp_res.n_utf8_longer_than_1byte += result.n_utf8_longer_than_1byte;
+					total_cp_res.n_wincp1252 += result.n_wincp1252;
+					total_cp_res.n_iso_8859_1 += result.n_iso_8859_1;
+					string rectified = result.rectified;
+
+					//if (no_errors > 0)  {
+					//	cout << "line no : " << i + 2 << " has a utf8 issue, compare: " << endl
+					//		<< v[j] << endl
+					//		<< "vs" << endl
+					//		<< rectified << endl; 
+					//	rectified_vec.push_back(rectified);
+					//} else {
+					//	rectified_vec.push_back(rectified);
+					//}
+					rectified_vec.push_back(rectified);
+				} else {
+					rectified_vec.push_back("");
+				}
+			}
+			json_escaped_records.push_back(rectified_vec);
+		} else {
+			//cout << "line no : " << i + 2 << " all fields are empty not adding "  << endl; 
+		}
 		//cout << v[v.size()-1] << endl;
 		//json arr = json::array(v);
-		json_op.push_back(v); 
+		//json_op.push_back(v);
 		//if (all_ok) json_op.push_back(v); 
 		//else cout << "skipping non-utf:" << i << endl;
 		//if (rectified_vec.size() > 0) {
 		//	json_op.push_back(rectified_vec);
 		//}
 	}
-	json header_op;
-	for (int i = 1; i<= expected_fields2; ++i)  {
-		header_op.push_back(header_row_map2[i]) ;
+	//json header_op;
+	//for (int i = 1; i<= expected_fields2; ++i)  {
+	//	header_op.push_back(header_row_map2[i]) ;
+	//}
+
+	string csv_as_json = print_csv_as_json(total_cp_res, 
+		json_escaped_records, header_row_map2, 
+		expected_fields2, error_line_nos);
+	cout //<< "\"csv_as_json\" : "
+		<< csv_as_json << endl;
+
+
+
+	//json parsed_data;
+	//parsed_data["header"] =  header_op;
+	////parsed_data["parsed_data"] =  json_op;
+	//parsed_data["expected_fields"] = expected_fields2;
+	////parsed_data["errors"] = error_op;
+	//parsed_data["total_records"] = num_lines2;
+	//parsed_data["total_errors"] = error_line_nos.size() ;
+	//parsed_data["successfully_parsed"] = all_csv_records.size()  ;
+	//parsed_data["n_utf8_longer_than_1byte"] = total_cp_res.n_utf8_longer_than_1byte  ;
+	//parsed_data["n_iso_8859_1"] = total_cp_res.n_iso_8859_1  ;
+	//parsed_data["n_wincp1252"] = total_cp_res.n_wincp1252  ;
+	//cout 
+	//	//<< "JSON format: " << endl
+	//	<< parsed_data.dump(4) << endl;
+	return 0;
+}
+
+string print_key_value(map<string, int> & kv) {
+	std::stringstream ss;
+	map<string, int>::const_iterator ci = kv.begin();
+	map<string, int>::const_iterator ci_end = kv.end();
+	map<string, int>::const_iterator last_but_one = --ci_end;
+
+	for (; ci != last_but_one; ++ci) {
+		ss
+			<< '"' << ci->first << '"'
+			<< " : "
+			<< '"' << ci->second << '"'
+			<< ","
+			<< endl;
+	}
+	ss
+		<< '"' << last_but_one->first << '"'
+		<< " : "
+		<< '"' << last_but_one->second << '"' ;
+
+	return ss.str();
+}
+
+string print_array(const string key, const vector<string> & v) {
+	//cout << "print_array v.size(): " << v.size() << endl;
+	std::stringstream ss;
+	ss
+		<< '"' << key << '"'
+			<< " : "
+			<< " [ " << endl;
+
+	for (int i = 0; i < v.size()-1; ++i) {
+		ss << "    " << '"' << v[i] << '"' << ',' << endl;
+	}
+	ss << "    " << '"' << v[v.size()-1] << '"' << endl;
+	ss << " ] " << endl;
+	return ss.str();
+}
+
+string print_array(const vector<string>& v)
+{
+	//cout << "print_array v.size(): " << v.size() << endl;
+	std::stringstream ss;
+	if (v.size() > 0) {
+		ss << " [ " << endl;
+
+		for (int i = 0; i < v.size() - 1 ; ++i) {
+			ss << "    " << '"' << v[i] << '"' << ',' << endl;
+		}
+		ss << "    " << '"' << v[v.size()-1] << '"' << endl;
+		ss << " ] " ;
+	} else {
+		ss << "[]";
+	}
+	return ss.str();
+}
+
+string print_parsed_data(
+	const vector<vector<string>> & all_csv_records)
+{
+	std::stringstream ss;
+	ss << '"' << "parsed_data" << '"' << ':' << '[' << endl;
+	if (all_csv_records.size() > 0) {
+		bool should_print_comma = (all_csv_records.size() >= 2) ? true : false;
+		bool has_output_one_row = false;
+		for (int i = 0; i < all_csv_records.size()-1; ++i) {
+			if (all_csv_records[i].size() > 0) {
+				if (all_csv_records[i].size() > 0 && should_print_comma && has_output_one_row) {
+					ss << ",";
+				}
+				if (all_csv_records[i].size() > 0 ) {
+					ss << print_array(all_csv_records[i]) << endl;
+					has_output_one_row = true;
+				}
+			}
+		}
+		if (all_csv_records[all_csv_records.size()-1].size() > 0 && should_print_comma && has_output_one_row) {
+			ss << ",";
+		}
+		if (all_csv_records[all_csv_records.size()-1].size() > 0) {
+			ss << print_array(all_csv_records[all_csv_records.size()-1]);
+		}
+		ss << ']' ;
+	}
+	return ss.str();
+}
+
+
+vector<string> convert_header_to_vec( 
+	const std::map<int, std::string> & header_row_map2)
+{
+	vector<string> v;
+	v.reserve(header_row_map2.size());
+	for (map<int, string>::const_iterator ci = header_row_map2.begin(); 
+		ci != header_row_map2.end(); ++ci) {
+		//cout << ci->first << ":" << ci->second << endl;
+		v.push_back(ci->second);
+	}
+	return v;
+}
+
+string print_csv_as_json(
+	const StringCodePageAnalysisResult & total_cp_res,
+	const vector<vector<string>> & all_csv_records,
+	const std::map<int, std::string> & header_row_map2,
+	int expected_fields2,
+	const vector<error_pos> & error_line_nos
+	)
+{
+	std::stringstream res;
+	map<string, int> analysis_kv;
+	analysis_kv["expected_fields"] = expected_fields2;
+	analysis_kv["n_iso_8859_1"] = total_cp_res.n_iso_8859_1;
+	analysis_kv["n_utf8_longer_than_1byte"] = total_cp_res.n_utf8_longer_than_1byte;
+	analysis_kv["n_wincp1252"] = total_cp_res.n_wincp1252;
+	analysis_kv["total_records"] = num_lines2;
+	analysis_kv["total_errors"] = error_line_nos.size() ;
+	analysis_kv["successfully_parsed"] = all_csv_records.size()  ;
+	string analysis_res = 
+		print_key_value(analysis_kv);
+	
+	// step 0 - declare our inferences
+	res
+		<< "{" << endl
+		<< analysis_res;
+	// step 1 - print the headers
+	vector<string> headers_in_order = 
+		convert_header_to_vec(header_row_map2);	 
+	res
+		<< "," << endl
+		<< print_array("header", headers_in_order)
+		;
+
+	// step 2 - print the body
+	res 
+		<< "," << endl
+		<< print_parsed_data(all_csv_records);
+	// step 3 - print the summary chars
+	// step 4 - print the errors
+	if (error_line_nos.size() > 0) {
+		res << ", " << print_error_info(error_line_nos);
 	}
 
-
-	json parsed_data;
-	parsed_data["header"] =  header_op;
-	parsed_data["parsed_data"] =  json_op;
-	parsed_data["expected_fields"] = expected_fields2;
-	parsed_data["errors"] = error_op;
-	parsed_data["total_records"] = num_lines2;
-	parsed_data["total_errors"] = error_line_nos.size() ;
-	parsed_data["successfully_parsed"] = all_csv_records.size()  ;
-	cout 
-		//<< "JSON format: " << endl
-		<< parsed_data.dump(4) << endl;
-	return 0;
+	res
+		<< "}"
+		<< endl;
+	return res.str();
 }
 
