@@ -453,8 +453,9 @@ string print_csv_as_json(
 	const StringCodePageAnalysisResult & total_cp_res,
 	const vector<vector<string>> & all_csv_records,
 	const std::map<int, std::string> & header_row_map2,
-	int expected_fields2 
-);
+	int expected_fields2,
+	const vector<error_pos> & error_line_nos
+	);
 
 // todo - these globals need to disappear
 //int n_utf8_longer_than_1byte = 0;
@@ -600,6 +601,23 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 	return res;
 }
 
+string print_error_info(const vector<error_pos> & error_line_nos) {
+	std::stringstream res;
+	if (error_line_nos.size() > 0) {
+		res << "\"errors\"" << ':' << "\"";
+		for (int i = 0; i < error_line_nos.size(); ++i) {
+			const error_pos & ep = error_line_nos[i];
+			res 	<< " line : " << ep.row
+				<< ", col : " << ep.col;
+			StringCodePageAnalysisResult result = json_print(ep.error_context);
+			res << ", context: ";
+			res << result.rectified;
+		}
+		res << "\"";
+	}
+	return res.str();
+}
+
 int main(int argc, char * argv[])
 {
 	if (argc > 1) {
@@ -648,6 +666,9 @@ int main(int argc, char * argv[])
 	StringCodePageAnalysisResult total_cp_res;
 	//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
 	//json json_op;
+	// todo - extract out as a method
+	//vector<vector<string> > json_escaped_records = json_escape_records(all_csv_records);
+
 	vector<vector<string> > json_escaped_records;
 	json_escaped_records.reserve(all_csv_records.size());
 	for (int i = 0; i < all_csv_records.size(); ++i) {
@@ -721,7 +742,7 @@ int main(int argc, char * argv[])
 
 	string csv_as_json = print_csv_as_json(total_cp_res, 
 		json_escaped_records, header_row_map2, 
-		expected_fields2);
+		expected_fields2, error_line_nos);
 	cout //<< "\"csv_as_json\" : "
 		<< csv_as_json << endl;
 
@@ -846,7 +867,9 @@ string print_csv_as_json(
 	const StringCodePageAnalysisResult & total_cp_res,
 	const vector<vector<string>> & all_csv_records,
 	const std::map<int, std::string> & header_row_map2,
-	int expected_fields2)
+	int expected_fields2,
+	const vector<error_pos> & error_line_nos
+	)
 {
 	std::stringstream res;
 	map<string, int> analysis_kv;
@@ -877,6 +900,11 @@ string print_csv_as_json(
 		<< "," << endl
 		<< print_parsed_data(all_csv_records);
 	// step 3 - print the summary chars
+	// step 4 - print the errors
+	if (error_line_nos.size() > 0) {
+		res << ", " << print_error_info(error_line_nos);
+	}
+
 	res
 		<< "}"
 		<< endl;
