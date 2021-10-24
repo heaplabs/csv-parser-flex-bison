@@ -659,7 +659,6 @@ int main(int argc, char * argv[])
 		//	cout << v[j] << "|";
 		//}
 		// bool all_ok = true;
-		vector<string> rectified_vec;
 		int all_lengths = 0;
 		for (int j = 0; j < v.size() ; ++j) {
 			//cout << "|" << v[j] << "|" << endl;
@@ -676,6 +675,8 @@ int main(int argc, char * argv[])
 		}
 		// //cout << "line no:" << i + 2 <<  ", all_lengths: " << all_lengths << endl;
 		if (all_lengths > 0) {
+			vector<string> rectified_vec; 
+			rectified_vec.reserve(v.size());
 			for (int j = 0; j < v.size() ; ++j) {
 				//cout << v[j] << "|";
 				if (v[j].length() > 0) {
@@ -700,13 +701,13 @@ int main(int argc, char * argv[])
 					rectified_vec.push_back("");
 				}
 			}
+			json_escaped_records.push_back(rectified_vec);
 		} else {
 			//cout << "line no : " << i + 2 << " all fields are empty not adding "  << endl; 
 		}
 		//cout << v[v.size()-1] << endl;
 		//json arr = json::array(v);
 		//json_op.push_back(v);
-		json_escaped_records.push_back(rectified_vec);
 		//if (all_ok) json_op.push_back(v); 
 		//else cout << "skipping non-utf:" << i << endl;
 		//if (rectified_vec.size() > 0) {
