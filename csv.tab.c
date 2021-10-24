@@ -534,7 +534,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    49,    49,   100,   184,   202,   209,   219,   238,   245
+       0,    49,    49,   103,   187,   205,   212,   222,   241,   248
 };
 #endif
 
@@ -1357,6 +1357,9 @@ yyreduce:
 				error_pos(num_lines2, csv_record.size(),
 				error_context.str()));
 			has_last_bad_header = true;
+			std::map<int, std::string> ::iterator iterator_last = header_row_map2.end();
+			--iterator_last;
+			header_row_map2.erase(iterator_last);
 		} else {
 			expected_fields2 = csv_record.size();
 		}
@@ -1374,11 +1377,11 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1378 "csv.tab.c"
+#line 1381 "csv.tab.c"
     break;
 
   case 3:
-#line 100 "csv.y"
+#line 103 "csv.y"
                             {
 
 		++num_lines2;
@@ -1437,11 +1440,11 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1441 "csv.tab.c"
+#line 1444 "csv.tab.c"
     break;
 
   case 4:
-#line 184 "csv.y"
+#line 187 "csv.y"
                        { 
 		if (num_fields2 == expected_fields2) {
 			all_csv_records.push_back(csv_record);
@@ -1457,11 +1460,11 @@ yyreduce:
 		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1461 "csv.tab.c"
+#line 1464 "csv.tab.c"
     break;
 
   case 5:
-#line 202 "csv.y"
+#line 205 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1469,11 +1472,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1473 "csv.tab.c"
+#line 1476 "csv.tab.c"
     break;
 
   case 6:
-#line 209 "csv.y"
+#line 212 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1481,11 +1484,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1485 "csv.tab.c"
+#line 1488 "csv.tab.c"
     break;
 
   case 7:
-#line 219 "csv.y"
+#line 222 "csv.y"
                {
 		//cout << " not pushing last field as it's empty:"
 		//	<< ", num_fields2: " << num_fields2
@@ -1505,11 +1508,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1509 "csv.tab.c"
+#line 1512 "csv.tab.c"
     break;
 
   case 8:
-#line 238 "csv.y"
+#line 241 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1517,11 +1520,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1521 "csv.tab.c"
+#line 1524 "csv.tab.c"
     break;
 
   case 9:
-#line 245 "csv.y"
+#line 248 "csv.y"
                             {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1529,11 +1532,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1533 "csv.tab.c"
+#line 1536 "csv.tab.c"
     break;
 
 
-#line 1537 "csv.tab.c"
+#line 1540 "csv.tab.c"
 
       default: break;
     }
@@ -1765,7 +1768,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 334 "csv.y"
+#line 337 "csv.y"
 
 
 

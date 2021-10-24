@@ -77,6 +77,11 @@ input:
 				error_pos(num_lines2, csv_record.size(),
 				error_context.str()));
 			has_last_bad_header = true;
+			// the header_row_map2 already has the empty last field pushed
+			// we're going to delete it (i.e. clean it up)
+			std::map<int, std::string> ::iterator iterator_last = header_row_map2.end();
+			--iterator_last;
+			header_row_map2.erase(iterator_last);
 		} else {
 			expected_fields2 = csv_record.size();
 		}
