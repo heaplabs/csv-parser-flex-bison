@@ -655,24 +655,24 @@ int main(int argc, char * argv[])
 	// cout << endl << "num_lines2: "  << num_lines2 << endl;
 	// cout << "expected_fields: "  << expected_fields2 << endl;
 	// cout << "Total errors: " << error_line_nos.size() << endl;
-	using json = nlohmann::json;
-	json error_op;
-	if (error_line_nos.size() > 0 ) { 
-		//cout << "Detailed errors: " << endl;
-		for (int i = 0; i < error_line_nos.size(); ++i) {
-			error_pos error_pos = error_line_nos[i];
-			json an_error_pos = { 
-				{"line", error_pos.row} , 
-				{"field", error_pos.col },
-				{"context", error_pos.error_context}
-			};
-			error_op.push_back(an_error_pos);
-			//cout 
-			//	<< "line: "      << error_pos.row
-			//	<< ", n_field: " << error_pos.col << endl;
-		}
-		//cout << "End of error report" << endl;
-	}
+	//using json = nlohmann::json;
+	//json error_op;
+	//if (error_line_nos.size() > 0 ) { 
+	//	//cout << "Detailed errors: " << endl;
+	//	for (int i = 0; i < error_line_nos.size(); ++i) {
+	//		error_pos error_pos = error_line_nos[i];
+	//		json an_error_pos = { 
+	//			{"line", error_pos.row} , 
+	//			{"field", error_pos.col },
+	//			{"context", error_pos.error_context}
+	//		};
+	//		error_op.push_back(an_error_pos);
+	//		//cout 
+	//		//	<< "line: "      << error_pos.row
+	//		//	<< ", n_field: " << error_pos.col << endl;
+	//	}
+	//	//cout << "End of error report" << endl;
+	//}
 
 	 /* For non-reentrant C scanner only. */
 	//yy_delete_buffer(YY_CURRENT_BUFFER);
@@ -750,10 +750,10 @@ int main(int argc, char * argv[])
 		//	json_op.push_back(rectified_vec);
 		//}
 	}
-	json header_op;
-	for (int i = 1; i<= expected_fields2; ++i)  {
-		header_op.push_back(header_row_map2[i]) ;
-	}
+	//json header_op;
+	//for (int i = 1; i<= expected_fields2; ++i)  {
+	//	header_op.push_back(header_row_map2[i]) ;
+	//}
 
 	string csv_as_json = print_csv_as_json(total_cp_res, 
 		json_escaped_records, header_row_map2, 
