@@ -55,7 +55,27 @@ input:
 		//		total_len = 0;
 		//	}
 		//}
-		expected_fields2 = csv_record.size();
+		vector<int> bad_headers ;
+		for (int i = 0; i < csv_record.size(); ++i) {
+			if (csv_record[i].size() == 0) {
+				error_context << "header field of len 0 at position i=" << i << endl;
+				bad_headers.push_back(i);
+			}
+		}
+		// we'll do only 1 optimisation
+		// - IF there is only 1 bad header
+		// -    AND it is the last header
+		// - THEN we drop it
+		if (bad_headers.size () == 1 && bad_headers[0] == csv_record.size()-1) {
+			error_context << "resetting expected_fields2: from " << csv_record.size()
+				<< " to " << csv_record.size() - 1 << endl;
+			expected_fields2 = csv_record.size() - 1;
+			error_line_nos.push_back(
+				error_pos(num_lines2, csv_record.size(),
+				error_context.str()));
+		} else {
+			expected_fields2 = csv_record.size();
+		}
 		//cout << endl << "total fields: " << expected_fields2 << endl;
 		csv_record.resize(0);
 		//++num_lines2; // dont count the header row
@@ -77,6 +97,9 @@ input:
 
 		++num_lines2;
 		if (csv_record.size() != expected_fields2) {
+			//cout << "error: csv_record.size " << csv_record.size() 
+			//	<< ", expected_fields2: " << expected_fields2
+			//	<< endl;
 			for (int i =0; i < csv_record.size(); ++i) {
 				if (i+1 <= expected_fields2) { 
 					error_context 
@@ -99,13 +122,20 @@ input:
 			error_line_nos.push_back(
 				error_pos(num_lines2, csv_record.size(),
 				error_context.str()));
+			error_context.clear();
 		} else {
+			//cout << "parsed record: " ;
+			//for (int i = 0; i < csv_record.size(); ++i ) {
+			//	cout << ", " << csv_record[i] ;
+			//}
+			//cout << endl;
 			all_csv_records.push_back(csv_record);
 		}
 		csv_record.resize(0);
-		//cout << "new rec: " << ", num_lines2: " << num_lines2
-		//	<< ", num_fields2: " << num_fields2
-		//	<< endl;
+		// cout << "new rec: " << ", num_lines2: " << num_lines2
+		// 	<< ", num_fields2: " << num_fields2
+		// 	<< ", no_errors: " << error_line_nos.size()
+		// 	<< endl;
 		if (enable_progress_report) {
 			if (num_lines2 % 10 == 0 ) {
 				cout << '+';
@@ -155,6 +185,7 @@ input:
 		num_fields2 = 0;
 		++num_lines2;
 		csv_record.resize(0);
+		error_context.clear();
 		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
@@ -588,9 +619,9 @@ int main(int argc, char * argv[])
 			return 41;
 		}
 	}
-	//cout << endl << "num_lines2: "  << num_lines2 << endl;
-	//cout << "expected_fields: "  << expected_fields2 << endl;
-	//cout << "Total errors: " << error_line_nos.size() << endl;
+	// cout << endl << "num_lines2: "  << num_lines2 << endl;
+	// cout << "expected_fields: "  << expected_fields2 << endl;
+	// cout << "Total errors: " << error_line_nos.size() << endl;
 	using json = nlohmann::json;
 	json error_op;
 	if (error_line_nos.size() > 0 ) { 
@@ -616,7 +647,7 @@ int main(int argc, char * argv[])
 	csv2_lex_clean_up();
 	StringCodePageAnalysisResult total_cp_res;
 	//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
-	json json_op;
+	//json json_op;
 	vector<vector<string> > json_escaped_records;
 	json_escaped_records.reserve(all_csv_records.size());
 	for (int i = 0; i < all_csv_records.size(); ++i) {
@@ -674,7 +705,7 @@ int main(int argc, char * argv[])
 		}
 		//cout << v[v.size()-1] << endl;
 		//json arr = json::array(v);
-		json_op.push_back(v); 
+		//json_op.push_back(v);
 		json_escaped_records.push_back(rectified_vec);
 		//if (all_ok) json_op.push_back(v); 
 		//else cout << "skipping non-utf:" << i << endl;
@@ -695,17 +726,17 @@ int main(int argc, char * argv[])
 
 
 
-	json parsed_data;
-	parsed_data["header"] =  header_op;
-	parsed_data["parsed_data"] =  json_op;
-	parsed_data["expected_fields"] = expected_fields2;
-	//parsed_data["errors"] = error_op;
-	parsed_data["total_records"] = num_lines2;
-	parsed_data["total_errors"] = error_line_nos.size() ;
-	parsed_data["successfully_parsed"] = all_csv_records.size()  ;
-	parsed_data["n_utf8_longer_than_1byte"] = total_cp_res.n_utf8_longer_than_1byte  ;
-	parsed_data["n_iso_8859_1"] = total_cp_res.n_iso_8859_1  ;
-	parsed_data["n_wincp1252"] = total_cp_res.n_wincp1252  ;
+	//json parsed_data;
+	//parsed_data["header"] =  header_op;
+	////parsed_data["parsed_data"] =  json_op;
+	//parsed_data["expected_fields"] = expected_fields2;
+	////parsed_data["errors"] = error_op;
+	//parsed_data["total_records"] = num_lines2;
+	//parsed_data["total_errors"] = error_line_nos.size() ;
+	//parsed_data["successfully_parsed"] = all_csv_records.size()  ;
+	//parsed_data["n_utf8_longer_than_1byte"] = total_cp_res.n_utf8_longer_than_1byte  ;
+	//parsed_data["n_iso_8859_1"] = total_cp_res.n_iso_8859_1  ;
+	//parsed_data["n_wincp1252"] = total_cp_res.n_wincp1252  ;
 	//cout 
 	//	//<< "JSON format: " << endl
 	//	<< parsed_data.dump(4) << endl;
@@ -755,10 +786,9 @@ string print_array(const vector<string>& v)
 	//cout << "print_array v.size(): " << v.size() << endl;
 	std::stringstream ss;
 	if (v.size() > 0) {
-		ss
-			<< " [ " << endl;
+		ss << " [ " << endl;
 
-		for (int i = 0; i < v.size()-1; ++i) {
+		for (int i = 0; i < v.size() - 1 ; ++i) {
 			ss << "    " << '"' << v[i] << '"' << ',' << endl;
 		}
 		ss << "    " << '"' << v[v.size()-1] << '"' << endl;
