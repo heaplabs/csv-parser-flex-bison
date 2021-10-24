@@ -99,12 +99,13 @@
 	//#include <nlohmann/json.hpp>
 	#include <sstream>
 
-	std::stringstream error_context;
+	//std::stringstream error_context;
 	// disable for now, enable via cmd line option 
 	// if needed
 	bool enable_progress_report = false; 
+	bool has_last_bad_header = false; 
 
-#line 108 "csv.tab.c"
+#line 109 "csv.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -533,7 +534,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    48,    48,    96,   179,   195,   202,   212,   219,   226
+       0,    49,    49,   100,   184,   202,   209,   219,   238,   245
 };
 #endif
 
@@ -1324,7 +1325,7 @@ yyreduce:
   switch (yyn)
     {
   case 2:
-#line 48 "csv.y"
+#line 49 "csv.y"
                     {
 		int total_len = 0;
 		//for (int i =0; i < csv_record.size(); ++i) {
@@ -1336,6 +1337,7 @@ yyreduce:
 		//	}
 		//}
 		vector<int> bad_headers ;
+		std::stringstream error_context;
 		for (int i = 0; i < csv_record.size(); ++i) {
 			if (csv_record[i].size() == 0) {
 				error_context << "header field of len 0 at position i=" << i << endl;
@@ -1347,12 +1349,14 @@ yyreduce:
 		// -    AND it is the last header
 		// - THEN we drop it
 		if (bad_headers.size () == 1 && bad_headers[0] == csv_record.size()-1) {
+			std::stringstream error_context;
 			error_context << "resetting expected_fields2: from " << csv_record.size()
 				<< " to " << csv_record.size() - 1 << endl;
 			expected_fields2 = csv_record.size() - 1;
 			error_line_nos.push_back(
 				error_pos(num_lines2, csv_record.size(),
 				error_context.str()));
+			has_last_bad_header = true;
 		} else {
 			expected_fields2 = csv_record.size();
 		}
@@ -1370,11 +1374,11 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1374 "csv.tab.c"
+#line 1378 "csv.tab.c"
     break;
 
   case 3:
-#line 96 "csv.y"
+#line 100 "csv.y"
                             {
 
 		++num_lines2;
@@ -1382,6 +1386,7 @@ yyreduce:
 			//cout << "error: csv_record.size " << csv_record.size() 
 			//	<< ", expected_fields2: " << expected_fields2
 			//	<< endl;
+			std::stringstream error_context;
 			for (int i =0; i < csv_record.size(); ++i) {
 				if (i+1 <= expected_fields2) { 
 					error_context 
@@ -1432,29 +1437,31 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1436 "csv.tab.c"
+#line 1441 "csv.tab.c"
     break;
 
   case 4:
-#line 179 "csv.y"
+#line 184 "csv.y"
                        { 
 		if (num_fields2 == expected_fields2) {
 			all_csv_records.push_back(csv_record);
 		} else {
+			std::stringstream error_context;
+			error_context << "missing final linefeed";
 			error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
 		}
 		num_fields2 = 0;
 		++num_lines2;
 		csv_record.resize(0);
-		error_context.clear();
+		//error_context.clear();
 		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1454 "csv.tab.c"
+#line 1461 "csv.tab.c"
     break;
 
   case 5:
-#line 195 "csv.y"
+#line 202 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1462,11 +1469,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1466 "csv.tab.c"
+#line 1473 "csv.tab.c"
     break;
 
   case 6:
-#line 202 "csv.y"
+#line 209 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1474,23 +1481,35 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1478 "csv.tab.c"
+#line 1485 "csv.tab.c"
     break;
 
   case 7:
-#line 212 "csv.y"
+#line 219 "csv.y"
                {
-		csv_record.push_back(string(""));
+		//cout << " not pushing last field as it's empty:"
+		//	<< ", num_fields2: " << num_fields2
+		//	<< ", expected_fields2: " << expected_fields2
+		//	<< endl;
+		if (!header_mode2 && has_last_bad_header && (num_fields2  == expected_fields2)) {
+			// dont even push this field
+			//cout << " not pushing last field as it's empty and we skipped the last header which was also empty:"
+			//	<< ", num_fields2: " << num_fields2
+			//	<< ", expected_fields2: " << expected_fields2
+			//	<< endl;
+		} else {
+			csv_record.push_back(string(""));
+		}
 		++ num_fields2;
 		if (header_mode2) {
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1490 "csv.tab.c"
+#line 1509 "csv.tab.c"
     break;
 
   case 8:
-#line 219 "csv.y"
+#line 238 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1498,11 +1517,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1502 "csv.tab.c"
+#line 1521 "csv.tab.c"
     break;
 
   case 9:
-#line 226 "csv.y"
+#line 245 "csv.y"
                             {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1510,11 +1529,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1514 "csv.tab.c"
+#line 1533 "csv.tab.c"
     break;
 
 
-#line 1518 "csv.tab.c"
+#line 1537 "csv.tab.c"
 
       default: break;
     }
@@ -1746,7 +1765,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 315 "csv.y"
+#line 334 "csv.y"
 
 
 
@@ -2296,8 +2315,8 @@ string print_parsed_data(
 		if (all_csv_records[all_csv_records.size()-1].size() > 0) {
 			ss << print_array(all_csv_records[all_csv_records.size()-1]);
 		}
-		ss << ']' ;
 	}
+	ss << ']' ;
 	return ss.str();
 }
 

@@ -30,10 +30,11 @@
 	//#include <nlohmann/json.hpp>
 	#include <sstream>
 
-	std::stringstream error_context;
+	//std::stringstream error_context;
 	// disable for now, enable via cmd line option 
 	// if needed
 	bool enable_progress_report = false; 
+	bool has_last_bad_header = false; 
 %}
 
 %define api.value.type {std::string}
@@ -56,6 +57,7 @@ input:
 		//	}
 		//}
 		vector<int> bad_headers ;
+		std::stringstream error_context;
 		for (int i = 0; i < csv_record.size(); ++i) {
 			if (csv_record[i].size() == 0) {
 				error_context << "header field of len 0 at position i=" << i << endl;
@@ -67,12 +69,14 @@ input:
 		// -    AND it is the last header
 		// - THEN we drop it
 		if (bad_headers.size () == 1 && bad_headers[0] == csv_record.size()-1) {
+			std::stringstream error_context;
 			error_context << "resetting expected_fields2: from " << csv_record.size()
 				<< " to " << csv_record.size() - 1 << endl;
 			expected_fields2 = csv_record.size() - 1;
 			error_line_nos.push_back(
 				error_pos(num_lines2, csv_record.size(),
 				error_context.str()));
+			has_last_bad_header = true;
 		} else {
 			expected_fields2 = csv_record.size();
 		}
@@ -100,6 +104,7 @@ input:
 			//cout << "error: csv_record.size " << csv_record.size() 
 			//	<< ", expected_fields2: " << expected_fields2
 			//	<< endl;
+			std::stringstream error_context;
 			for (int i =0; i < csv_record.size(); ++i) {
 				if (i+1 <= expected_fields2) { 
 					error_context 
@@ -180,12 +185,14 @@ input:
 		if (num_fields2 == expected_fields2) {
 			all_csv_records.push_back(csv_record);
 		} else {
+			std::stringstream error_context;
+			error_context << "missing final linefeed";
 			error_line_nos.push_back( error_pos(num_lines2, num_fields2, error_context.str()));
 		}
 		num_fields2 = 0;
 		++num_lines2;
 		csv_record.resize(0);
-		error_context.clear();
+		//error_context.clear();
 		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
@@ -210,7 +217,19 @@ record:
 
 csv_field:
 	%empty {
-		csv_record.push_back(string(""));
+		//cout << " not pushing last field as it's empty:"
+		//	<< ", num_fields2: " << num_fields2
+		//	<< ", expected_fields2: " << expected_fields2
+		//	<< endl;
+		if (!header_mode2 && has_last_bad_header && (num_fields2  == expected_fields2)) {
+			// dont even push this field
+			//cout << " not pushing last field as it's empty and we skipped the last header which was also empty:"
+			//	<< ", num_fields2: " << num_fields2
+			//	<< ", expected_fields2: " << expected_fields2
+			//	<< endl;
+		} else {
+			csv_record.push_back(string(""));
+		}
 		++ num_fields2;
 		if (header_mode2) {
 			header_row_map2[num_fields2] = string("");
@@ -861,8 +880,8 @@ string print_parsed_data(
 		if (all_csv_records[all_csv_records.size()-1].size() > 0) {
 			ss << print_array(all_csv_records[all_csv_records.size()-1]);
 		}
-		ss << ']' ;
 	}
+	ss << ']' ;
 	return ss.str();
 }
 
