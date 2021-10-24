@@ -604,16 +604,31 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 string print_error_info(const vector<error_pos> & error_line_nos) {
 	std::stringstream res;
 	if (error_line_nos.size() > 0) {
-		res << "\"errors\"" << ':' << "\"";
-		for (int i = 0; i < error_line_nos.size(); ++i) {
+		res << "\"errors\"" << ':' << "[";
+		for (int i = 0; i < error_line_nos.size() - 1; ++i) {
 			const error_pos & ep = error_line_nos[i];
-			res 	<< " line : " << ep.row
-				<< ", col : " << ep.col;
+			res << "{";
+			res
+				<< "\"line\" : " << ep.row << "," << endl
+				<< "\"field\" : " << ep.col << "," << endl
+				<< "\"context\" : \"";
 			StringCodePageAnalysisResult result = json_print(ep.error_context);
-			res << ", context: ";
-			res << result.rectified;
+			res << result.rectified << "\"";
+			res << "}," << endl;
 		}
-		res << "\"";
+		{
+			const error_pos & ep = error_line_nos[error_line_nos.size()-1];
+			res << "{";
+			res
+				<< "\"line\" : " << ep.row << "," << endl
+				<< "\"field\" : " << ep.col << "," << endl
+				<< "\"context\" : \"";
+			StringCodePageAnalysisResult result = json_print(ep.error_context);
+			res << result.rectified << "\"";
+			res << "}" << endl;
+		}
+
+		res << "]";
 	}
 	return res.str();
 }
@@ -826,26 +841,28 @@ string print_parsed_data(
 {
 	std::stringstream ss;
 	ss << '"' << "parsed_data" << '"' << ':' << '[' << endl;
-	bool should_print_comma = (all_csv_records.size() >= 2) ? true : false;
-	bool has_output_one_row = false;
-	for (int i = 0; i < all_csv_records.size()-1; ++i) {
-		if (all_csv_records[i].size() > 0) {
-			if (all_csv_records[i].size() > 0 && should_print_comma && has_output_one_row) {
-				ss << ",";
-			}
-			if (all_csv_records[i].size() > 0 ) {
-				ss << print_array(all_csv_records[i]) << endl;
-				has_output_one_row = true;
+	if (all_csv_records.size() > 0) {
+		bool should_print_comma = (all_csv_records.size() >= 2) ? true : false;
+		bool has_output_one_row = false;
+		for (int i = 0; i < all_csv_records.size()-1; ++i) {
+			if (all_csv_records[i].size() > 0) {
+				if (all_csv_records[i].size() > 0 && should_print_comma && has_output_one_row) {
+					ss << ",";
+				}
+				if (all_csv_records[i].size() > 0 ) {
+					ss << print_array(all_csv_records[i]) << endl;
+					has_output_one_row = true;
+				}
 			}
 		}
+		if (all_csv_records[all_csv_records.size()-1].size() > 0 && should_print_comma && has_output_one_row) {
+			ss << ",";
+		}
+		if (all_csv_records[all_csv_records.size()-1].size() > 0) {
+			ss << print_array(all_csv_records[all_csv_records.size()-1]);
+		}
+		ss << ']' ;
 	}
-	if (all_csv_records[all_csv_records.size()-1].size() > 0 && should_print_comma && has_output_one_row) {
-		ss << ",";
-	}
-	if (all_csv_records[all_csv_records.size()-1].size() > 0) {
-		ss << print_array(all_csv_records[all_csv_records.size()-1]);
-	}
-	ss << ']' ;
 	return ss.str();
 }
 
