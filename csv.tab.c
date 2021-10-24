@@ -96,7 +96,7 @@
 		{}
 	};
 	vector<error_pos> error_line_nos;
-	#include <nlohmann/json.hpp>
+	//#include <nlohmann/json.hpp>
 	#include <sstream>
 
 	std::stringstream error_context;
