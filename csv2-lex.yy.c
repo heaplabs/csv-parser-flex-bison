@@ -475,10 +475,11 @@ std::map<int, std::string> header_row_map;
 bool header_mode = false;
 int expected_fields = 0;
 int semi_colon_count = 0;
+int tab_count = 0;
 
-#line 480 "csv2-lex.yy.c"
+#line 481 "csv2-lex.yy.c"
 
-#line 482 "csv2-lex.yy.c"
+#line 483 "csv2-lex.yy.c"
 
 #define INITIAL 0
 #define quoted_field 1
@@ -696,10 +697,10 @@ YY_DECL
 		}
 
 	{
-#line 29 "csv2-lex.l"
+#line 30 "csv2-lex.l"
 
 
-#line 703 "csv2-lex.yy.c"
+#line 704 "csv2-lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -758,7 +759,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 31 "csv2-lex.l"
+#line 32 "csv2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -771,6 +772,7 @@ YY_RULE_SETUP
 		//	<< field << endl; 
 	}
 	semi_colon_count += std::count(field.begin(), field.end(), ';');
+	tab_count += std::count(field.begin(), field.end(), '\t');
 	yylval = field;
 	return CSV_FIELD;
 }
@@ -780,7 +782,7 @@ case 2:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 47 "csv2-lex.l"
+#line 49 "csv2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -793,6 +795,7 @@ YY_RULE_SETUP
 		//	<< field << endl; 
 	}
 	semi_colon_count += std::count(field.begin(), field.end(), ';');
+	tab_count += std::count(field.begin(), field.end(), '\t');
 	yylval = field;
 	return CSV_FIELD;
 }
@@ -800,7 +803,7 @@ YY_RULE_SETUP
 /* warning rule cant be matched because of my changes */ 
 case 3:
 YY_RULE_SETUP
-#line 64 "csv2-lex.l"
+#line 67 "csv2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -813,13 +816,14 @@ YY_RULE_SETUP
 		//	<< field << endl; 
 	}
 	semi_colon_count += std::count(field.begin(), field.end(), ';');
+	tab_count += std::count(field.begin(), field.end(), '\t');
 	yylval = field;
 	return CSV_FIELD;
 }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 80 "csv2-lex.l"
+#line 84 "csv2-lex.l"
 {
 	//printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -832,13 +836,14 @@ YY_RULE_SETUP
 		//	<< field << endl; 
 	}
 	semi_colon_count += std::count(field.begin(), field.end(), ';');
+	tab_count += std::count(field.begin(), field.end(), '\t');
 	yylval = field;
 	return CSV_FIELD;
 }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 96 "csv2-lex.l"
+#line 101 "csv2-lex.l"
 {
 	BEGIN(quoted_field);
 	//return DOUBLE_QUOTE;
@@ -846,7 +851,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 101 "csv2-lex.l"
+#line 106 "csv2-lex.l"
 {
 	//strcpy(buffer+strlen(buffer), yytext);
 	buffer += string(yytext);
@@ -854,7 +859,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 106 "csv2-lex.l"
+#line 111 "csv2-lex.l"
 {
 	//printf("got a double quote inside a csv field");
 	//strcpy(buffer + strlen(buffer), "\"\"");
@@ -864,7 +869,7 @@ YY_RULE_SETUP
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 112 "csv2-lex.l"
+#line 117 "csv2-lex.l"
 {
 	//printf("found a newline in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\n");
@@ -873,7 +878,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 118 "csv2-lex.l"
+#line 123 "csv2-lex.l"
 {
 	//printf("found a carriage return in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\r");
@@ -882,7 +887,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 124 "csv2-lex.l"
+#line 129 "csv2-lex.l"
 {
 	//printf("found a comma in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), ",");
@@ -891,7 +896,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 130 "csv2-lex.l"
+#line 135 "csv2-lex.l"
 {
 	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
 	string field(buffer);
@@ -906,6 +911,7 @@ YY_RULE_SETUP
 	//printf("got a QUOTED_CSV_FIELD field: %s\n", buffer.c_str());
 	++num_quoted_fields;
 	semi_colon_count += std::count(buffer.begin(), buffer.end(), ';');
+	tab_count += std::count(field.begin(), field.end(), '\t');
 	yylval = buffer;
 	buffer[0] = '\0';
 	buffer = "";
@@ -914,7 +920,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 150 "csv2-lex.l"
+#line 156 "csv2-lex.l"
 {
 	++num_fields;
 	//printf("field separator: %d\n", num_fields);
@@ -931,7 +937,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 164 "csv2-lex.l"
+#line 170 "csv2-lex.l"
 {
 	++num_lines;
 	//printf("total fields :%d\n", num_fields);
@@ -950,10 +956,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 180 "csv2-lex.l"
+#line 186 "csv2-lex.l"
 ECHO;
 	YY_BREAK
-#line 957 "csv2-lex.yy.c"
+#line 963 "csv2-lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(quoted_field):
 	yyterminate();
@@ -1959,7 +1965,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 180 "csv2-lex.l"
+#line 186 "csv2-lex.l"
 
 
 void csv2_lex_clean_up() {

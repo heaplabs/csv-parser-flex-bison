@@ -676,6 +676,16 @@ int main(int argc, char * argv[])
 			return 41;
 		}
 	}
+	extern int tab_count;
+	if (tab_count > 0) {
+		// cout << "input file has tabs:" 
+		// 	<< tab_count
+		// 	<< "num_lines: " << num_lines2 << endl;
+		if (tab_count > num_lines2 ) {
+			//cout << "Exiting - this is a tab  separated file mostly" <<endl;
+			return 41;
+		}
+	}
 	// cout << endl << "num_lines2: "  << num_lines2 << endl;
 	// cout << "expected_fields: "  << expected_fields2 << endl;
 	// cout << "Total errors: " << error_line_nos.size() << endl;

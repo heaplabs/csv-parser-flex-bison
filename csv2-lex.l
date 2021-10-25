@@ -18,6 +18,7 @@ std::map<int, std::string> header_row_map;
 bool header_mode = false;
 int expected_fields = 0;
 int semi_colon_count = 0;
+int tab_count = 0;
 
 %}
 
@@ -40,6 +41,7 @@ int semi_colon_count = 0;
 		//	<< field << endl; 
 	}
 	semi_colon_count += std::count(field.begin(), field.end(), ';');
+	tab_count += std::count(field.begin(), field.end(), '\t');
 	yylval = field;
 	return CSV_FIELD;
 }
@@ -56,6 +58,7 @@ int semi_colon_count = 0;
 		//	<< field << endl; 
 	}
 	semi_colon_count += std::count(field.begin(), field.end(), ';');
+	tab_count += std::count(field.begin(), field.end(), '\t');
 	yylval = field;
 	return CSV_FIELD;
 }
@@ -73,6 +76,7 @@ int semi_colon_count = 0;
 		//	<< field << endl; 
 	}
 	semi_colon_count += std::count(field.begin(), field.end(), ';');
+	tab_count += std::count(field.begin(), field.end(), '\t');
 	yylval = field;
 	return CSV_FIELD;
 }
@@ -89,6 +93,7 @@ int semi_colon_count = 0;
 		//	<< field << endl; 
 	}
 	semi_colon_count += std::count(field.begin(), field.end(), ';');
+	tab_count += std::count(field.begin(), field.end(), '\t');
 	yylval = field;
 	return CSV_FIELD;
 }
@@ -141,6 +146,7 @@ int semi_colon_count = 0;
 	//printf("got a QUOTED_CSV_FIELD field: %s\n", buffer.c_str());
 	++num_quoted_fields;
 	semi_colon_count += std::count(buffer.begin(), buffer.end(), ';');
+	tab_count += std::count(field.begin(), field.end(), '\t');
 	yylval = buffer;
 	buffer[0] = '\0';
 	buffer = "";
