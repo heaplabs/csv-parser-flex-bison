@@ -1777,7 +1777,7 @@ yyreturn:
 /* Called by yyparse on error. */
 void yyerror (char const *s)
 {
-	//error_line_nos.push_back( error_pos(num_lines2, num_fields2, s));
+	error_line_nos.push_back( error_pos(num_lines2, num_fields2, s));
 	//printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
 }
 
