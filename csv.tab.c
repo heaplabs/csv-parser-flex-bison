@@ -534,7 +534,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    49,    49,   103,   187,   205,   212,   222,   241,   248
+       0,    49,    49,   105,   189,   207,   214,   224,   243,   250
 };
 #endif
 
@@ -1357,6 +1357,8 @@ yyreduce:
 				error_pos(num_lines2, csv_record.size(),
 				error_context.str()));
 			has_last_bad_header = true;
+			// the header_row_map2 already has the empty last field pushed
+			// we're going to delete it (i.e. clean it up)
 			std::map<int, std::string> ::iterator iterator_last = header_row_map2.end();
 			--iterator_last;
 			header_row_map2.erase(iterator_last);
@@ -1377,11 +1379,11 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1381 "csv.tab.c"
+#line 1383 "csv.tab.c"
     break;
 
   case 3:
-#line 103 "csv.y"
+#line 105 "csv.y"
                             {
 
 		++num_lines2;
@@ -1440,11 +1442,11 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1444 "csv.tab.c"
+#line 1446 "csv.tab.c"
     break;
 
   case 4:
-#line 187 "csv.y"
+#line 189 "csv.y"
                        { 
 		if (num_fields2 == expected_fields2) {
 			all_csv_records.push_back(csv_record);
@@ -1460,11 +1462,11 @@ yyreduce:
 		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1464 "csv.tab.c"
+#line 1466 "csv.tab.c"
     break;
 
   case 5:
-#line 205 "csv.y"
+#line 207 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1472,11 +1474,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1476 "csv.tab.c"
+#line 1478 "csv.tab.c"
     break;
 
   case 6:
-#line 212 "csv.y"
+#line 214 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1484,11 +1486,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1488 "csv.tab.c"
+#line 1490 "csv.tab.c"
     break;
 
   case 7:
-#line 222 "csv.y"
+#line 224 "csv.y"
                {
 		//cout << " not pushing last field as it's empty:"
 		//	<< ", num_fields2: " << num_fields2
@@ -1508,11 +1510,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1512 "csv.tab.c"
+#line 1514 "csv.tab.c"
     break;
 
   case 8:
-#line 241 "csv.y"
+#line 243 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1520,11 +1522,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1524 "csv.tab.c"
+#line 1526 "csv.tab.c"
     break;
 
   case 9:
-#line 248 "csv.y"
+#line 250 "csv.y"
                             {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1532,11 +1534,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1536 "csv.tab.c"
+#line 1538 "csv.tab.c"
     break;
 
 
-#line 1540 "csv.tab.c"
+#line 1542 "csv.tab.c"
 
       default: break;
     }
@@ -1768,14 +1770,14 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 337 "csv.y"
+#line 339 "csv.y"
 
 
 
 /* Called by yyparse on error. */
 void yyerror (char const *s)
 {
-	error_line_nos.push_back( error_pos(num_lines2, num_fields2, s));
+	//error_line_nos.push_back( error_pos(num_lines2, num_fields2, s));
 	//printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
 }
 
