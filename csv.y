@@ -37,6 +37,12 @@
 	bool has_last_bad_header = false; 
 %}
 
+
+%define parse.lac full
+%define parse.error verbose
+
+%define lr.type ielr
+
 %define api.value.type {std::string}
 
 %token CSV_FIELD
