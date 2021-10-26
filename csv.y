@@ -3,6 +3,13 @@
 	#include <vector>
 	using std::string;
 	using std::vector;
+
+	struct error_pos {
+		int row, col; string error_context;
+		error_pos(int r, int c, string err_ctx)
+			: row(r), col(c), error_context(err_ctx)
+		{}
+	};
 }
 
 %{
@@ -25,27 +32,30 @@
 
 	void yyerror ( vector<string> & csv_record, 
 		vector<vector<string>> & all_csv_records,
-		char const *s);
+		int &num_fields2,
+		int &num_lines2,
+		std::map<int, std::string> & header_row_map2,
+		bool &header_mod2 ,
+		int &expected_filds2,
+		vector<error_pos> & error_line_nos,
+		bool &enable_proress_report,
+		bool &has_last_bad_header,
+		char const *s );
 
-	int num_fields2 = 0, num_lines2 = 0;
-	std::map<int, std::string> header_row_map2;
-	bool header_mode2 = true;
-	int expected_fields2 = 0;
-	struct error_pos {
-		int row, col; string error_context;
-		error_pos(int r, int c, string err_ctx)
-			: row(r), col(c), error_context(err_ctx)
-		{}
-	};
-	vector<error_pos> error_line_nos;
+	//int num_fields2 = 0, num_lines2 = 0;
+	//std::map<int, std::string> header_row_map2;
+	//bool header_mode2 = true;
+	//int expected_fields2 = 0;
+
+	//vector<error_pos> error_line_nos;
 	//#include <nlohmann/json.hpp>
 	#include <sstream>
 
 	//std::stringstream error_context;
 	// disable for now, enable via cmd line option 
 	// if needed
-	bool enable_progress_report = false; 
-	bool has_last_bad_header = false; 
+	//bool enable_progress_report = false; 
+	//bool has_last_bad_header = false; 
 %}
 
 
@@ -56,7 +66,16 @@
 
 %define api.value.type {std::string}
 
-%parse-param {vector<string> & csv_record} {vector<vector<string>> & all_csv_records}
+%parse-param 	{vector<string> & csv_record} 
+		{vector<vector<string>> & all_csv_records}
+		{int &num_fields2} 
+		{int &num_lines2}
+		{std::map<int, std::string> & header_row_map2}
+		{bool &header_mode2 }
+		{int &expected_fields2}
+		{vector<error_pos> & error_line_nos}
+		{bool &enable_progress_report}
+		{bool &has_last_bad_header}
 
 %token CSV_FIELD
 %token QUOTED_CSV_FIELD
@@ -361,6 +380,14 @@ record:
 /* Called by yyparse on error. */
 void yyerror ( vector<string> & csv_record,
 		vector<vector<string>> & all_csv_records,
+		int &num_fields2,
+		int &num_lines2,
+		std::map<int, std::string> & header_row_map2,
+		bool &header_mod2 ,
+		int &expected_filds2,
+		vector<error_pos> & error_line_nos,
+		bool &enable_proress_report,
+		bool &has_last_bad_header,
 		char const *s )
 {
 	error_line_nos.push_back( error_pos(num_lines2, num_fields2, s));
@@ -499,7 +526,8 @@ string print_csv_as_json(
 	const vector<vector<string>> & all_csv_records,
 	const std::map<int, std::string> & header_row_map2,
 	int expected_fields2,
-	const vector<error_pos> & error_line_nos
+	const vector<error_pos> & error_line_nos,
+	int num_lines2
 	);
 
 // todo - these globals need to disappear
@@ -697,8 +725,22 @@ int main(int argc, char * argv[])
 
 	vector<string> csv_record;
 	vector<vector<string>> all_csv_records;
+	vector<vector<string>> &all_csv_records_ref = all_csv_records;
+	int num_fields2 = 0;
+	int num_lines2 = 0;
+	std::map<int, std::string> header_row_map2;
+	std::map<int, std::string> & header_row_map2_ref = header_row_map2;
+	bool header_mode2 = true ;
+	int expected_fields2 = 0;
+	vector<error_pos> error_line_nos;
+	vector<error_pos> & error_line_nos_ref = error_line_nos;
+	bool enable_progress_report = false;
+	bool has_last_bad_header = false;
 
-	int status = yyparse(csv_record, all_csv_records);
+	int status = yyparse(csv_record, all_csv_records_ref,
+		num_fields2, num_lines2, header_row_map2_ref,
+		header_mode2, expected_fields2, error_line_nos_ref,
+		enable_progress_report, has_last_bad_header);
 	//cout << "Parse finished" << endl;
 	if (status != 0) return 37;
 	extern int semi_colon_count;
@@ -826,7 +868,8 @@ int main(int argc, char * argv[])
 
 	string csv_as_json = print_csv_as_json(total_cp_res, 
 		json_escaped_records, header_row_map2, 
-		expected_fields2, error_line_nos);
+		expected_fields2, error_line_nos,
+		num_lines2);
 	cout //<< "\"csv_as_json\" : "
 		<< csv_as_json << endl;
 
@@ -954,7 +997,8 @@ string print_csv_as_json(
 	const vector<vector<string>> & all_csv_records,
 	const std::map<int, std::string> & header_row_map2,
 	int expected_fields2,
-	const vector<error_pos> & error_line_nos
+	const vector<error_pos> & error_line_nos,
+	int num_lines2
 	)
 {
 	std::stringstream res;

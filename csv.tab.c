@@ -66,7 +66,7 @@
 
 
 /* First part of user prologue.  */
-#line 8 "csv.y"
+#line 15 "csv.y"
 
 	#include <stdio.h>
 	int yylex(void);
@@ -87,29 +87,32 @@
 
 	void yyerror ( vector<string> & csv_record, 
 		vector<vector<string>> & all_csv_records,
-		char const *s);
+		int &num_fields2,
+		int &num_lines2,
+		std::map<int, std::string> & header_row_map2,
+		bool &header_mod2 ,
+		int &expected_filds2,
+		vector<error_pos> & error_line_nos,
+		bool &enable_proress_report,
+		bool &has_last_bad_header,
+		char const *s );
 
-	int num_fields2 = 0, num_lines2 = 0;
-	std::map<int, std::string> header_row_map2;
-	bool header_mode2 = true;
-	int expected_fields2 = 0;
-	struct error_pos {
-		int row, col; string error_context;
-		error_pos(int r, int c, string err_ctx)
-			: row(r), col(c), error_context(err_ctx)
-		{}
-	};
-	vector<error_pos> error_line_nos;
+	//int num_fields2 = 0, num_lines2 = 0;
+	//std::map<int, std::string> header_row_map2;
+	//bool header_mode2 = true;
+	//int expected_fields2 = 0;
+
+	//vector<error_pos> error_line_nos;
 	//#include <nlohmann/json.hpp>
 	#include <sstream>
 
 	//std::stringstream error_context;
 	// disable for now, enable via cmd line option 
 	// if needed
-	bool enable_progress_report = false; 
-	bool has_last_bad_header = false; 
+	//bool enable_progress_report = false; 
+	//bool has_last_bad_header = false; 
 
-#line 113 "csv.tab.c"
+#line 116 "csv.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -173,7 +176,7 @@ typedef std::string YYSTYPE;
 
 extern YYSTYPE yylval;
 
-int yyparse (vector<string> & csv_record, vector<vector<string>> & all_csv_records);
+int yyparse (vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header);
 /* "%code provides" blocks.  */
 #line 1 "csv.y"
 
@@ -182,7 +185,14 @@ int yyparse (vector<string> & csv_record, vector<vector<string>> & all_csv_recor
 	using std::string;
 	using std::vector;
 
-#line 186 "csv.tab.c"
+	struct error_pos {
+		int row, col; string error_context;
+		error_pos(int r, int c, string err_ctx)
+			: row(r), col(c), error_context(err_ctx)
+		{}
+	};
+
+#line 196 "csv.tab.c"
 
 #endif /* !YY_YY_CSV_TAB_H_INCLUDED  */
 
@@ -524,7 +534,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    68,    68,   124,   208,   226,   233,   243,   262,   269
+       0,    87,    87,   143,   227,   245,   252,   262,   281,   288
 };
 #endif
 
@@ -648,7 +658,7 @@ static const yytype_int8 yyr2[] =
       }                                                           \
     else                                                          \
       {                                                           \
-        yyerror (csv_record, all_csv_records, YY_("syntax error: cannot back up")); \
+        yyerror (csv_record, all_csv_records, num_fields2, num_lines2, header_row_map2, header_mode2, expected_fields2, error_line_nos, enable_progress_report, has_last_bad_header, YY_("syntax error: cannot back up")); \
         YYERROR;                                                  \
       }                                                           \
   while (0)
@@ -685,7 +695,7 @@ do {                                                                      \
     {                                                                     \
       YYFPRINTF (stderr, "%s ", Title);                                   \
       yy_symbol_print (stderr,                                            \
-                  Type, Value, csv_record, all_csv_records); \
+                  Type, Value, csv_record, all_csv_records, num_fields2, num_lines2, header_row_map2, header_mode2, expected_fields2, error_line_nos, enable_progress_report, has_last_bad_header); \
       YYFPRINTF (stderr, "\n");                                           \
     }                                                                     \
 } while (0)
@@ -696,12 +706,20 @@ do {                                                                      \
 `-----------------------------------*/
 
 static void
-yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, vector<string> & csv_record, vector<vector<string>> & all_csv_records)
+yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header)
 {
   FILE *yyoutput = yyo;
   YYUSE (yyoutput);
   YYUSE (csv_record);
   YYUSE (all_csv_records);
+  YYUSE (num_fields2);
+  YYUSE (num_lines2);
+  YYUSE (header_row_map2);
+  YYUSE (header_mode2);
+  YYUSE (expected_fields2);
+  YYUSE (error_line_nos);
+  YYUSE (enable_progress_report);
+  YYUSE (has_last_bad_header);
   if (!yyvaluep)
     return;
 # ifdef YYPRINT
@@ -719,12 +737,12 @@ yy_symbol_value_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, ve
 `---------------------------*/
 
 static void
-yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, vector<string> & csv_record, vector<vector<string>> & all_csv_records)
+yy_symbol_print (FILE *yyo, int yytype, YYSTYPE const * const yyvaluep, vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header)
 {
   YYFPRINTF (yyo, "%s %s (",
              yytype < YYNTOKENS ? "token" : "nterm", yytname[yytype]);
 
-  yy_symbol_value_print (yyo, yytype, yyvaluep, csv_record, all_csv_records);
+  yy_symbol_value_print (yyo, yytype, yyvaluep, csv_record, all_csv_records, num_fields2, num_lines2, header_row_map2, header_mode2, expected_fields2, error_line_nos, enable_progress_report, has_last_bad_header);
   YYFPRINTF (yyo, ")");
 }
 
@@ -757,7 +775,7 @@ do {                                                            \
 `------------------------------------------------*/
 
 static void
-yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule, vector<string> & csv_record, vector<vector<string>> & all_csv_records)
+yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule, vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header)
 {
   int yylno = yyrline[yyrule];
   int yynrhs = yyr2[yyrule];
@@ -771,7 +789,7 @@ yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule, vector<string> &
       yy_symbol_print (stderr,
                        yystos[+yyssp[yyi + 1 - yynrhs]],
                        &yyvsp[(yyi + 1) - (yynrhs)]
-                                              , csv_record, all_csv_records);
+                                              , csv_record, all_csv_records, num_fields2, num_lines2, header_row_map2, header_mode2, expected_fields2, error_line_nos, enable_progress_report, has_last_bad_header);
       YYFPRINTF (stderr, "\n");
     }
 }
@@ -779,7 +797,7 @@ yy_reduce_print (yy_state_t *yyssp, YYSTYPE *yyvsp, int yyrule, vector<string> &
 # define YY_REDUCE_PRINT(Rule)          \
 do {                                    \
   if (yydebug)                          \
-    yy_reduce_print (yyssp, yyvsp, Rule, csv_record, all_csv_records); \
+    yy_reduce_print (yyssp, yyvsp, Rule, csv_record, all_csv_records, num_fields2, num_lines2, header_row_map2, header_mode2, expected_fields2, error_line_nos, enable_progress_report, has_last_bad_header); \
 } while (0)
 
 /* Nonzero means print parse trace.  It is left uninitialized so that
@@ -1289,11 +1307,19 @@ yysyntax_error (YYPTRDIFF_T *yymsg_alloc, char **yymsg,
 `-----------------------------------------------*/
 
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, vector<string> & csv_record, vector<vector<string>> & all_csv_records)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header)
 {
   YYUSE (yyvaluep);
   YYUSE (csv_record);
   YYUSE (all_csv_records);
+  YYUSE (num_fields2);
+  YYUSE (num_lines2);
+  YYUSE (header_row_map2);
+  YYUSE (header_mode2);
+  YYUSE (expected_fields2);
+  YYUSE (error_line_nos);
+  YYUSE (enable_progress_report);
+  YYUSE (has_last_bad_header);
   if (!yymsg)
     yymsg = "Deleting";
   YY_SYMBOL_PRINT (yymsg, yytype, yyvaluep, yylocationp);
@@ -1320,7 +1346,7 @@ int yynerrs;
 `----------*/
 
 int
-yyparse (vector<string> & csv_record, vector<vector<string>> & all_csv_records)
+yyparse (vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header)
 {
     yy_state_fast_t yystate;
     /* Number of tokens to shift before error messages enabled.  */
@@ -1579,7 +1605,7 @@ yyreduce:
     switch (yyn)
       {
   case 2:
-#line 68 "csv.y"
+#line 87 "csv.y"
                     {
 		int total_len = 0;
 		//for (int i =0; i < csv_record.size(); ++i) {
@@ -1633,11 +1659,11 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1637 "csv.tab.c"
+#line 1663 "csv.tab.c"
     break;
 
   case 3:
-#line 124 "csv.y"
+#line 143 "csv.y"
                             {
 
 		++num_lines2;
@@ -1696,11 +1722,11 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1700 "csv.tab.c"
+#line 1726 "csv.tab.c"
     break;
 
   case 4:
-#line 208 "csv.y"
+#line 227 "csv.y"
                        { 
 		if (num_fields2 == expected_fields2) {
 			all_csv_records.push_back(csv_record);
@@ -1716,11 +1742,11 @@ yyreduce:
 		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1720 "csv.tab.c"
+#line 1746 "csv.tab.c"
     break;
 
   case 5:
-#line 226 "csv.y"
+#line 245 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1728,11 +1754,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1732 "csv.tab.c"
+#line 1758 "csv.tab.c"
     break;
 
   case 6:
-#line 233 "csv.y"
+#line 252 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1740,11 +1766,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1744 "csv.tab.c"
+#line 1770 "csv.tab.c"
     break;
 
   case 7:
-#line 243 "csv.y"
+#line 262 "csv.y"
                {
 		//cout << " not pushing last field as it's empty:"
 		//	<< ", num_fields2: " << num_fields2
@@ -1764,11 +1790,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1768 "csv.tab.c"
+#line 1794 "csv.tab.c"
     break;
 
   case 8:
-#line 262 "csv.y"
+#line 281 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1776,11 +1802,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1780 "csv.tab.c"
+#line 1806 "csv.tab.c"
     break;
 
   case 9:
-#line 269 "csv.y"
+#line 288 "csv.y"
                             {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1788,11 +1814,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1792 "csv.tab.c"
+#line 1818 "csv.tab.c"
     break;
 
 
-#line 1796 "csv.tab.c"
+#line 1822 "csv.tab.c"
 
         default: break;
       }
@@ -1845,7 +1871,7 @@ yyerrlab:
     {
       ++yynerrs;
 #if ! YYERROR_VERBOSE
-      yyerror (csv_record, all_csv_records, YY_("syntax error"));
+      yyerror (csv_record, all_csv_records, num_fields2, num_lines2, header_row_map2, header_mode2, expected_fields2, error_line_nos, enable_progress_report, has_last_bad_header, YY_("syntax error"));
 #else
 # define YYSYNTAX_ERROR yysyntax_error (&yymsg_alloc, &yymsg, \
                                         yyesa, &yyes, &yyes_capacity, \
@@ -1875,7 +1901,7 @@ yyerrlab:
                 yymsgp = yymsg;
               }
           }
-        yyerror (csv_record, all_csv_records, yymsgp);
+        yyerror (csv_record, all_csv_records, num_fields2, num_lines2, header_row_map2, header_mode2, expected_fields2, error_line_nos, enable_progress_report, has_last_bad_header, yymsgp);
         if (yysyntax_error_status == 2)
           goto yyexhaustedlab;
       }
@@ -1899,7 +1925,7 @@ yyerrlab:
       else
         {
           yydestruct ("Error: discarding",
-                      yytoken, &yylval, csv_record, all_csv_records);
+                      yytoken, &yylval, csv_record, all_csv_records, num_fields2, num_lines2, header_row_map2, header_mode2, expected_fields2, error_line_nos, enable_progress_report, has_last_bad_header);
           yychar = YYEMPTY;
         }
     }
@@ -1953,7 +1979,7 @@ yyerrlab1:
 
 
       yydestruct ("Error: popping",
-                  yystos[yystate], yyvsp, csv_record, all_csv_records);
+                  yystos[yystate], yyvsp, csv_record, all_csv_records, num_fields2, num_lines2, header_row_map2, header_mode2, expected_fields2, error_line_nos, enable_progress_report, has_last_bad_header);
       YYPOPSTACK (1);
       yystate = *yyssp;
       YY_STACK_PRINT (yyss, yyssp);
@@ -1996,7 +2022,7 @@ yyabortlab:
 | yyexhaustedlab -- memory exhaustion comes here.  |
 `-------------------------------------------------*/
 yyexhaustedlab:
-  yyerror (csv_record, all_csv_records, YY_("memory exhausted"));
+  yyerror (csv_record, all_csv_records, num_fields2, num_lines2, header_row_map2, header_mode2, expected_fields2, error_line_nos, enable_progress_report, has_last_bad_header, YY_("memory exhausted"));
   yyresult = 2;
   /* Fall through.  */
 #endif
@@ -2012,7 +2038,7 @@ yyreturn:
          user semantic actions for why this is necessary.  */
       yytoken = YYTRANSLATE (yychar);
       yydestruct ("Cleanup: discarding lookahead",
-                  yytoken, &yylval, csv_record, all_csv_records);
+                  yytoken, &yylval, csv_record, all_csv_records, num_fields2, num_lines2, header_row_map2, header_mode2, expected_fields2, error_line_nos, enable_progress_report, has_last_bad_header);
     }
   /* Do not reclaim the symbols of the rule whose action triggered
      this YYABORT or YYACCEPT.  */
@@ -2021,7 +2047,7 @@ yyreturn:
   while (yyssp != yyss)
     {
       yydestruct ("Cleanup: popping",
-                  yystos[+*yyssp], yyvsp, csv_record, all_csv_records);
+                  yystos[+*yyssp], yyvsp, csv_record, all_csv_records, num_fields2, num_lines2, header_row_map2, header_mode2, expected_fields2, error_line_nos, enable_progress_report, has_last_bad_header);
       YYPOPSTACK (1);
     }
 #ifndef yyoverflow
@@ -2036,13 +2062,21 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 358 "csv.y"
+#line 377 "csv.y"
 
 
 
 /* Called by yyparse on error. */
 void yyerror ( vector<string> & csv_record,
 		vector<vector<string>> & all_csv_records,
+		int &num_fields2,
+		int &num_lines2,
+		std::map<int, std::string> & header_row_map2,
+		bool &header_mod2 ,
+		int &expected_filds2,
+		vector<error_pos> & error_line_nos,
+		bool &enable_proress_report,
+		bool &has_last_bad_header,
 		char const *s )
 {
 	error_line_nos.push_back( error_pos(num_lines2, num_fields2, s));
@@ -2181,7 +2215,8 @@ string print_csv_as_json(
 	const vector<vector<string>> & all_csv_records,
 	const std::map<int, std::string> & header_row_map2,
 	int expected_fields2,
-	const vector<error_pos> & error_line_nos
+	const vector<error_pos> & error_line_nos,
+	int num_lines2
 	);
 
 // todo - these globals need to disappear
@@ -2379,8 +2414,22 @@ int main(int argc, char * argv[])
 
 	vector<string> csv_record;
 	vector<vector<string>> all_csv_records;
+	vector<vector<string>> &all_csv_records_ref = all_csv_records;
+	int num_fields2 = 0;
+	int num_lines2 = 0;
+	std::map<int, std::string> header_row_map2;
+	std::map<int, std::string> & header_row_map2_ref = header_row_map2;
+	bool header_mode2 = true ;
+	int expected_fields2 = 0;
+	vector<error_pos> error_line_nos;
+	vector<error_pos> & error_line_nos_ref = error_line_nos;
+	bool enable_progress_report = false;
+	bool has_last_bad_header = false;
 
-	int status = yyparse(csv_record, all_csv_records);
+	int status = yyparse(csv_record, all_csv_records_ref,
+		num_fields2, num_lines2, header_row_map2_ref,
+		header_mode2, expected_fields2, error_line_nos_ref,
+		enable_progress_report, has_last_bad_header);
 	//cout << "Parse finished" << endl;
 	if (status != 0) return 37;
 	extern int semi_colon_count;
@@ -2508,7 +2557,8 @@ int main(int argc, char * argv[])
 
 	string csv_as_json = print_csv_as_json(total_cp_res, 
 		json_escaped_records, header_row_map2, 
-		expected_fields2, error_line_nos);
+		expected_fields2, error_line_nos,
+		num_lines2);
 	cout //<< "\"csv_as_json\" : "
 		<< csv_as_json << endl;
 
@@ -2636,7 +2686,8 @@ string print_csv_as_json(
 	const vector<vector<string>> & all_csv_records,
 	const std::map<int, std::string> & header_row_map2,
 	int expected_fields2,
-	const vector<error_pos> & error_line_nos
+	const vector<error_pos> & error_line_nos,
+	int num_lines2
 	)
 {
 	std::stringstream res;
