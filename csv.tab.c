@@ -2195,13 +2195,13 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 	using std::endl;
 	std::stringstream ss;
 	int no_errors = 0;
-	cout << "Enter json_print: |" << s << "|" 
-		<< ", len: " << s.length() <<  endl;
+	//cout << "Enter json_print: |" << s << "|" 
+	//	<< ", len: " << s.length() <<  endl;
 	int len = s.length();
 	for (int i = 0; i < len; ++i) {
-		cout << "s["<< i << "]: "
-			<< (std::bitset<8>(s[i]))
-			<< endl;
+		//cout << "s["<< i << "]: "
+		//	<< (std::bitset<8>(s[i]))
+		//	<< endl;
 		// control characters
 		// cout << "s["<< i << "]: "
 		// 	<< (std::bitset<8>(s[i]))
@@ -2243,7 +2243,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			    ((s[i+2] & 0b11000000) >> 6) == 0b10 &&
 			    ((s[i+3] & 0b11000000) >> 6) == 0b10 
 				) {
-			cout << "4 byte unicode point" << endl;
+			//cout << "4 byte unicode point" << endl;
 			ss << s[i] << s[i+1] << s[i+2] << s[i+3];
 			i+=3;
 			++res.n_utf8_longer_than_1byte;
@@ -2255,7 +2255,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			    ((s[i+2] & 0b11000000) >> 6) == 0b10 
 				) {
 			// 3 byte unicode character
-			cout << "3 byte unicode" << endl;
+			//cout << "3 byte unicode" << endl;
 			ss << s[i] << s[i+1] << s[i+2];
 			i+=2;
 			++res.n_utf8_longer_than_1byte;
@@ -2266,7 +2266,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			    ((s[i+1] & 0b11000000) >> 6) == 0b10
 				) {
 			// 2 byte unicode character
-			cout << "2 byte unicode" << endl;
+			//cout << "2 byte unicode" << endl;
 			ss << s[i] << s[i+1];
 			i+=1;
 			++res.n_utf8_longer_than_1byte;
@@ -2277,7 +2277,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			// some control chars need special handling
 			// https://www.cs.cmu.edu/~pattis/15-1XX/common/handouts/ascii.html
 			// https://www.json.org/json-en.html
-			cout << "ascii control char: " << s[i] << endl;
+			//cout << "ascii control char: " << s[i] << endl;
 			if        (s[i] ==  8) { // backspace
 				ss << "\\b"; 
 			} else if (s[i] ==  9) { // tab
@@ -2296,7 +2296,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			//cout << "ascii printable char: |" << s[i] << "|" << endl;
 			// todo - bring back later
 			if (s[i] == '"' || s[i] == '\\' || s[i] == '/') {
-				cout << "adding backslash" << endl;
+				//cout << "adding backslash" << endl;
 				ss << "\\" << s[i];
 			} else {
 				ss << s[i];
@@ -2318,15 +2318,15 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 		else 
 		{
 			// non unicode character
-			cout << "else clause non-utf8 char: " << (std::bitset<8>(s[i])) << endl;
+			//cout << "else clause non-utf8 char: " << (std::bitset<8>(s[i])) << endl;
 			unsigned char ch = (unsigned char) s[i];
 			if (ch >= 127 && ch <= 159) {
-				cout << "wincp1252 printable char: |" << s[i] << "|,"
-				 	<< ((int) ch) << endl;
+				//cout << "wincp1252 printable char: |" << s[i] << "|,"
+				// 	<< ((int) ch) << endl;
 				++res.n_wincp1252;
 			} else if (ch >= 160 && ch <= 255) {
-				cout << "iso8859 printable char: |" << s[i] << "|, " 
-				 	<< ((int) ch) << endl;
+				//cout << "iso8859 printable char: |" << s[i] << "|, " 
+				// 	<< ((int) ch) << endl;
 				//ss << "\\" << s[i];
 				++res.n_iso_8859_1; // note: all iso part of wincp1252
 			}
