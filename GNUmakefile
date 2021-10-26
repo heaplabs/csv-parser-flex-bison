@@ -8,12 +8,15 @@ CC=g++ -g -O2 -std=c++11
 csv2_ubuntu.exe: $(OBJ2S) $(SRC)
 	$(CC) -o $@ $(OBJ2S) 
 
+csv2_ubuntu-localise.exe: $(OBJ2S) $(SRC)
+	$(CC) -o $@ $(OBJ2S) 
+
 .PHONY: clean
 
 csv.exe: $(OBJS)
 	$(CC) -o $@ $(OBJS) 
 
-csv.tab.o: csv.tab.c
+csv.tab.o: csv.tab.c csv.tab.h
 	$(CC) -std=c++11 -I. -c $<
 
 # hand-lex.o: hand-lex.c calc.h csv.tab.h
@@ -48,4 +51,5 @@ test-nlohmann.o: test-nlohmann-json.cpp
 
 clean:
 	rm *.o csv.tab.[hc] csv2-lex.yy.c *.exe
+
 

@@ -2274,7 +2274,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			// some control chars need special handling
 			// https://www.cs.cmu.edu/~pattis/15-1XX/common/handouts/ascii.html
 			// https://www.json.org/json-en.html
-			//cout << "ascii control char: " << s[i] << endl;
+			cout << "ascii control char: " << s[i] << endl;
 			if        (s[i] ==  8) { // backspace
 				ss << "\\b"; 
 			} else if (s[i] ==  9) { // tab
@@ -2293,6 +2293,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			//cout << "ascii printable char: |" << s[i] << "|" << endl;
 			// todo - bring back later
 			if (s[i] == '"' || s[i] == '\\' || s[i] == '/') {
+				cout << "adding backslash" << endl;
 				ss << "\\" << s[i];
 			} else {
 				ss << s[i];
@@ -2317,12 +2318,12 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			//cout << "else clause non-utf8 char: " << (std::bitset<8>(s[i])) << endl;
 			unsigned char ch = (unsigned char) s[i];
 			if (ch >= 127 && ch <= 159) {
-				// cout << "wincp1252 printable char: |" << s[i] << "|,"
-				// 	<< ((int) ch) << endl;
+				cout << "wincp1252 printable char: |" << s[i] << "|,"
+				 	<< ((int) ch) << endl;
 				++res.n_wincp1252;
 			} else if (ch >= 160 && ch <= 255) {
-				// cout << "iso8859 printable char: |" << s[i] << "|, " 
-				// 	<< ((int) ch) << endl;
+				cout << "iso8859 printable char: |" << s[i] << "|, " 
+				 	<< ((int) ch) << endl;
 				ss << "\\" << s[i];
 				++res.n_iso_8859_1; // note: all iso part of wincp1252
 			}
