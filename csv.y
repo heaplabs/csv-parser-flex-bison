@@ -568,7 +568,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			    ((s[i+2] & 0b11000000) >> 6) == 0b10 
 				) {
 			// 3 byte unicode character
-			// cout << "3 byte unicode" << endl;
+			//cout << "3 byte unicode" << endl;
 			ss << s[i] << s[i+1] << s[i+2];
 			i+=2;
 			++res.n_utf8_longer_than_1byte;
@@ -579,7 +579,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			    ((s[i+1] & 0b11000000) >> 6) == 0b10
 				) {
 			// 2 byte unicode character
-			// cout << "2 byte unicode" << endl;
+			//cout << "2 byte unicode" << endl;
 			ss << s[i] << s[i+1];
 			i+=1;
 			++res.n_utf8_longer_than_1byte;
