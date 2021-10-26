@@ -66,8 +66,9 @@
 
 
 /* First part of user prologue.  */
-#line 15 "csv.y"
+#line 1 "csv.y"
 
+	#include "common_defs.h"
 	#include <stdio.h>
 	int yylex(void);
 	//void yyerror(char const *);
@@ -112,7 +113,7 @@
 	//bool enable_progress_report = false; 
 	//bool has_last_bad_header = false; 
 
-#line 116 "csv.tab.c"
+#line 117 "csv.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -177,22 +178,6 @@ typedef std::string YYSTYPE;
 extern YYSTYPE yylval;
 
 int yyparse (vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header);
-/* "%code provides" blocks.  */
-#line 1 "csv.y"
-
-	#include <string>
-	#include <vector>
-	using std::string;
-	using std::vector;
-
-	struct error_pos {
-		int row, col; string error_context;
-		error_pos(int r, int c, string err_ctx)
-			: row(r), col(c), error_context(err_ctx)
-		{}
-	};
-
-#line 196 "csv.tab.c"
 
 #endif /* !YY_YY_CSV_TAB_H_INCLUDED  */
 
@@ -534,7 +519,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    87,    87,   143,   227,   245,   252,   262,   281,   288
+       0,    74,    74,   130,   214,   232,   239,   249,   268,   275
 };
 #endif
 
@@ -1605,7 +1590,7 @@ yyreduce:
     switch (yyn)
       {
   case 2:
-#line 87 "csv.y"
+#line 74 "csv.y"
                     {
 		int total_len = 0;
 		//for (int i =0; i < csv_record.size(); ++i) {
@@ -1659,11 +1644,11 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1663 "csv.tab.c"
+#line 1648 "csv.tab.c"
     break;
 
   case 3:
-#line 143 "csv.y"
+#line 130 "csv.y"
                             {
 
 		++num_lines2;
@@ -1722,11 +1707,11 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1726 "csv.tab.c"
+#line 1711 "csv.tab.c"
     break;
 
   case 4:
-#line 227 "csv.y"
+#line 214 "csv.y"
                        { 
 		if (num_fields2 == expected_fields2) {
 			all_csv_records.push_back(csv_record);
@@ -1742,11 +1727,11 @@ yyreduce:
 		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1746 "csv.tab.c"
+#line 1731 "csv.tab.c"
     break;
 
   case 5:
-#line 245 "csv.y"
+#line 232 "csv.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1754,11 +1739,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1758 "csv.tab.c"
+#line 1743 "csv.tab.c"
     break;
 
   case 6:
-#line 252 "csv.y"
+#line 239 "csv.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1766,11 +1751,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1770 "csv.tab.c"
+#line 1755 "csv.tab.c"
     break;
 
   case 7:
-#line 262 "csv.y"
+#line 249 "csv.y"
                {
 		//cout << " not pushing last field as it's empty:"
 		//	<< ", num_fields2: " << num_fields2
@@ -1790,11 +1775,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1794 "csv.tab.c"
+#line 1779 "csv.tab.c"
     break;
 
   case 8:
-#line 281 "csv.y"
+#line 268 "csv.y"
                     {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1802,11 +1787,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1806 "csv.tab.c"
+#line 1791 "csv.tab.c"
     break;
 
   case 9:
-#line 288 "csv.y"
+#line 275 "csv.y"
                             {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1814,11 +1799,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1818 "csv.tab.c"
+#line 1803 "csv.tab.c"
     break;
 
 
-#line 1822 "csv.tab.c"
+#line 1807 "csv.tab.c"
 
         default: break;
       }
@@ -2062,7 +2047,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 377 "csv.y"
+#line 364 "csv.y"
 
 
 

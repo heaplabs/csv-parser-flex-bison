@@ -1,18 +1,5 @@
-%code provides {
-	#include <string>
-	#include <vector>
-	using std::string;
-	using std::vector;
-
-	struct error_pos {
-		int row, col; string error_context;
-		error_pos(int r, int c, string err_ctx)
-			: row(r), col(c), error_context(err_ctx)
-		{}
-	};
-}
-
 %{
+	#include "common_defs.h"
 	#include <stdio.h>
 	int yylex(void);
 	//void yyerror(char const *);

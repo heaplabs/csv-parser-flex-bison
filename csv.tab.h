@@ -66,21 +66,5 @@ typedef std::string YYSTYPE;
 extern YYSTYPE yylval;
 
 int yyparse (vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header);
-/* "%code provides" blocks.  */
-#line 1 "csv.y"
-
-	#include <string>
-	#include <vector>
-	using std::string;
-	using std::vector;
-
-	struct error_pos {
-		int row, col; string error_context;
-		error_pos(int r, int c, string err_ctx)
-			: row(r), col(c), error_context(err_ctx)
-		{}
-	};
-
-#line 85 "csv.tab.h"
 
 #endif /* !YY_YY_CSV_TAB_H_INCLUDED  */
