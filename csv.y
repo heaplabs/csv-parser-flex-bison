@@ -513,6 +513,8 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 	using std::endl;
 	std::stringstream ss;
 	int no_errors = 0;
+	cout << "Enter json_print: |" << s << "|" 
+		<< ", len: " << s.length() <<  endl;
 	int len = s.length();
 	for (int i = 0; i < len; ++i) {
 		// control characters
