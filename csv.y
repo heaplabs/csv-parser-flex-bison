@@ -558,7 +558,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			    ((s[i+2] & 0b11000000) >> 6) == 0b10 &&
 			    ((s[i+3] & 0b11000000) >> 6) == 0b10 
 				) {
-			//cout << "4 byte unicode point" << endl;
+			cout << "4 byte unicode point" << endl;
 			ss << s[i] << s[i+1] << s[i+2] << s[i+3];
 			i+=3;
 			++res.n_utf8_longer_than_1byte;
@@ -570,7 +570,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			    ((s[i+2] & 0b11000000) >> 6) == 0b10 
 				) {
 			// 3 byte unicode character
-			//cout << "3 byte unicode" << endl;
+			cout << "3 byte unicode" << endl;
 			ss << s[i] << s[i+1] << s[i+2];
 			i+=2;
 			++res.n_utf8_longer_than_1byte;
@@ -581,7 +581,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			    ((s[i+1] & 0b11000000) >> 6) == 0b10
 				) {
 			// 2 byte unicode character
-			//cout << "2 byte unicode" << endl;
+			cout << "2 byte unicode" << endl;
 			ss << s[i] << s[i+1];
 			i+=1;
 			++res.n_utf8_longer_than_1byte;
@@ -633,7 +633,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 		else 
 		{
 			// non unicode character
-			//cout << "else clause non-utf8 char: " << (std::bitset<8>(s[i])) << endl;
+			cout << "else clause non-utf8 char: " << (std::bitset<8>(s[i])) << endl;
 			unsigned char ch = (unsigned char) s[i];
 			if (ch >= 127 && ch <= 159) {
 				cout << "wincp1252 printable char: |" << s[i] << "|,"
