@@ -2327,7 +2327,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			} else if (ch >= 160 && ch <= 255) {
 				cout << "iso8859 printable char: |" << s[i] << "|, " 
 				 	<< ((int) ch) << endl;
-				ss << "\\" << s[i];
+				//ss << "\\" << s[i];
 				++res.n_iso_8859_1; // note: all iso part of wincp1252
 			}
 			//ss << s[i] << s[i+1] << s[i+2] << s[i+3];
