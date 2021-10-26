@@ -2199,6 +2199,9 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 		<< ", len: " << s.length() <<  endl;
 	int len = s.length();
 	for (int i = 0; i < len; ++i) {
+		cout << "s["<< i << "]: "
+			<< (std::bitset<8>(s[i]))
+			<< endl;
 		// control characters
 		// cout << "s["<< i << "]: "
 		// 	<< (std::bitset<8>(s[i]))
