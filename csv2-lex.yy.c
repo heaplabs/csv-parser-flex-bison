@@ -460,6 +460,10 @@ char *yytext_ptr;
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <string>
+#include <vector>
+using std::string;
+using std::vector;
 #include "csv.tab.h"
 int num_lines = 0, num_fields = 1, num_quoted_fields = 0;
 //char buffer[8192];
@@ -477,9 +481,9 @@ int expected_fields = 0;
 int semi_colon_count = 0;
 int tab_count = 0;
 
-#line 481 "csv2-lex.yy.c"
+#line 485 "csv2-lex.yy.c"
 
-#line 483 "csv2-lex.yy.c"
+#line 487 "csv2-lex.yy.c"
 
 #define INITIAL 0
 #define quoted_field 1
@@ -697,10 +701,10 @@ YY_DECL
 		}
 
 	{
-#line 30 "csv2-lex.l"
+#line 34 "csv2-lex.l"
 
 
-#line 704 "csv2-lex.yy.c"
+#line 708 "csv2-lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -759,7 +763,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 32 "csv2-lex.l"
+#line 36 "csv2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -782,7 +786,7 @@ case 2:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 49 "csv2-lex.l"
+#line 53 "csv2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -803,7 +807,7 @@ YY_RULE_SETUP
 /* warning rule cant be matched because of my changes */ 
 case 3:
 YY_RULE_SETUP
-#line 67 "csv2-lex.l"
+#line 71 "csv2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -823,7 +827,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 84 "csv2-lex.l"
+#line 88 "csv2-lex.l"
 {
 	//printf("CSV_FIELD got field: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -843,7 +847,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 101 "csv2-lex.l"
+#line 105 "csv2-lex.l"
 {
 	BEGIN(quoted_field);
 	//return DOUBLE_QUOTE;
@@ -851,7 +855,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 106 "csv2-lex.l"
+#line 110 "csv2-lex.l"
 {
 	//strcpy(buffer+strlen(buffer), yytext);
 	buffer += string(yytext);
@@ -859,7 +863,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 111 "csv2-lex.l"
+#line 115 "csv2-lex.l"
 {
 	//printf("got a double quote inside a csv field");
 	//strcpy(buffer + strlen(buffer), "\"\"");
@@ -869,7 +873,7 @@ YY_RULE_SETUP
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 117 "csv2-lex.l"
+#line 121 "csv2-lex.l"
 {
 	//printf("found a newline in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\n");
@@ -878,7 +882,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 123 "csv2-lex.l"
+#line 127 "csv2-lex.l"
 {
 	//printf("found a carriage return in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\r");
@@ -887,7 +891,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 129 "csv2-lex.l"
+#line 133 "csv2-lex.l"
 {
 	//printf("found a comma in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), ",");
@@ -896,7 +900,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 135 "csv2-lex.l"
+#line 139 "csv2-lex.l"
 {
 	map<int,string>::const_iterator  index = header_row_map.find(num_fields);
 	string field(buffer);
@@ -920,7 +924,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 156 "csv2-lex.l"
+#line 160 "csv2-lex.l"
 {
 	++num_fields;
 	//printf("field separator: %d\n", num_fields);
@@ -937,7 +941,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 170 "csv2-lex.l"
+#line 174 "csv2-lex.l"
 {
 	++num_lines;
 	//printf("total fields :%d\n", num_fields);
@@ -956,10 +960,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 186 "csv2-lex.l"
+#line 190 "csv2-lex.l"
 ECHO;
 	YY_BREAK
-#line 963 "csv2-lex.yy.c"
+#line 967 "csv2-lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(quoted_field):
 	yyterminate();
@@ -1965,7 +1969,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 186 "csv2-lex.l"
+#line 190 "csv2-lex.l"
 
 
 void csv2_lex_clean_up() {

@@ -1,7 +1,14 @@
+%code provides {
+	#include <string>
+	#include <vector>
+	using std::string;
+	using std::vector;
+}
+
 %{
 	#include <stdio.h>
 	int yylex(void);
-	void yyerror(char const *);
+	//void yyerror(char const *);
 	#include <string>
 	#include <vector>
 	#include <map>
@@ -9,12 +16,16 @@
 	using std::string;
 	using std::vector;
 	using std::map;
-	vector<string> csv_record;
-	vector<vector<string>> all_csv_records;
+	//vector<string> csv_record;
+	//vector<vector<string>> all_csv_records;
 	#include <iostream>
 	#include <utility>
 	using std::cout;
 	using std::endl;
+
+	void yyerror ( vector<string> & csv_record, 
+		vector<vector<string>> & all_csv_records,
+		char const *s);
 
 	int num_fields2 = 0, num_lines2 = 0;
 	std::map<int, std::string> header_row_map2;
@@ -44,6 +55,8 @@
 %define lr.type ielr
 
 %define api.value.type {std::string}
+
+%parse-param {vector<string> & csv_record} {vector<vector<string>> & all_csv_records}
 
 %token CSV_FIELD
 %token QUOTED_CSV_FIELD
@@ -346,7 +359,9 @@ record:
 
 
 /* Called by yyparse on error. */
-void yyerror (char const *s)
+void yyerror ( vector<string> & csv_record,
+		vector<vector<string>> & all_csv_records,
+		char const *s )
 {
 	error_line_nos.push_back( error_pos(num_lines2, num_fields2, s));
 	//printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
@@ -553,7 +568,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			    ((s[i+2] & 0b11000000) >> 6) == 0b10 
 				) {
 			// 3 byte unicode character
-			//cout << "3 byte unicode" << endl;
+			// cout << "3 byte unicode" << endl;
 			ss << s[i] << s[i+1] << s[i+2];
 			i+=2;
 			++res.n_utf8_longer_than_1byte;
@@ -564,7 +579,7 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			    ((s[i+1] & 0b11000000) >> 6) == 0b10
 				) {
 			// 2 byte unicode character
-			//cout << "2 byte unicode" << endl;
+			// cout << "2 byte unicode" << endl;
 			ss << s[i] << s[i+1];
 			i+=1;
 			++res.n_utf8_longer_than_1byte;
@@ -618,8 +633,13 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			//cout << "else clause non-utf8 char: " << (std::bitset<8>(s[i])) << endl;
 			unsigned char ch = (unsigned char) s[i];
 			if (ch >= 127 && ch <= 159) {
+				// cout << "wincp1252 printable char: |" << s[i] << "|,"
+				// 	<< ((int) ch) << endl;
 				++res.n_wincp1252;
 			} else if (ch >= 160 && ch <= 255) {
+				// cout << "iso8859 printable char: |" << s[i] << "|, " 
+				// 	<< ((int) ch) << endl;
+				ss << "\\" << s[i];
 				++res.n_iso_8859_1; // note: all iso part of wincp1252
 			}
 			//ss << s[i] << s[i+1] << s[i+2] << s[i+3];
@@ -669,7 +689,10 @@ int main(int argc, char * argv[])
 		initialise_yylex_from_file(argv[1]);
 	}
 
-	int status = yyparse();
+	vector<string> csv_record;
+	vector<vector<string>> all_csv_records;
+
+	int status = yyparse(csv_record, all_csv_records);
 	//cout << "Parse finished" << endl;
 	if (status != 0) return 37;
 	extern int semi_colon_count;

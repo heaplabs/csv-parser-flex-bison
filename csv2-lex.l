@@ -3,6 +3,10 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <string>
+#include <vector>
+using std::string;
+using std::vector;
 #include "csv.tab.h"
 int num_lines = 0, num_fields = 1, num_quoted_fields = 0;
 //char buffer[8192];
