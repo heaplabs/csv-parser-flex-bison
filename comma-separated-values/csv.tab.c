@@ -62,8 +62,16 @@
 /* Pull parsers.  */
 #define YYPULL 1
 
-
-
+/* Substitute the type names.  */
+#define YYSTYPE         COMMA_SEPARATED_VALUES_STYPE
+/* Substitute the variable and function names.  */
+#define yyparse         comma_separated_values_parse
+#define yylex           comma_separated_values_lex
+#define yyerror         comma_separated_values_error
+#define yydebug         comma_separated_values_debug
+#define yynerrs         comma_separated_values_nerrs
+#define yylval          comma_separated_values_lval
+#define yychar          comma_separated_values_char
 
 /* First part of user prologue.  */
 #line 1 "csv.y"
@@ -113,7 +121,7 @@
 	//bool enable_progress_report = false; 
 	//bool has_last_bad_header = false; 
 
-#line 117 "csv.tab.c"
+#line 125 "csv.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -146,20 +154,28 @@
 
 /* Use api.header.include to #include this header
    instead of duplicating it here.  */
-#ifndef YY_YY_CSV_TAB_H_INCLUDED
-# define YY_YY_CSV_TAB_H_INCLUDED
+#ifndef YY_COMMA_SEPARATED_VALUES_CSV_TAB_H_INCLUDED
+# define YY_COMMA_SEPARATED_VALUES_CSV_TAB_H_INCLUDED
 /* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
+#ifndef COMMA_SEPARATED_VALUES_DEBUG
+# if defined YYDEBUG
 #if YYDEBUG
-extern int yydebug;
+#   define COMMA_SEPARATED_VALUES_DEBUG 1
+#  else
+#   define COMMA_SEPARATED_VALUES_DEBUG 0
+#  endif
+# else /* ! defined YYDEBUG */
+#  define COMMA_SEPARATED_VALUES_DEBUG 0
+# endif /* ! defined YYDEBUG */
+#endif  /* ! defined COMMA_SEPARATED_VALUES_DEBUG */
+#if COMMA_SEPARATED_VALUES_DEBUG
+extern int comma_separated_values_debug;
 #endif
 
 /* Token type.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
+#ifndef COMMA_SEPARATED_VALUES_TOKENTYPE
+# define COMMA_SEPARATED_VALUES_TOKENTYPE
+  enum comma_separated_values_tokentype
   {
     CSV_FIELD = 258,
     QUOTED_CSV_FIELD = 259,
@@ -168,18 +184,18 @@ extern int yydebug;
 #endif
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef std::string YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
+#if ! defined COMMA_SEPARATED_VALUES_STYPE && ! defined COMMA_SEPARATED_VALUES_STYPE_IS_DECLARED
+typedef std::string COMMA_SEPARATED_VALUES_STYPE;
+# define COMMA_SEPARATED_VALUES_STYPE_IS_TRIVIAL 1
+# define COMMA_SEPARATED_VALUES_STYPE_IS_DECLARED 1
 #endif
 
 
-extern YYSTYPE yylval;
+extern COMMA_SEPARATED_VALUES_STYPE comma_separated_values_lval;
 
-int yyparse (vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header);
+int comma_separated_values_parse (vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header);
 
-#endif /* !YY_YY_CSV_TAB_H_INCLUDED  */
+#endif /* !YY_COMMA_SEPARATED_VALUES_CSV_TAB_H_INCLUDED  */
 
 
 
@@ -401,7 +417,7 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
-         || (defined YYSTYPE_IS_TRIVIAL && YYSTYPE_IS_TRIVIAL)))
+         || (defined COMMA_SEPARATED_VALUES_STYPE_IS_TRIVIAL && COMMA_SEPARATED_VALUES_STYPE_IS_TRIVIAL)))
 
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
@@ -515,7 +531,7 @@ static const yytype_int8 yytranslate[] =
        5
 };
 
-#if YYDEBUG
+#if COMMA_SEPARATED_VALUES_DEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
@@ -523,7 +539,7 @@ static const yytype_int16 yyrline[] =
 };
 #endif
 
-#if YYDEBUG || YYERROR_VERBOSE || 1
+#if COMMA_SEPARATED_VALUES_DEBUG || YYERROR_VERBOSE || 1
 /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
@@ -655,7 +671,7 @@ static const yytype_int8 yyr2[] =
 
 
 /* Enable debugging if requested.  */
-#if YYDEBUG
+#if COMMA_SEPARATED_VALUES_DEBUG
 
 # ifndef YYFPRINTF
 #  include <stdio.h> /* INFRINGES ON USER NAME SPACE */
@@ -788,12 +804,12 @@ do {                                    \
 /* Nonzero means print parse trace.  It is left uninitialized so that
    multiple parsers can coexist.  */
 int yydebug;
-#else /* !YYDEBUG */
+#else /* !COMMA_SEPARATED_VALUES_DEBUG */
 # define YYDPRINTF(Args)
 # define YY_SYMBOL_PRINT(Title, Type, Value, Location)
 # define YY_STACK_PRINT(Bottom, Top)
 # define YY_REDUCE_PRINT(Rule)
-#endif /* !YYDEBUG */
+#endif /* !COMMA_SEPARATED_VALUES_DEBUG */
 
 
 /* YYINITDEPTH -- initial size of the parser's stacks.  */
@@ -824,7 +840,7 @@ int yydebug;
    required.  Return 1 if memory is exhausted.  */
 static int
 yy_lac_stack_realloc (YYPTRDIFF_T *yycapacity, YYPTRDIFF_T yyadd,
-#if YYDEBUG
+#if COMMA_SEPARATED_VALUES_DEBUG
                       char const *yydebug_prefix,
                       char const *yydebug_suffix,
 #endif
@@ -929,7 +945,7 @@ do {                                                             \
    the parser stacks to try to find a new initial context in which the
    current lookahead is syntactically acceptable.  If it fails to find
    such a context, it discards the lookahead.  */
-#if YYDEBUG
+#if COMMA_SEPARATED_VALUES_DEBUG
 # define YY_LAC_DISCARD(Event)                                           \
 do {                                                                     \
   if (yy_lac_established)                                                \
@@ -1032,7 +1048,7 @@ yy_lac (yy_state_t *yyesa, yy_state_t **yyes,
         else
           {
             if (yy_lac_stack_realloc (yyes_capacity, 1,
-#if YYDEBUG
+#if COMMA_SEPARATED_VALUES_DEBUG
                                       " (", ")",
 #endif
                                       yyes, yyesa, &yyesp, yyes_prev))
@@ -1224,7 +1240,7 @@ yysyntax_error (YYPTRDIFF_T *yymsg_alloc, char **yymsg,
                 }
               }
         }
-# if YYDEBUG
+# if COMMA_SEPARATED_VALUES_DEBUG
       else if (yydebug)
         YYFPRINTF (stderr, "No expected tokens.\n");
 # endif
@@ -1644,7 +1660,7 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1648 "csv.tab.c"
+#line 1664 "csv.tab.c"
     break;
 
   case 3:
@@ -1707,7 +1723,7 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1711 "csv.tab.c"
+#line 1727 "csv.tab.c"
     break;
 
   case 4:
@@ -1727,7 +1743,7 @@ yyreduce:
 		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1731 "csv.tab.c"
+#line 1747 "csv.tab.c"
     break;
 
   case 5:
@@ -1739,7 +1755,7 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1743 "csv.tab.c"
+#line 1759 "csv.tab.c"
     break;
 
   case 6:
@@ -1751,7 +1767,7 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1755 "csv.tab.c"
+#line 1771 "csv.tab.c"
     break;
 
   case 7:
@@ -1775,7 +1791,7 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1779 "csv.tab.c"
+#line 1795 "csv.tab.c"
     break;
 
   case 8:
@@ -1787,7 +1803,7 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1791 "csv.tab.c"
+#line 1807 "csv.tab.c"
     break;
 
   case 9:
@@ -1799,11 +1815,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1803 "csv.tab.c"
+#line 1819 "csv.tab.c"
     break;
 
 
-#line 1807 "csv.tab.c"
+#line 1823 "csv.tab.c"
 
         default: break;
       }

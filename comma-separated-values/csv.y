@@ -45,7 +45,7 @@
 	//bool has_last_bad_header = false; 
 %}
 
-
+%define api.prefix {comma_separated_values_}
 %define parse.lac full
 %define parse.error verbose
 

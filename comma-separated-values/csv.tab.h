@@ -34,20 +34,28 @@
 /* Undocumented macros, especially those whose name start with YY_,
    are private implementation details.  Do not rely on them.  */
 
-#ifndef YY_YY_CSV_TAB_H_INCLUDED
-# define YY_YY_CSV_TAB_H_INCLUDED
+#ifndef YY_COMMA_SEPARATED_VALUES_CSV_TAB_H_INCLUDED
+# define YY_COMMA_SEPARATED_VALUES_CSV_TAB_H_INCLUDED
 /* Debug traces.  */
-#ifndef YYDEBUG
-# define YYDEBUG 0
-#endif
+#ifndef COMMA_SEPARATED_VALUES_DEBUG
+# if defined YYDEBUG
 #if YYDEBUG
-extern int yydebug;
+#   define COMMA_SEPARATED_VALUES_DEBUG 1
+#  else
+#   define COMMA_SEPARATED_VALUES_DEBUG 0
+#  endif
+# else /* ! defined YYDEBUG */
+#  define COMMA_SEPARATED_VALUES_DEBUG 0
+# endif /* ! defined YYDEBUG */
+#endif  /* ! defined COMMA_SEPARATED_VALUES_DEBUG */
+#if COMMA_SEPARATED_VALUES_DEBUG
+extern int comma_separated_values_debug;
 #endif
 
 /* Token type.  */
-#ifndef YYTOKENTYPE
-# define YYTOKENTYPE
-  enum yytokentype
+#ifndef COMMA_SEPARATED_VALUES_TOKENTYPE
+# define COMMA_SEPARATED_VALUES_TOKENTYPE
+  enum comma_separated_values_tokentype
   {
     CSV_FIELD = 258,
     QUOTED_CSV_FIELD = 259,
@@ -56,15 +64,15 @@ extern int yydebug;
 #endif
 
 /* Value type.  */
-#if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-typedef std::string YYSTYPE;
-# define YYSTYPE_IS_TRIVIAL 1
-# define YYSTYPE_IS_DECLARED 1
+#if ! defined COMMA_SEPARATED_VALUES_STYPE && ! defined COMMA_SEPARATED_VALUES_STYPE_IS_DECLARED
+typedef std::string COMMA_SEPARATED_VALUES_STYPE;
+# define COMMA_SEPARATED_VALUES_STYPE_IS_TRIVIAL 1
+# define COMMA_SEPARATED_VALUES_STYPE_IS_DECLARED 1
 #endif
 
 
-extern YYSTYPE yylval;
+extern COMMA_SEPARATED_VALUES_STYPE comma_separated_values_lval;
 
-int yyparse (vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header);
+int comma_separated_values_parse (vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header);
 
-#endif /* !YY_YY_CSV_TAB_H_INCLUDED  */
+#endif /* !YY_COMMA_SEPARATED_VALUES_CSV_TAB_H_INCLUDED  */
