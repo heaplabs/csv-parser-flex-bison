@@ -468,7 +468,7 @@ int main(int argc, char * argv[])
 		num_fields2, num_lines2, header_row_map2,
 		header_mode2, expected_fields2, error_line_nos,
 		enable_progress_report, has_last_bad_header);
-	cout << "Parse finished" << endl;
+	//cout << "Parse finished" << endl;
 	extern int semi_colon_count;
 	if (status_csv == 0 && !(semi_colon_count > 0 && semi_colon_count > num_lines2 )) {
 		//cout << "exit " << endl;
@@ -492,7 +492,7 @@ int main(int argc, char * argv[])
 		return 0;
 
 	} else if (semi_colon_count > 0 && semi_colon_count > num_lines2 ) {
-		cout << "trying with semicolon parser" << endl;
+		//cout << "trying with semicolon parser" << endl;
 		initialise_semicolon_lex_from_file(argv[1]);
 		//extern struct LexerSpecificVars lexerSpecificVars;
 		all_csv_records.resize(0);
@@ -511,7 +511,7 @@ int main(int argc, char * argv[])
 			header_mode2, expected_fields2, error_line_nos,
 			enable_progress_report, has_last_bad_header);
 		if (status_csv == 0) {
-			cout << "semicolon parser success" << endl;
+			//cout << "semicolon parser success" << endl;
 
 			StringCodePageAnalysisResult total_cp_res;
 			//cout << "Successfully parsed records: " << all_csv_records.size() << endl;

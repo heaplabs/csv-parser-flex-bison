@@ -12,6 +12,9 @@ build/csv2_ubuntu.exe: $(OBJ2S) $(SRC)
 build/csv.tab.o: comma-separated-values/csv.tab.c comma-separated-values/csv.tab.h
 	$(CC) -std=c++11 -I. -c $< -o $@
 
+build/semicolon-separated-values.tab.o: semicolon-separated-values/semicolon-separated-values.tab.c semicolon-separated-values/semicolon-separated-values.tab.h
+	$(CC) -std=c++11 -I. -c $< -o $@
+
 build/driver.o: common/driver.cpp comma-separated-values/csv.tab.h semicolon-separated-values/semicolon-separated-values.tab.h
 	$(CC) -std=c++11 -Icomma-separated-values -Isemicolon-separated-values -Icommon -c $< -o $@
 
