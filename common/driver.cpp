@@ -374,6 +374,77 @@ string print_error_info(const vector<error_pos> & error_line_nos) {
 	return res.str();
 }
 
+vector<vector<string> > json_escape_records(const vector<vector<string>> &all_csv_records,
+		StringCodePageAnalysisResult & total_cp_res)
+{
+	vector<vector<string> > json_escaped_records;
+	json_escaped_records.reserve(all_csv_records.size());
+	for (int i = 0; i < all_csv_records.size(); ++i) {
+		const vector<string>& v = all_csv_records[i];
+		//cout << "line " << i + 1 << ", v.size(): " << v.size() << endl;
+		//string row = "row_" + i;
+		//json_op[row] = v;
+		//for (int j = 0; j < v.size() - 1; ++j) {
+		//	cout << v[j] << "|";
+		//}
+		// bool all_ok = true;
+		int all_lengths = 0;
+		for (int j = 0; j < v.size() ; ++j) {
+			//cout << "|" << v[j] << "|" << endl;
+			if (v[j].length() > 0) {
+				//string rectified = rectify_utf8(v[j]);
+				//if (v[j] == rectified)  {
+				//	rectified_vec.push_back(rectified);
+				//} else {
+				//	cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
+				//	rectified_vec.push_back(rectified);
+				//}
+				all_lengths += v[j].length();
+			}
+		}
+		// //cout << "line no:" << i + 2 <<  ", all_lengths: " << all_lengths << endl;
+		if (all_lengths > 0) {
+			vector<string> rectified_vec; 
+			rectified_vec.reserve(v.size());
+			for (int j = 0; j < v.size() ; ++j) {
+				//cout << v[j] << "|";
+				if (v[j].length() > 0) {
+					//string rectified = rectify_utf8(v[j]);
+					StringCodePageAnalysisResult result = json_print(v[j]);
+					total_cp_res.n_utf8_longer_than_1byte += result.n_utf8_longer_than_1byte;
+					total_cp_res.n_wincp1252 += result.n_wincp1252;
+					total_cp_res.n_iso_8859_1 += result.n_iso_8859_1;
+					string rectified = result.rectified;
+					//if (no_errors > 0)  {
+					//	cout << "line no : " << i + 2 << " has a utf8 issue, compare: " << endl
+					//		<< v[j] << endl
+					//		<< "vs" << endl
+					//		<< rectified << endl; 
+					//	rectified_vec.push_back(rectified);
+					//} else {
+					//	rectified_vec.push_back(rectified);
+					//}
+					rectified_vec.push_back(rectified);
+				} else {
+					rectified_vec.push_back("");
+				}
+			}
+			json_escaped_records.push_back(rectified_vec);
+		} else {
+			//cout << "line no : " << i + 2 << " all fields are empty not adding "  << endl; 
+		}
+		//cout << v[v.size()-1] << endl;
+		//json arr = json::array(v);
+		//json_op.push_back(v);
+		//if (all_ok) json_op.push_back(v); 
+		//else cout << "skipping non-utf:" << i << endl;
+		//if (rectified_vec.size() > 0) {
+		//	json_op.push_back(rectified_vec);
+		//}
+	}
+	return json_escaped_records;
+}
+
 int main(int argc, char * argv[])
 {
 	if (argc > 1) {
@@ -398,11 +469,32 @@ int main(int argc, char * argv[])
 		num_fields2, num_lines2, header_row_map2_ref,
 		header_mode2, expected_fields2, error_line_nos_ref,
 		enable_progress_report, has_last_bad_header);
+	cout << "Parse finished" << endl;
+	if (status_csv == 0) {
+		//cout << "exit " << endl;
+		csv2_lex_clean_up();
+
+		StringCodePageAnalysisResult total_cp_res;
+		//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
+		//json json_op;
+		// todo - extract out as a method
+		vector<vector<string> > json_escaped_records = json_escape_records(all_csv_records, total_cp_res);
+		//json header_op;
+		//for (int i = 1; i<= expected_fields2; ++i)  {
+		//	header_op.push_back(header_row_map2[i]) ;
+		//}
+		string csv_as_json = print_csv_as_json(total_cp_res, 
+			json_escaped_records, header_row_map2, 
+			expected_fields2, error_line_nos,
+			num_lines2);
+		cout //<< "\"csv_as_json\" : "
+			<< csv_as_json << endl;
+		return 0;
+	} 
 	int status_semicolon = semicolon_separated_values_parse (csv_record, all_csv_records_ref,
 		num_fields2, num_lines2, header_row_map2_ref,
 		header_mode2, expected_fields2, error_line_nos_ref,
 		enable_progress_report, has_last_bad_header);
-	//cout << "Parse finished" << endl;
 	if (status_csv != 0) return 37;
 	extern int semi_colon_count;
 	if (semi_colon_count > 0) {
@@ -451,89 +543,6 @@ int main(int argc, char * argv[])
 	//yy_init = 1;
 	csv2_lex_clean_up();
 	semicolonsv2_lex_clean_up();
-	StringCodePageAnalysisResult total_cp_res;
-	//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
-	//json json_op;
-	// todo - extract out as a method
-	//vector<vector<string> > json_escaped_records = json_escape_records(all_csv_records);
-
-	vector<vector<string> > json_escaped_records;
-	json_escaped_records.reserve(all_csv_records.size());
-	for (int i = 0; i < all_csv_records.size(); ++i) {
-		const vector<string>& v = all_csv_records[i];
-		//cout << "line " << i + 1 << ", v.size(): " << v.size() << endl;
-		//string row = "row_" + i;
-		//json_op[row] = v;
-		//for (int j = 0; j < v.size() - 1; ++j) {
-		//	cout << v[j] << "|";
-		//}
-		// bool all_ok = true;
-		int all_lengths = 0;
-		for (int j = 0; j < v.size() ; ++j) {
-			//cout << "|" << v[j] << "|" << endl;
-			if (v[j].length() > 0) {
-				//string rectified = rectify_utf8(v[j]);
-				//if (v[j] == rectified)  {
-				//	rectified_vec.push_back(rectified);
-				//} else {
-				//	cout << "line no : " << i + 2 << " has a utf8 issue: " << rectified << endl; 
-				//	rectified_vec.push_back(rectified);
-				//}
-				all_lengths += v[j].length();
-			}
-		}
-		// //cout << "line no:" << i + 2 <<  ", all_lengths: " << all_lengths << endl;
-		if (all_lengths > 0) {
-			vector<string> rectified_vec; 
-			rectified_vec.reserve(v.size());
-			for (int j = 0; j < v.size() ; ++j) {
-				//cout << v[j] << "|";
-				if (v[j].length() > 0) {
-					//string rectified = rectify_utf8(v[j]);
-					StringCodePageAnalysisResult result = json_print(v[j]);
-					total_cp_res.n_utf8_longer_than_1byte += result.n_utf8_longer_than_1byte;
-					total_cp_res.n_wincp1252 += result.n_wincp1252;
-					total_cp_res.n_iso_8859_1 += result.n_iso_8859_1;
-					string rectified = result.rectified;
-
-					//if (no_errors > 0)  {
-					//	cout << "line no : " << i + 2 << " has a utf8 issue, compare: " << endl
-					//		<< v[j] << endl
-					//		<< "vs" << endl
-					//		<< rectified << endl; 
-					//	rectified_vec.push_back(rectified);
-					//} else {
-					//	rectified_vec.push_back(rectified);
-					//}
-					rectified_vec.push_back(rectified);
-				} else {
-					rectified_vec.push_back("");
-				}
-			}
-			json_escaped_records.push_back(rectified_vec);
-		} else {
-			//cout << "line no : " << i + 2 << " all fields are empty not adding "  << endl; 
-		}
-		//cout << v[v.size()-1] << endl;
-		//json arr = json::array(v);
-		//json_op.push_back(v);
-		//if (all_ok) json_op.push_back(v); 
-		//else cout << "skipping non-utf:" << i << endl;
-		//if (rectified_vec.size() > 0) {
-		//	json_op.push_back(rectified_vec);
-		//}
-	}
-	//json header_op;
-	//for (int i = 1; i<= expected_fields2; ++i)  {
-	//	header_op.push_back(header_row_map2[i]) ;
-	//}
-
-	string csv_as_json = print_csv_as_json(total_cp_res, 
-		json_escaped_records, header_row_map2, 
-		expected_fields2, error_line_nos,
-		num_lines2);
-	cout //<< "\"csv_as_json\" : "
-		<< csv_as_json << endl;
 
 
 

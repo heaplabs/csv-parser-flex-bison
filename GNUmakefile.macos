@@ -2,7 +2,7 @@
 #OBJS= csv.tab.o lex.yy.o hand-lex.o
 OBJ2S= build/csv.tab.o build/csv2-lex.yy.o build/driver.o build/semicolon-separated-values.tab.o build/semicolon-separated-values2-lex.yy.o
 SRC=comma-separated-values/csv.y comma-separated-values/csv2-lex.l
-CC=g++ -g -O2 -std=c++11
+CC=g++-11 -g -O2 -std=c++11
 
 build/csv2_ubuntu.exe: $(OBJ2S) $(SRC)
 	$(CC) -o $@ $(OBJ2S) 
@@ -38,7 +38,7 @@ build/semicolon-separated-values2-lex.yy.o: semicolon-separated-values/semicolon
 	$(CC) -c $< -o $@
 
 valgrind_check: build/csv2_ubuntu.exe
-	valgrind --leak-check=full ./build/csv2_ubuntu.exe  comma-separated-values/csv-test-files/inp1.csv || echo "install valgrind and then run this"
+	valgrind ./build/csv2_ubuntu.exe --leak-check=full <  comma-separated-values/csv-test-files/inp1.csv || echo "install valgrind and then run this"
 
 
 #external library
