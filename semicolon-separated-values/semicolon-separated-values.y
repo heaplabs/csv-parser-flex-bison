@@ -47,7 +47,7 @@
 	//bool has_last_bad_header = false; 
 %}
 
-%define api.prefix {comma_separated_values_}
+%define api.prefix {semicolon_separated_values_}
 %define parse.lac full
 %define parse.error verbose
 
@@ -66,8 +66,8 @@
 		{bool &enable_progress_report}
 		{bool &has_last_bad_header}
 
-%token CSV_FIELD
-%token QUOTED_CSV_FIELD
+%token SEMICOLONSV_FIELD
+%token SEMICOLONSV_QUOTED_FIELD
 
 %%
 
@@ -237,7 +237,7 @@ record:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-	| record ',' csv_field {
+	| record ';' csv_field {
 		//csv_record.push_back($3);
 		//++ num_fields2;
 		//if (header_mode2) {
@@ -266,14 +266,14 @@ csv_field:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-	| CSV_FIELD {
+	| SEMICOLONSV_FIELD {
 		csv_record.push_back($1);
 		++ num_fields2;
 		if (header_mode2) {
 			header_row_map2[num_fields2] = $1;
 		}
 	}
-	| QUOTED_CSV_FIELD  {
+	| SEMICOLONSV_QUOTED_FIELD  {
 		csv_record.push_back($1);
 		++ num_fields2;
 		if (header_mode2) {

@@ -63,18 +63,18 @@
 #define YYPULL 1
 
 /* Substitute the type names.  */
-#define YYSTYPE         COMMA_SEPARATED_VALUES_STYPE
+#define YYSTYPE         SEMICOLON_SEPARATED_VALUES_STYPE
 /* Substitute the variable and function names.  */
-#define yyparse         comma_separated_values_parse
-#define yylex           comma_separated_values_lex
-#define yyerror         comma_separated_values_error
-#define yydebug         comma_separated_values_debug
-#define yynerrs         comma_separated_values_nerrs
-#define yylval          comma_separated_values_lval
-#define yychar          comma_separated_values_char
+#define yyparse         semicolon_separated_values_parse
+#define yylex           semicolon_separated_values_lex
+#define yyerror         semicolon_separated_values_error
+#define yydebug         semicolon_separated_values_debug
+#define yynerrs         semicolon_separated_values_nerrs
+#define yylval          semicolon_separated_values_lval
+#define yychar          semicolon_separated_values_char
 
 /* First part of user prologue.  */
-#line 1 "comma-separated-values/csv.y"
+#line 1 "semicolon-separated-values/semicolon-separated-values.y"
 
 	#include "common_defs.h"
 	#include <stdio.h>
@@ -123,7 +123,7 @@
 	//bool enable_progress_report = false; 
 	//bool has_last_bad_header = false; 
 
-#line 127 "comma-separated-values/csv.tab.c"
+#line 127 "semicolon-separated-values/semicolon-separated-values.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -156,47 +156,47 @@
 
 /* Use api.header.include to #include this header
    instead of duplicating it here.  */
-#ifndef YY_COMMA_SEPARATED_VALUES_COMMA_SEPARATED_VALUES_CSV_TAB_H_INCLUDED
-# define YY_COMMA_SEPARATED_VALUES_COMMA_SEPARATED_VALUES_CSV_TAB_H_INCLUDED
+#ifndef YY_SEMICOLON_SEPARATED_VALUES_SEMICOLON_SEPARATED_VALUES_SEMICOLON_SEPARATED_VALUES_TAB_H_INCLUDED
+# define YY_SEMICOLON_SEPARATED_VALUES_SEMICOLON_SEPARATED_VALUES_SEMICOLON_SEPARATED_VALUES_TAB_H_INCLUDED
 /* Debug traces.  */
-#ifndef COMMA_SEPARATED_VALUES_DEBUG
+#ifndef SEMICOLON_SEPARATED_VALUES_DEBUG
 # if defined YYDEBUG
 #if YYDEBUG
-#   define COMMA_SEPARATED_VALUES_DEBUG 1
+#   define SEMICOLON_SEPARATED_VALUES_DEBUG 1
 #  else
-#   define COMMA_SEPARATED_VALUES_DEBUG 0
+#   define SEMICOLON_SEPARATED_VALUES_DEBUG 0
 #  endif
 # else /* ! defined YYDEBUG */
-#  define COMMA_SEPARATED_VALUES_DEBUG 0
+#  define SEMICOLON_SEPARATED_VALUES_DEBUG 0
 # endif /* ! defined YYDEBUG */
-#endif  /* ! defined COMMA_SEPARATED_VALUES_DEBUG */
-#if COMMA_SEPARATED_VALUES_DEBUG
-extern int comma_separated_values_debug;
+#endif  /* ! defined SEMICOLON_SEPARATED_VALUES_DEBUG */
+#if SEMICOLON_SEPARATED_VALUES_DEBUG
+extern int semicolon_separated_values_debug;
 #endif
 
 /* Token type.  */
-#ifndef COMMA_SEPARATED_VALUES_TOKENTYPE
-# define COMMA_SEPARATED_VALUES_TOKENTYPE
-  enum comma_separated_values_tokentype
+#ifndef SEMICOLON_SEPARATED_VALUES_TOKENTYPE
+# define SEMICOLON_SEPARATED_VALUES_TOKENTYPE
+  enum semicolon_separated_values_tokentype
   {
-    CSV_FIELD = 258,
-    QUOTED_CSV_FIELD = 259
+    SEMICOLONSV_FIELD = 258,
+    SEMICOLONSV_QUOTED_FIELD = 259
   };
 #endif
 
 /* Value type.  */
-#if ! defined COMMA_SEPARATED_VALUES_STYPE && ! defined COMMA_SEPARATED_VALUES_STYPE_IS_DECLARED
-typedef std::string COMMA_SEPARATED_VALUES_STYPE;
-# define COMMA_SEPARATED_VALUES_STYPE_IS_TRIVIAL 1
-# define COMMA_SEPARATED_VALUES_STYPE_IS_DECLARED 1
+#if ! defined SEMICOLON_SEPARATED_VALUES_STYPE && ! defined SEMICOLON_SEPARATED_VALUES_STYPE_IS_DECLARED
+typedef std::string SEMICOLON_SEPARATED_VALUES_STYPE;
+# define SEMICOLON_SEPARATED_VALUES_STYPE_IS_TRIVIAL 1
+# define SEMICOLON_SEPARATED_VALUES_STYPE_IS_DECLARED 1
 #endif
 
 
-extern COMMA_SEPARATED_VALUES_STYPE comma_separated_values_lval;
+extern SEMICOLON_SEPARATED_VALUES_STYPE semicolon_separated_values_lval;
 
-int comma_separated_values_parse (vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header);
+int semicolon_separated_values_parse (vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header);
 
-#endif /* !YY_COMMA_SEPARATED_VALUES_COMMA_SEPARATED_VALUES_CSV_TAB_H_INCLUDED  */
+#endif /* !YY_SEMICOLON_SEPARATED_VALUES_SEMICOLON_SEPARATED_VALUES_SEMICOLON_SEPARATED_VALUES_TAB_H_INCLUDED  */
 
 
 
@@ -418,7 +418,7 @@ void free (void *); /* INFRINGES ON USER NAME SPACE */
 
 #if (! defined yyoverflow \
      && (! defined __cplusplus \
-         || (defined COMMA_SEPARATED_VALUES_STYPE_IS_TRIVIAL && COMMA_SEPARATED_VALUES_STYPE_IS_TRIVIAL)))
+         || (defined SEMICOLON_SEPARATED_VALUES_STYPE_IS_TRIVIAL && SEMICOLON_SEPARATED_VALUES_STYPE_IS_TRIVIAL)))
 
 /* A type that is properly aligned for any stack member.  */
 union yyalloc
@@ -507,8 +507,8 @@ static const yytype_int8 yytranslate[] =
        5,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
-       2,     2,     2,     2,     6,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
+       2,     2,     2,     2,     2,     2,     2,     2,     2,     6,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
        2,     2,     2,     2,     2,     2,     2,     2,     2,     2,
@@ -531,7 +531,7 @@ static const yytype_int8 yytranslate[] =
        2,     2,     2,     2,     2,     2,     1,     2,     3,     4
 };
 
-#if COMMA_SEPARATED_VALUES_DEBUG
+#if SEMICOLON_SEPARATED_VALUES_DEBUG
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
@@ -539,13 +539,14 @@ static const yytype_int16 yyrline[] =
 };
 #endif
 
-#if COMMA_SEPARATED_VALUES_DEBUG || YYERROR_VERBOSE || 1
+#if SEMICOLON_SEPARATED_VALUES_DEBUG || YYERROR_VERBOSE || 1
 /* YYTNAME[SYMBOL-NUM] -- String name of the symbol SYMBOL-NUM.
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "CSV_FIELD", "QUOTED_CSV_FIELD", "'\\n'",
-  "','", "$accept", "input", "record", "csv_field", YY_NULLPTR
+  "$end", "error", "$undefined", "SEMICOLONSV_FIELD",
+  "SEMICOLONSV_QUOTED_FIELD", "'\\n'", "';'", "$accept", "input", "record",
+  "csv_field", YY_NULLPTR
 };
 #endif
 
@@ -554,7 +555,7 @@ static const char *const yytname[] =
    (internal) symbol number NUM (which must be that of a token).  */
 static const yytype_int16 yytoknum[] =
 {
-       0,   256,   257,   258,   259,    10,    44
+       0,   256,   257,   258,   259,    10,    59
 };
 # endif
 
@@ -670,7 +671,7 @@ static const yytype_int8 yyr2[] =
 
 
 /* Enable debugging if requested.  */
-#if COMMA_SEPARATED_VALUES_DEBUG
+#if SEMICOLON_SEPARATED_VALUES_DEBUG
 
 # ifndef YYFPRINTF
 #  include <stdio.h> /* INFRINGES ON USER NAME SPACE */
@@ -803,12 +804,12 @@ do {                                    \
 /* Nonzero means print parse trace.  It is left uninitialized so that
    multiple parsers can coexist.  */
 int yydebug;
-#else /* !COMMA_SEPARATED_VALUES_DEBUG */
+#else /* !SEMICOLON_SEPARATED_VALUES_DEBUG */
 # define YYDPRINTF(Args)
 # define YY_SYMBOL_PRINT(Title, Type, Value, Location)
 # define YY_STACK_PRINT(Bottom, Top)
 # define YY_REDUCE_PRINT(Rule)
-#endif /* !COMMA_SEPARATED_VALUES_DEBUG */
+#endif /* !SEMICOLON_SEPARATED_VALUES_DEBUG */
 
 
 /* YYINITDEPTH -- initial size of the parser's stacks.  */
@@ -839,7 +840,7 @@ int yydebug;
    required.  Return 1 if memory is exhausted.  */
 static int
 yy_lac_stack_realloc (YYPTRDIFF_T *yycapacity, YYPTRDIFF_T yyadd,
-#if COMMA_SEPARATED_VALUES_DEBUG
+#if SEMICOLON_SEPARATED_VALUES_DEBUG
                       char const *yydebug_prefix,
                       char const *yydebug_suffix,
 #endif
@@ -944,7 +945,7 @@ do {                                                             \
    the parser stacks to try to find a new initial context in which the
    current lookahead is syntactically acceptable.  If it fails to find
    such a context, it discards the lookahead.  */
-#if COMMA_SEPARATED_VALUES_DEBUG
+#if SEMICOLON_SEPARATED_VALUES_DEBUG
 # define YY_LAC_DISCARD(Event)                                           \
 do {                                                                     \
   if (yy_lac_established)                                                \
@@ -1047,7 +1048,7 @@ yy_lac (yy_state_t *yyesa, yy_state_t **yyes,
         else
           {
             if (yy_lac_stack_realloc (yyes_capacity, 1,
-#if COMMA_SEPARATED_VALUES_DEBUG
+#if SEMICOLON_SEPARATED_VALUES_DEBUG
                                       " (", ")",
 #endif
                                       yyes, yyesa, &yyesp, yyes_prev))
@@ -1239,7 +1240,7 @@ yysyntax_error (YYPTRDIFF_T *yymsg_alloc, char **yymsg,
                 }
               }
         }
-# if COMMA_SEPARATED_VALUES_DEBUG
+# if SEMICOLON_SEPARATED_VALUES_DEBUG
       else if (yydebug)
         YYFPRINTF (stderr, "No expected tokens.\n");
 # endif
@@ -1605,7 +1606,7 @@ yyreduce:
     switch (yyn)
       {
   case 2:
-#line 75 "comma-separated-values/csv.y"
+#line 75 "semicolon-separated-values/semicolon-separated-values.y"
                     {
 		int total_len = 0;
 		//for (int i =0; i < csv_record.size(); ++i) {
@@ -1659,11 +1660,11 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1663 "comma-separated-values/csv.tab.c"
+#line 1664 "semicolon-separated-values/semicolon-separated-values.tab.c"
     break;
 
   case 3:
-#line 131 "comma-separated-values/csv.y"
+#line 131 "semicolon-separated-values/semicolon-separated-values.y"
                             {
 
 		++num_lines2;
@@ -1722,11 +1723,11 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1726 "comma-separated-values/csv.tab.c"
+#line 1727 "semicolon-separated-values/semicolon-separated-values.tab.c"
     break;
 
   case 4:
-#line 215 "comma-separated-values/csv.y"
+#line 215 "semicolon-separated-values/semicolon-separated-values.y"
                        { 
 		if (num_fields2 == expected_fields2) {
 			all_csv_records.push_back(csv_record);
@@ -1742,11 +1743,11 @@ yyreduce:
 		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1746 "comma-separated-values/csv.tab.c"
+#line 1747 "semicolon-separated-values/semicolon-separated-values.tab.c"
     break;
 
   case 5:
-#line 233 "comma-separated-values/csv.y"
+#line 233 "semicolon-separated-values/semicolon-separated-values.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1754,11 +1755,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1758 "comma-separated-values/csv.tab.c"
+#line 1759 "semicolon-separated-values/semicolon-separated-values.tab.c"
     break;
 
   case 6:
-#line 240 "comma-separated-values/csv.y"
+#line 240 "semicolon-separated-values/semicolon-separated-values.y"
                                {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1766,11 +1767,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1770 "comma-separated-values/csv.tab.c"
+#line 1771 "semicolon-separated-values/semicolon-separated-values.tab.c"
     break;
 
   case 7:
-#line 250 "comma-separated-values/csv.y"
+#line 250 "semicolon-separated-values/semicolon-separated-values.y"
                {
 		//cout << " not pushing last field as it's empty:"
 		//	<< ", num_fields2: " << num_fields2
@@ -1790,23 +1791,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1794 "comma-separated-values/csv.tab.c"
+#line 1795 "semicolon-separated-values/semicolon-separated-values.tab.c"
     break;
 
   case 8:
-#line 269 "comma-separated-values/csv.y"
-                    {
-		csv_record.push_back(yyvsp[0]);
-		++ num_fields2;
-		if (header_mode2) {
-			header_row_map2[num_fields2] = yyvsp[0];
-		}
-	}
-#line 1806 "comma-separated-values/csv.tab.c"
-    break;
-
-  case 9:
-#line 276 "comma-separated-values/csv.y"
+#line 269 "semicolon-separated-values/semicolon-separated-values.y"
                             {
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
@@ -1814,11 +1803,23 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1818 "comma-separated-values/csv.tab.c"
+#line 1807 "semicolon-separated-values/semicolon-separated-values.tab.c"
+    break;
+
+  case 9:
+#line 276 "semicolon-separated-values/semicolon-separated-values.y"
+                                    {
+		csv_record.push_back(yyvsp[0]);
+		++ num_fields2;
+		if (header_mode2) {
+			header_row_map2[num_fields2] = yyvsp[0];
+		}
+	}
+#line 1819 "semicolon-separated-values/semicolon-separated-values.tab.c"
     break;
 
 
-#line 1822 "comma-separated-values/csv.tab.c"
+#line 1823 "semicolon-separated-values/semicolon-separated-values.tab.c"
 
         default: break;
       }
@@ -2062,6 +2063,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 365 "comma-separated-values/csv.y"
+#line 365 "semicolon-separated-values/semicolon-separated-values.y"
 
 

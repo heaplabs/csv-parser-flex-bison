@@ -14,6 +14,7 @@
 	using std::endl;
 	#include <sstream>
 #include "csv.tab.h"
+#include "semicolon-separated-values.tab.h"
 
 /* Called by yyparse on error. */
 void comma_separated_values_error ( vector<string> & csv_record,
@@ -50,6 +51,7 @@ void semicolon_separated_values_error ( vector<string> & csv_record,
 }
 
 extern  void csv2_lex_clean_up() ;
+extern  void semicolonsv2_lex_clean_up() ;
 extern bool initialise_yylex_from_file(string file_name) ;
 
 // https://stackoverflow.com/questions/1031645/how-to-detect-utf-8-in-plain-c
@@ -392,16 +394,16 @@ int main(int argc, char * argv[])
 	bool enable_progress_report = false;
 	bool has_last_bad_header = false;
 
-	int status = comma_separated_values_parse (csv_record, all_csv_records_ref,
+	int status_csv = comma_separated_values_parse (csv_record, all_csv_records_ref,
 		num_fields2, num_lines2, header_row_map2_ref,
 		header_mode2, expected_fields2, error_line_nos_ref,
 		enable_progress_report, has_last_bad_header);
-	int status = semicolon_separated_values_parse (csv_record, all_csv_records_ref,
+	int status_semicolon = semicolon_separated_values_parse (csv_record, all_csv_records_ref,
 		num_fields2, num_lines2, header_row_map2_ref,
 		header_mode2, expected_fields2, error_line_nos_ref,
 		enable_progress_report, has_last_bad_header);
 	//cout << "Parse finished" << endl;
-	if (status != 0) return 37;
+	if (status_csv != 0) return 37;
 	extern int semi_colon_count;
 	if (semi_colon_count > 0) {
 		// cout << "input file has semicolons:" 
@@ -448,6 +450,7 @@ int main(int argc, char * argv[])
 	//yy_delete_buffer(YY_CURRENT_BUFFER);
 	//yy_init = 1;
 	csv2_lex_clean_up();
+	semicolonsv2_lex_clean_up();
 	StringCodePageAnalysisResult total_cp_res;
 	//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
 	//json json_op;

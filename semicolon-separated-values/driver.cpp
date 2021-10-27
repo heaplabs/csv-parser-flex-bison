@@ -13,7 +13,7 @@
 	using std::cout;
 	using std::endl;
 	#include <sstream>
-#include "csv.tab.h"
+#include "semicolon-separated-values.tab.h"
 
 /* Called by yyparse on error. */
 void comma_separated_values_error ( vector<string> & csv_record,
@@ -392,10 +392,6 @@ int main(int argc, char * argv[])
 	bool enable_progress_report = false;
 	bool has_last_bad_header = false;
 
-	int status = comma_separated_values_parse (csv_record, all_csv_records_ref,
-		num_fields2, num_lines2, header_row_map2_ref,
-		header_mode2, expected_fields2, error_line_nos_ref,
-		enable_progress_report, has_last_bad_header);
 	int status = semicolon_separated_values_parse (csv_record, all_csv_records_ref,
 		num_fields2, num_lines2, header_row_map2_ref,
 		header_mode2, expected_fields2, error_line_nos_ref,

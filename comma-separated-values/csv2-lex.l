@@ -20,6 +20,7 @@ bool header_mode = false;
 int expected_fields = 0;
 int semi_colon_count = 0;
 int tab_count = 0;
+int comma_count = 0;
 
 %}
 
@@ -44,6 +45,7 @@ int tab_count = 0;
 	}
 	semi_colon_count += std::count(field.begin(), field.end(), ';');
 	tab_count += std::count(field.begin(), field.end(), '\t');
+	comma_count += std::count(field.begin(), field.end(), ',');
 	comma_separated_values_lval = field;
 	return CSV_FIELD;
 }
@@ -61,6 +63,7 @@ int tab_count = 0;
 	}
 	semi_colon_count += std::count(field.begin(), field.end(), ';');
 	tab_count += std::count(field.begin(), field.end(), '\t');
+	comma_count += std::count(field.begin(), field.end(), ',');
 	comma_separated_values_lval = field;
 	return CSV_FIELD;
 }
@@ -79,6 +82,7 @@ int tab_count = 0;
 	}
 	semi_colon_count += std::count(field.begin(), field.end(), ';');
 	tab_count += std::count(field.begin(), field.end(), '\t');
+	comma_count += std::count(field.begin(), field.end(), ',');
 	comma_separated_values_lval = field;
 	return CSV_FIELD;
 }
@@ -96,6 +100,7 @@ int tab_count = 0;
 	}
 	semi_colon_count += std::count(field.begin(), field.end(), ';');
 	tab_count += std::count(field.begin(), field.end(), '\t');
+	comma_count += std::count(field.begin(), field.end(), ',');
 	comma_separated_values_lval = field;
 	return CSV_FIELD;
 }
@@ -149,6 +154,7 @@ int tab_count = 0;
 	++num_quoted_fields;
 	semi_colon_count += std::count(buffer.begin(), buffer.end(), ';');
 	tab_count += std::count(field.begin(), field.end(), '\t');
+	comma_count += std::count(field.begin(), field.end(), ',');
 	comma_separated_values_lval = buffer;
 	buffer[0] = '\0';
 	buffer = "";
