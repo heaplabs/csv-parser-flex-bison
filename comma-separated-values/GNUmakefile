@@ -1,7 +1,7 @@
 #OBJS= csv.tab.o hand-lex.o
 #OBJS= csv.tab.o lex.yy.o hand-lex.o
 OBJS= ../build/csv.tab.o ../build/lex.yy.o
-OBJ2S= ../build/csv.tab.o ../build/csv2-lex.yy.o
+OBJ2S= ../build/csv.tab.o ../build/csv2-lex.yy.o ../build/driver.o
 SRC=csv.y csv2-lex.l
 CC=g++ -g -O2 -std=c++11
 
@@ -24,6 +24,9 @@ csv.exe: $(OBJS)
 
 ../build/lex.yy.o: lex.yy.c  csv.tab.h lex.l
 	$(CC) -c $<
+
+../build/driver.o: driver.cpp
+	$(CC) -std=c++11 -I. -c $< -o $@
 
 lex.yy.c: lex.l  csv.tab.h  GNUmakefile
 	flex --backup $<

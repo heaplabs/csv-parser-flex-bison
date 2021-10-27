@@ -2,8 +2,10 @@
 #define common_defs_h
 #include <string>
 #include <vector>
+#include <map>
 using std::string;
 using std::vector;
+using std::map;
 
 struct error_pos {
 	int row, col; string error_context;
