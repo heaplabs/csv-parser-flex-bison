@@ -68,7 +68,7 @@ struct LexerSpecificVars lexerSpecificVars;
 	return SEMICOLONSV_FIELD;
 }
 
-[^";\r\n][^;\r\n]*/, {
+[^";\r\n][^;\r\n]*/; {
 	//printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, lexerSpecificVars.num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = lexerSpecificVars.header_row_map.find(lexerSpecificVars.num_fields);
