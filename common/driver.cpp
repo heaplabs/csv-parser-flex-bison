@@ -53,6 +53,7 @@ void semicolon_separated_values_error ( vector<string> & csv_record,
 extern  void csv2_lex_clean_up() ;
 extern  void semicolonsv2_lex_clean_up() ;
 extern bool initialise_yylex_from_file(string file_name) ;
+extern bool initialise_semicolon_lex_from_file(string file_name) ;
 
 // https://stackoverflow.com/questions/1031645/how-to-detect-utf-8-in-plain-c
 string rectify_utf8(const string& a_str)
@@ -457,20 +458,19 @@ int main(int argc, char * argv[])
 	int num_fields2 = 0;
 	int num_lines2 = 0;
 	std::map<int, std::string> header_row_map2;
-	std::map<int, std::string> & header_row_map2_ref = header_row_map2;
 	bool header_mode2 = true ;
 	int expected_fields2 = 0;
 	vector<error_pos> error_line_nos;
-	vector<error_pos> & error_line_nos_ref = error_line_nos;
 	bool enable_progress_report = false;
 	bool has_last_bad_header = false;
 
 	int status_csv = comma_separated_values_parse (csv_record, all_csv_records_ref,
-		num_fields2, num_lines2, header_row_map2_ref,
-		header_mode2, expected_fields2, error_line_nos_ref,
+		num_fields2, num_lines2, header_row_map2,
+		header_mode2, expected_fields2, error_line_nos,
 		enable_progress_report, has_last_bad_header);
 	cout << "Parse finished" << endl;
-	if (status_csv == 0) {
+	extern int semi_colon_count;
+	if (status_csv == 0 && !(semi_colon_count > 0 && semi_colon_count > num_lines2 )) {
 		//cout << "exit " << endl;
 		csv2_lex_clean_up();
 
@@ -490,13 +490,48 @@ int main(int argc, char * argv[])
 		cout //<< "\"csv_as_json\" : "
 			<< csv_as_json << endl;
 		return 0;
-	} 
-	int status_semicolon = semicolon_separated_values_parse (csv_record, all_csv_records_ref,
-		num_fields2, num_lines2, header_row_map2_ref,
-		header_mode2, expected_fields2, error_line_nos_ref,
-		enable_progress_report, has_last_bad_header);
+
+	} else if (semi_colon_count > 0 && semi_colon_count > num_lines2 ) {
+		cout << "trying with semicolon parser" << endl;
+		initialise_semicolon_lex_from_file(argv[1]);
+		//extern struct LexerSpecificVars lexerSpecificVars;
+		all_csv_records.resize(0);
+		csv_record.resize(0);
+		num_fields2 = 0;
+		num_lines2 = 0;
+		header_mode2 = true;
+		expected_fields2 = 0;
+		enable_progress_report = false;
+		has_last_bad_header = false;
+		// todo header_row_map2 need to be cleared
+		header_row_map2.clear();
+		error_line_nos.resize(0);
+		int status_semicolon = semicolon_separated_values_parse (csv_record, all_csv_records,
+			num_fields2, num_lines2, header_row_map2,
+			header_mode2, expected_fields2, error_line_nos,
+			enable_progress_report, has_last_bad_header);
+		if (status_csv == 0) {
+			cout << "semicolon parser success" << endl;
+
+			StringCodePageAnalysisResult total_cp_res;
+			//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
+			//json json_op;
+			// todo - extract out as a method
+			vector<vector<string> > json_escaped_records = json_escape_records(all_csv_records, total_cp_res);
+			//json header_op;
+			//for (int i = 1; i<= expected_fields2; ++i)  {
+			//	header_op.push_back(header_row_map2[i]) ;
+			//}
+			string csv_as_json = print_csv_as_json(total_cp_res, 
+				json_escaped_records, header_row_map2, 
+				expected_fields2, error_line_nos,
+				num_lines2);
+			cout //<< "\"csv_as_json\" : "
+				<< csv_as_json << endl;
+			return 0;
+		}
+	}
 	if (status_csv != 0) return 37;
-	extern int semi_colon_count;
 	if (semi_colon_count > 0) {
 		// cout << "input file has semicolons:" 
 		// 	<< semi_colon_count

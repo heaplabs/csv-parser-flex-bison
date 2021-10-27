@@ -728,7 +728,6 @@ using std::cout;
 using std::endl;
 
 struct LexerSpecificVars {
-
 	string buffer;
 	std::map<int, std::string> header_row_map;
 	bool header_mode = false;
@@ -737,7 +736,6 @@ struct LexerSpecificVars {
 	int tab_count = 0;
 	int comma_count = 0;
 	int num_lines = 0, num_fields = 1, num_quoted_fields = 0;
-
 	LexerSpecificVars() :
 		buffer(), header_row_map(), header_mode (false),
 		expected_fields (0), semi_colon_count (0),
@@ -746,6 +744,7 @@ struct LexerSpecificVars {
 	{
 	}
 };
+
 struct LexerSpecificVars lexerSpecificVars;
 
 // string buffer;
@@ -757,9 +756,9 @@ struct LexerSpecificVars lexerSpecificVars;
 // int comma_count = 0;
 // int num_lines = 0, num_fields = 1, num_quoted_fields = 0;
 
-#line 761 "semicolon-separated-values/semicolon-separated-values2-lex.yy.c"
+#line 760 "semicolon-separated-values/semicolon-separated-values2-lex.yy.c"
 
-#line 763 "semicolon-separated-values/semicolon-separated-values2-lex.yy.c"
+#line 762 "semicolon-separated-values/semicolon-separated-values2-lex.yy.c"
 
 #define INITIAL 0
 #define quoted_field 1
@@ -977,10 +976,10 @@ YY_DECL
 		}
 
 	{
-#line 52 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 51 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 
 
-#line 984 "semicolon-separated-values/semicolon-separated-values2-lex.yy.c"
+#line 983 "semicolon-separated-values/semicolon-separated-values2-lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1039,7 +1038,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 54 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 53 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, num_fields);
 	string field(yytext);
@@ -1063,7 +1062,7 @@ case 2:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 72 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 71 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, lexerSpecificVars.num_fields);
 	string field(yytext);
@@ -1085,7 +1084,7 @@ YY_RULE_SETUP
 /* warning rule cant be matched because of my changes */ 
 case 3:
 YY_RULE_SETUP
-#line 91 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 90 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, lexerSpecificVars.num_fields);
 	string field(yytext);
@@ -1106,7 +1105,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 109 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 108 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	//printf("got field: |%s|, field_no: %d\n", yytext, lexerSpecificVars.num_fields);
 	string field(yytext);
@@ -1127,14 +1126,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 127 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 126 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	BEGIN(quoted_field);
 }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 131 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 130 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	//strcpy(buffer+strlen(buffer), yytext);
 	lexerSpecificVars.buffer += string(yytext);
@@ -1142,7 +1141,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 136 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 135 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	//printf("got a double quote inside a csv field");
 	//strcpy(buffer + strlen(buffer), "\"\"");
@@ -1152,7 +1151,7 @@ YY_RULE_SETUP
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 142 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 141 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	//printf("found a newline in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\n");
@@ -1161,7 +1160,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 148 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 147 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	//printf("found a carriage return in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\r");
@@ -1170,7 +1169,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 154 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 153 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	//printf("found a comma in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), ",");
@@ -1179,7 +1178,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 160 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 159 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	map<int,string>::const_iterator  index = lexerSpecificVars.header_row_map.find(lexerSpecificVars.num_fields);
 	string field(lexerSpecificVars.buffer);
@@ -1204,7 +1203,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 182 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 181 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	++lexerSpecificVars.num_fields;
 	//printf("field separator: %d\n", lexerSpecificVars.num_fields);
@@ -1221,7 +1220,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 196 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 195 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	++lexerSpecificVars.num_lines;
 	//printf("total fields :%d\n", lexerSpecificVars.num_fields);
@@ -1240,10 +1239,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 212 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 211 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 ECHO;
 	YY_BREAK
-#line 1247 "semicolon-separated-values/semicolon-separated-values2-lex.yy.c"
+#line 1246 "semicolon-separated-values/semicolon-separated-values2-lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(quoted_field):
 	yyterminate();
@@ -2249,7 +2248,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 212 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 211 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 
 
 void semicolonsv2_lex_clean_up() {
@@ -2257,32 +2256,32 @@ void semicolonsv2_lex_clean_up() {
 	yy_init = 1;
 }
 
-//bool initialise_yylex_from_file(string file_name) {
-//	yyin = fopen( file_name.c_str(), "r" );
-//	if ( ! yyin ) {
-//	      cout << "unable to open file: " << file_name << endl;
-//	      exit(1);
-//	}
-//	unsigned char buffer[100] ; // for the byte order mark
-//	for (int i = 0; i < 100; ++i) {
-//		buffer[i] = 0;
-//	}
-//	int n_read = fread(buffer, sizeof(char), 3, yyin);
-//	unsigned char ch1 = buffer[0], ch2 = buffer[1], ch3 = buffer[2];
-//	//printf("%x %x %x\n", buffer[0], buffer[1], buffer[2]);
-//	if (ch1 == 0xef && ch2 == 0xbb && ch3 == 0xbf) {
-//		// got the byte order mark so we skip over those
-//		// 3 bytes
-//		//cout << "skipping over byte order mark" << endl;
-//	} else {
-//		//cout << "rewinding to start of file - no byte order mark" << endl;
-//		fseek(yyin, 0, SEEK_SET);
-//	}
-//     
-//	yypush_buffer_state(yy_create_buffer( yyin, YY_BUF_SIZE ));
-//	BEGIN(INITIAL);
-//	return true;
-//}
+bool initialise_semicolon_lex_from_file(string file_name) {
+	semicolon_separated_values_in = fopen( file_name.c_str(), "r" );
+	if ( ! semicolon_separated_values_in ) {
+	      cout << "unable to open file: " << file_name << endl;
+	      exit(1);
+	}
+	unsigned char buffer[100] ; // for the byte order mark
+	for (int i = 0; i < 100; ++i) {
+		buffer[i] = 0;
+	}
+	int n_read = fread(buffer, sizeof(char), 3, semicolon_separated_values_in);
+	unsigned char ch1 = buffer[0], ch2 = buffer[1], ch3 = buffer[2];
+	//printf("%x %x %x\n", buffer[0], buffer[1], buffer[2]);
+	if (ch1 == 0xef && ch2 == 0xbb && ch3 == 0xbf) {
+		// got the byte order mark so we skip over those
+		// 3 bytes
+		//cout << "skipping over byte order mark" << endl;
+	} else {
+		//cout << "rewinding to start of file - no byte order mark" << endl;
+		fseek(semicolon_separated_values_in, 0, SEEK_SET);
+	}
+     
+	semicolon_separated_values_push_buffer_state(semicolon_separated_values__create_buffer( semicolon_separated_values_in, YY_BUF_SIZE ));
+	BEGIN(INITIAL);
+	return true;
+}
 
 //int main() {
 //        yylex();
