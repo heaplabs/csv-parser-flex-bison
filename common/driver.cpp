@@ -470,7 +470,8 @@ int main(int argc, char * argv[])
 		enable_progress_report, has_last_bad_header);
 	//cout << "Parse finished" << endl;
 	extern int semi_colon_count;
-	if (status_csv == 0 && !(semi_colon_count > 0 && semi_colon_count > num_lines2 )) {
+	extern int comma_count;
+	if (status_csv == 0 && !(semi_colon_count > 0 && semi_colon_count > num_lines2 && semi_colon_count > comma_count )) {
 		//cout << "exit " << endl;
 		csv2_lex_clean_up();
 
@@ -491,7 +492,7 @@ int main(int argc, char * argv[])
 			<< csv_as_json << endl;
 		return 0;
 
-	} else if (semi_colon_count > 0 && semi_colon_count > num_lines2 ) {
+	} else if (semi_colon_count > 0 && semi_colon_count > num_lines2  && semi_colon_count > comma_count ) {
 		//cout << "trying with semicolon parser" << endl;
 		initialise_semicolon_lex_from_file(argv[1]);
 		//extern struct LexerSpecificVars lexerSpecificVars;
@@ -510,6 +511,7 @@ int main(int argc, char * argv[])
 			num_fields2, num_lines2, header_row_map2,
 			header_mode2, expected_fields2, error_line_nos,
 			enable_progress_report, has_last_bad_header);
+		semicolonsv2_lex_clean_up();
 		if (status_csv == 0) {
 			//cout << "semicolon parser success" << endl;
 
@@ -532,15 +534,15 @@ int main(int argc, char * argv[])
 		}
 	}
 	if (status_csv != 0) return 37;
-	if (semi_colon_count > 0) {
-		// cout << "input file has semicolons:" 
-		// 	<< semi_colon_count
-		// 	<< "num_lines: " << num_lines2 << endl;
-		if (semi_colon_count > num_lines2 ) {
-			//cout << "Exiting - this is a semicolon terminated file mostly" <<endl;
-			return 41;
-		}
-	}
+	//if (semi_colon_count > 0) {
+	//	// cout << "input file has semicolons:" 
+	//	// 	<< semi_colon_count
+	//	// 	<< "num_lines: " << num_lines2 << endl;
+	//	if (semi_colon_count > num_lines2 ) {
+	//		//cout << "Exiting - this is a semicolon terminated file mostly" <<endl;
+	//		return 41;
+	//	}
+	//}
 	extern int tab_count;
 	if (tab_count > 0) {
 		// cout << "input file has tabs:" 
@@ -548,7 +550,7 @@ int main(int argc, char * argv[])
 		// 	<< "num_lines: " << num_lines2 << endl;
 		if (tab_count > num_lines2 ) {
 			//cout << "Exiting - this is a tab  separated file mostly" <<endl;
-			return 41;
+			return 43;
 		}
 	}
 	// cout << endl << "num_lines2: "  << num_lines2 << endl;
@@ -576,8 +578,7 @@ int main(int argc, char * argv[])
 	 /* For non-reentrant C scanner only. */
 	//yy_delete_buffer(YY_CURRENT_BUFFER);
 	//yy_init = 1;
-	csv2_lex_clean_up();
-	semicolonsv2_lex_clean_up();
+	//csv2_lex_clean_up();
 
 
 
@@ -595,7 +596,7 @@ int main(int argc, char * argv[])
 	//cout 
 	//	//<< "JSON format: " << endl
 	//	<< parsed_data.dump(4) << endl;
-	return 0;
+	return 47;
 }
 
 string print_key_value(map<string, int> & kv) {
