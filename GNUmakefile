@@ -50,7 +50,12 @@ valgrind_check: build/csv2_ubuntu.exe
 test-nlohmann.o: test-nlohmann-json.cpp
 	g++ -c $<
 
+
 clean:
-	rm *.o csv.tab.[hc] csv2-lex.yy.c *.exe
+	rm build/*.o comma-separated-values/csv.tab.[hc] \
+		comma-separated-values/csv2-lex.yy.c \
+		build/*.exe \
+		semicolon-separated-values/semicolon-separated-values2-lex.yy.c \
+		semicolon-separated-values/semicolon-separated-values.tab.[hc]
 
 
