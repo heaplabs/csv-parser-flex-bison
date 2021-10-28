@@ -11,23 +11,23 @@ using std::string;
 using std::cout;
 using std::endl;
 
-struct LexerSpecificVars {
-	string buffer;
-	std::map<int, std::string> header_row_map;
-	bool header_mode = false;
-	int expected_fields = 0;
-	int semi_colon_count = 0;
-	int tab_count = 0;
-	int comma_count = 0;
-	int num_lines = 0, num_fields = 1, num_quoted_fields = 0;
-	LexerSpecificVars() :
-		buffer(), header_row_map(), header_mode (false),
-		expected_fields (0), semi_colon_count (0),
-		tab_count(0), comma_count(0),
-		num_lines(0), num_fields(1), num_quoted_fields(0)
-	{
-	}
-};
+//struct LexerSpecificVars {
+//	string buffer;
+//	std::map<int, std::string> header_row_map;
+//	bool header_mode = false;
+//	int expected_fields = 0;
+//	int semi_colon_count = 0;
+//	int tab_count = 0;
+//	int comma_count = 0;
+//	int num_lines = 0, num_fields = 1, num_quoted_fields = 0;
+//	LexerSpecificVars() :
+//		buffer(), header_row_map(), header_mode (false),
+//		expected_fields (0), semi_colon_count (0),
+//		tab_count(0), comma_count(0),
+//		num_lines(0), num_fields(1), num_quoted_fields(0)
+//	{
+//	}
+//};
 
 struct LexerSpecificVars tabLexerSpecificVars;
 
@@ -51,7 +51,7 @@ struct LexerSpecificVars tabLexerSpecificVars;
 %%
 
 [^"\t\r\n][^\t\r\n]*\" {
-	//printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, num_fields);
+	printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = tabLexerSpecificVars.header_row_map.find(tabLexerSpecificVars.num_fields);
 	if (index == tabLexerSpecificVars.header_row_map.end()) {
@@ -69,7 +69,7 @@ struct LexerSpecificVars tabLexerSpecificVars;
 }
 
 [^"\t\r\n][^\t\r\n]*/\t {
-	//printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
+	printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = tabLexerSpecificVars.header_row_map.find(tabLexerSpecificVars.num_fields);
 	if (index == tabLexerSpecificVars.header_row_map.end()) {
@@ -88,7 +88,7 @@ struct LexerSpecificVars tabLexerSpecificVars;
 
  	/* warning rule cant be matched because of my changes */ 
 [^\t\r\n"]+\" {
-	//printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
+	printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = tabLexerSpecificVars.header_row_map.find(tabLexerSpecificVars.num_fields);
 	if (index == tabLexerSpecificVars.header_row_map.end()) {
@@ -106,7 +106,7 @@ struct LexerSpecificVars tabLexerSpecificVars;
 }
 
 [^\t\r\n"]* {
-	//printf("got field: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
+	printf("got field: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = tabLexerSpecificVars.header_row_map.find(tabLexerSpecificVars.num_fields);
 	if (index == tabLexerSpecificVars.header_row_map.end()) {
@@ -167,7 +167,7 @@ struct LexerSpecificVars tabLexerSpecificVars;
 		//	<< field << endl; 
 	}
 	BEGIN(INITIAL);
-	//printf("got a quoted field: %s\n", buffer.c_str());
+	printf("got a quoted field: %s\n", tabLexerSpecificVars.buffer.c_str());
 	++tabLexerSpecificVars.num_quoted_fields;
 	tabLexerSpecificVars.semi_colon_count += std::count(field.begin(), field.end(), ';');
 	tabLexerSpecificVars.tab_count += std::count(field.begin(), field.end(), '\t');
@@ -178,10 +178,10 @@ struct LexerSpecificVars tabLexerSpecificVars;
 	return TABSV_QUOTED_FIELD;
 }
 
-;	{
+\t	{
 	++tabLexerSpecificVars.num_fields;
 	//printf("field separator: %d\n", tabLexerSpecificVars.num_fields);
-	return ';';
+	return '\t';
 }
 
 	/*

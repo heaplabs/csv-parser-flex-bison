@@ -535,7 +535,7 @@ static const yytype_int8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int16 yyrline[] =
 {
-       0,    75,    75,   131,   215,   233,   240,   250,   269,   276
+       0,    75,    75,   131,   215,   233,   240,   250,   269,   277
 };
 #endif
 
@@ -1796,29 +1796,31 @@ yyreduce:
   case 8:
 #line 269 "tab-separated-values.y"
                       {
+		cout << "got TABSV_FIELD" << endl;
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
 		if (header_mode2) {
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1806 "tab-separated-values.tab.c"
+#line 1807 "tab-separated-values.tab.c"
     break;
 
   case 9:
-#line 276 "tab-separated-values.y"
+#line 277 "tab-separated-values.y"
                               {
+		cout << "got TABSV_QUOTED_FIELD" << endl;
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
 		if (header_mode2) {
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1818 "tab-separated-values.tab.c"
+#line 1820 "tab-separated-values.tab.c"
     break;
 
 
-#line 1822 "tab-separated-values.tab.c"
+#line 1824 "tab-separated-values.tab.c"
 
         default: break;
       }
@@ -2062,6 +2064,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 365 "tab-separated-values.y"
+#line 367 "tab-separated-values.y"
 
 

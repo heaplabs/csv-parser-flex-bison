@@ -267,6 +267,7 @@ csv_field:
 		}
 	}
 	| TABSV_FIELD {
+		cout << "got TABSV_FIELD" << endl;
 		csv_record.push_back($1);
 		++ num_fields2;
 		if (header_mode2) {
@@ -274,6 +275,7 @@ csv_field:
 		}
 	}
 	| TABSV_QUOTED_FIELD  {
+		cout << "got TABSV_QUOTED_FIELD" << endl;
 		csv_record.push_back($1);
 		++ num_fields2;
 		if (header_mode2) {

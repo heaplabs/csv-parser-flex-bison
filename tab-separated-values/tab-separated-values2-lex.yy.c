@@ -622,11 +622,11 @@ struct yy_trans_info
 	flex_int32_t yy_verify;
 	flex_int32_t yy_nxt;
 	};
-static const flex_int16_t yy_accept[26] =
+static const flex_int16_t yy_accept[25] =
     {   0,
-        4,    4,    6,    6,   15,    4,   14,   13,   13,    5,
-        4,    6,   10,    8,    9,   11,    4,    2,    1,   13,
-        6,    7,    0,    1,    0
+        4,    4,    6,    6,   15,    4,   12,   13,   13,    5,
+        6,   10,    8,    9,   11,    4,    2,    1,   13,    6,
+        7,    0,    1,    0
     } ;
 
 static const YY_CHAR yy_ec[256] =
@@ -636,7 +636,7 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    5,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
-        1,    1,    1,    1,    1,    1,    1,    1,    6,    1,
+        1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
         1,    1,    1,    1,    1,    1,    1,    1,    1,    1,
@@ -661,39 +661,37 @@ static const YY_CHAR yy_ec[256] =
         1,    1,    1,    1,    1
     } ;
 
-static const YY_CHAR yy_meta[7] =
+static const YY_CHAR yy_meta[6] =
     {   0,
-        1,    2,    3,    4,    5,    1
+        1,    2,    3,    4,    5
     } ;
 
-static const flex_int16_t yy_base[30] =
+static const flex_int16_t yy_base[29] =
     {   0,
-        0,    0,    6,    0,   25,   12,   26,    0,    0,   26,
-        0,    0,   26,   26,   26,    0,    0,   26,   18,   26,
-        0,   26,    0,    0,   26,   18,   18,   15,   10
+        0,    0,    5,    0,   21,   10,   22,    0,    0,   22,
+        0,   22,   22,   22,    0,    0,   22,   15,   22,    0,
+       22,    0,    0,   22,   15,   15,   13,    8
     } ;
 
-static const flex_int16_t yy_def[30] =
+static const flex_int16_t yy_def[29] =
     {   0,
-       25,    1,   25,    3,   25,   25,   25,   26,   27,   25,
-        6,   28,   25,   25,   25,   29,    6,   25,   25,   25,
-       28,   25,   19,   19,    0,   25,   25,   25,   25
+       24,    1,   24,    3,   24,   24,   24,   25,   26,   24,
+       27,   24,   24,   24,   28,    6,   24,   24,   24,   27,
+       24,   18,   18,    0,   24,   24,   24,   24
     } ;
 
-static const flex_int16_t yy_nxt[33] =
+static const flex_int16_t yy_nxt[28] =
     {   0,
         6,    7,    8,    9,   10,   11,   12,   13,   14,   15,
-       16,   12,   17,   18,   22,   21,   19,   17,   23,   18,
-       20,   20,   24,   23,   25,    5,   25,   25,   25,   25,
-       25,   25
+       16,   17,   21,   20,   18,   22,   17,   19,   19,   23,
+       24,    5,   24,   24,   24,   24,   24
     } ;
 
-static const flex_int16_t yy_chk[33] =
+static const flex_int16_t yy_chk[28] =
     {   0,
-        1,    1,    1,    1,    1,    1,    3,    3,    3,    3,
-        3,    3,    6,    6,   29,   28,    6,    6,   19,   19,
-       27,   26,   19,   19,    5,   25,   25,   25,   25,   25,
-       25,   25
+        1,    1,    1,    1,    1,    3,    3,    3,    3,    3,
+        6,    6,   28,   27,    6,   18,   18,   26,   25,   18,
+        5,   24,   24,   24,   24,   24,   24
     } ;
 
 static yy_state_type yy_last_accepting_state;
@@ -729,23 +727,23 @@ using std::string;
 using std::cout;
 using std::endl;
 
-struct LexerSpecificVars {
-	string buffer;
-	std::map<int, std::string> header_row_map;
-	bool header_mode = false;
-	int expected_fields = 0;
-	int semi_colon_count = 0;
-	int tab_count = 0;
-	int comma_count = 0;
-	int num_lines = 0, num_fields = 1, num_quoted_fields = 0;
-	LexerSpecificVars() :
-		buffer(), header_row_map(), header_mode (false),
-		expected_fields (0), semi_colon_count (0),
-		tab_count(0), comma_count(0),
-		num_lines(0), num_fields(1), num_quoted_fields(0)
-	{
-	}
-};
+//struct LexerSpecificVars {
+//	string buffer;
+//	std::map<int, std::string> header_row_map;
+//	bool header_mode = false;
+//	int expected_fields = 0;
+//	int semi_colon_count = 0;
+//	int tab_count = 0;
+//	int comma_count = 0;
+//	int num_lines = 0, num_fields = 1, num_quoted_fields = 0;
+//	LexerSpecificVars() :
+//		buffer(), header_row_map(), header_mode (false),
+//		expected_fields (0), semi_colon_count (0),
+//		tab_count(0), comma_count(0),
+//		num_lines(0), num_fields(1), num_quoted_fields(0)
+//	{
+//	}
+//};
 
 struct LexerSpecificVars tabLexerSpecificVars;
 
@@ -758,9 +756,9 @@ struct LexerSpecificVars tabLexerSpecificVars;
 // int comma_count = 0;
 // int num_lines = 0, num_fields = 1, num_quoted_fields = 0;
 
-#line 762 "tab-separated-values2-lex.yy.c"
+#line 760 "tab-separated-values2-lex.yy.c"
 
-#line 764 "tab-separated-values2-lex.yy.c"
+#line 762 "tab-separated-values2-lex.yy.c"
 
 #define INITIAL 0
 #define quoted_field 1
@@ -981,7 +979,7 @@ YY_DECL
 #line 51 "tab-separated-values2-lex.l"
 
 
-#line 985 "tab-separated-values2-lex.yy.c"
+#line 983 "tab-separated-values2-lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1008,13 +1006,13 @@ yy_match:
 			while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 				{
 				yy_current_state = (int) yy_def[yy_current_state];
-				if ( yy_current_state >= 26 )
+				if ( yy_current_state >= 25 )
 					yy_c = yy_meta[yy_c];
 				}
 			yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
 			++yy_cp;
 			}
-		while ( yy_base[yy_current_state] != 26 );
+		while ( yy_base[yy_current_state] != 22 );
 
 yy_find_action:
 		yy_act = yy_accept[yy_current_state];
@@ -1042,7 +1040,7 @@ case 1:
 YY_RULE_SETUP
 #line 53 "tab-separated-values2-lex.l"
 {
-	//printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, num_fields);
+	printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = tabLexerSpecificVars.header_row_map.find(tabLexerSpecificVars.num_fields);
 	if (index == tabLexerSpecificVars.header_row_map.end()) {
@@ -1066,7 +1064,7 @@ YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 71 "tab-separated-values2-lex.l"
 {
-	//printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
+	printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = tabLexerSpecificVars.header_row_map.find(tabLexerSpecificVars.num_fields);
 	if (index == tabLexerSpecificVars.header_row_map.end()) {
@@ -1088,7 +1086,7 @@ case 3:
 YY_RULE_SETUP
 #line 90 "tab-separated-values2-lex.l"
 {
-	//printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
+	printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = tabLexerSpecificVars.header_row_map.find(tabLexerSpecificVars.num_fields);
 	if (index == tabLexerSpecificVars.header_row_map.end()) {
@@ -1109,7 +1107,7 @@ case 4:
 YY_RULE_SETUP
 #line 108 "tab-separated-values2-lex.l"
 {
-	//printf("got field: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
+	printf("got field: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = tabLexerSpecificVars.header_row_map.find(tabLexerSpecificVars.num_fields);
 	if (index == tabLexerSpecificVars.header_row_map.end()) {
@@ -1192,7 +1190,7 @@ YY_RULE_SETUP
 		//	<< field << endl; 
 	}
 	BEGIN(INITIAL);
-	//printf("got a quoted field: %s\n", buffer.c_str());
+	printf("got a quoted field: %s\n", tabLexerSpecificVars.buffer.c_str());
 	++tabLexerSpecificVars.num_quoted_fields;
 	tabLexerSpecificVars.semi_colon_count += std::count(field.begin(), field.end(), ';');
 	tabLexerSpecificVars.tab_count += std::count(field.begin(), field.end(), '\t');
@@ -1209,7 +1207,7 @@ YY_RULE_SETUP
 {
 	++tabLexerSpecificVars.num_fields;
 	//printf("field separator: %d\n", tabLexerSpecificVars.num_fields);
-	return ';';
+	return '\t';
 }
 	YY_BREAK
 /*
@@ -1244,7 +1242,7 @@ YY_RULE_SETUP
 #line 211 "tab-separated-values2-lex.l"
 ECHO;
 	YY_BREAK
-#line 1248 "tab-separated-values2-lex.yy.c"
+#line 1246 "tab-separated-values2-lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(quoted_field):
 	yyterminate();
@@ -1542,7 +1540,7 @@ static int yy_get_next_buffer (void)
 		while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 			{
 			yy_current_state = (int) yy_def[yy_current_state];
-			if ( yy_current_state >= 26 )
+			if ( yy_current_state >= 25 )
 				yy_c = yy_meta[yy_c];
 			}
 		yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
@@ -1570,11 +1568,11 @@ static int yy_get_next_buffer (void)
 	while ( yy_chk[yy_base[yy_current_state] + yy_c] != yy_current_state )
 		{
 		yy_current_state = (int) yy_def[yy_current_state];
-		if ( yy_current_state >= 26 )
+		if ( yy_current_state >= 25 )
 			yy_c = yy_meta[yy_c];
 		}
 	yy_current_state = yy_nxt[yy_base[yy_current_state] + yy_c];
-	yy_is_jam = (yy_current_state == 25);
+	yy_is_jam = (yy_current_state == 24);
 
 		return yy_is_jam ? 0 : yy_current_state;
 }

@@ -29,7 +29,7 @@ void tab_separated_values_error ( vector<string> & csv_record,
 		char const *s )
 {
 	error_line_nos.push_back( error_pos(num_lines2, num_fields2, s));
-	//printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
+	printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
 }
 
 /* Called by yyparse on error. */
@@ -68,8 +68,10 @@ void semicolon_separated_values_error ( vector<string> & csv_record,
 
 extern  void csv2_lex_clean_up() ;
 extern  void semicolonsv2_lex_clean_up() ;
+extern void tabsv2_lex_clean_up() ;
 extern bool initialise_yylex_from_file(string file_name) ;
 extern bool initialise_semicolon_lex_from_file(string file_name) ;
+extern bool initialise_tab_lex_from_file(string file_name) ;
 
 // https://stackoverflow.com/questions/1031645/how-to-detect-utf-8-in-plain-c
 string rectify_utf8(const string& a_str)
@@ -466,6 +468,7 @@ int main(int argc, char * argv[])
 {
 	if (argc > 1) {
 		//initialise_yylex_from_file(argv[1]);
+		initialise_tab_lex_from_file(argv[1]);
 	}
 
 	vector<string> csv_record;
@@ -487,10 +490,10 @@ int main(int argc, char * argv[])
 	//cout << "Parse finished" << endl;
 	extern int semi_colon_count;
 	extern int comma_count;
-	/*
-	if (status_csv == 0 && !(semi_colon_count > 0 && semi_colon_count > num_lines2 && semi_colon_count > comma_count )) {
+	extern struct LexerSpecificVars tabLexerSpecificVars;
+	if (status_csv == 0 && !(tabLexerSpecificVars.semi_colon_count > 0 && tabLexerSpecificVars.semi_colon_count > num_lines2 && tabLexerSpecificVars.semi_colon_count > tabLexerSpecificVars.comma_count )) {
 		//cout << "exit " << endl;
-		csv2_lex_clean_up();
+		tabsv2_lex_clean_up();
 
 		StringCodePageAnalysisResult total_cp_res;
 		//cout << "Successfully parsed records: " << all_csv_records.size() << endl;
@@ -509,7 +512,9 @@ int main(int argc, char * argv[])
 			<< csv_as_json << endl;
 		return 0;
 
-	} else if (semi_colon_count > 0 && semi_colon_count > num_lines2  && semi_colon_count > comma_count ) {
+	} 
+	/*
+	else if (semi_colon_count > 0 && semi_colon_count > num_lines2  && semi_colon_count > comma_count ) {
 		//cout << "trying with semicolon parser" << endl;
 		initialise_semicolon_lex_from_file(argv[1]);
 		//extern struct LexerSpecificVars lexerSpecificVars;
