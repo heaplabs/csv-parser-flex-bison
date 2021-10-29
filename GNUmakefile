@@ -9,7 +9,7 @@ SRC=comma-separated-values/csv.y comma-separated-values/csv2-lex.l
 CC=g++ -g -O2 -std=c++11
 
 build/csv2_ubuntu.exe: $(OBJ2S) $(SRC)
-	$(CC) -o $@ $(OBJ2S) 
+	$(CC) -o $@ $(OBJ2S)
 
 .PHONY: clean
 
@@ -37,18 +37,18 @@ tab-separated-values/tab-separated-values.tab.h tab-separated-values/tab-separat
 	bison --defines $< -o tab-separated-values/tab-separated-values.tab.c
 
 # flex files l -> c
-comma-separated-values/csv2-lex.yy.c: comma-separated-values/csv2-lex.l 
+comma-separated-values/csv2-lex.yy.c: comma-separated-values/csv2-lex.l
 	flex --backup -o $@ $<
 
-semicolon-separated-values/semicolon-separated-values2-lex.yy.c: semicolon-separated-values/semicolon-separated-values2-lex.l 
+semicolon-separated-values/semicolon-separated-values2-lex.yy.c: semicolon-separated-values/semicolon-separated-values2-lex.l
 	flex --backup -o $@ $<
-	sed "s/yytext_ptr/semicolonsv_text_ptr/" semicolon-separated-values/semicolon-separated-values2-lex.yy.c > semicolon-separated-values/semicolon-separated-values2-lex.yy.c.temp 
+	sed "s/yytext_ptr/semicolonsv_text_ptr/" semicolon-separated-values/semicolon-separated-values2-lex.yy.c > semicolon-separated-values/semicolon-separated-values2-lex.yy.c.temp
 	mv semicolon-separated-values/semicolon-separated-values2-lex.yy.c.temp semicolon-separated-values/semicolon-separated-values2-lex.yy.c
 
 
 tab-separated-values/tab-separated-values2-lex.yy.c: tab-separated-values/tab-separated-values2-lex.l tab-separated-values/tab-separated-values.tab.h
 	flex --backup -o $@ $<
-	sed "s/yytext_ptr/tabsv_text_ptr/" tab-separated-values/tab-separated-values2-lex.yy.c > tab-separated-values/tab-separated-values2-lex.yy.c.temp 
+	sed "s/yytext_ptr/tabsv_text_ptr/" tab-separated-values/tab-separated-values2-lex.yy.c > tab-separated-values/tab-separated-values2-lex.yy.c.temp
 	mv tab-separated-values/tab-separated-values2-lex.yy.c.temp tab-separated-values/tab-separated-values2-lex.yy.c
 
 # flex file c -> o
