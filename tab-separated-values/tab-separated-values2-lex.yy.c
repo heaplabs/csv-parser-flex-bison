@@ -1040,7 +1040,7 @@ case 1:
 YY_RULE_SETUP
 #line 53 "tab-separated-values2-lex.l"
 {
-	printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
+	//printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = tabLexerSpecificVars.header_row_map.find(tabLexerSpecificVars.num_fields);
 	if (index == tabLexerSpecificVars.header_row_map.end()) {
@@ -1064,7 +1064,7 @@ YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
 #line 71 "tab-separated-values2-lex.l"
 {
-	printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
+	//printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = tabLexerSpecificVars.header_row_map.find(tabLexerSpecificVars.num_fields);
 	if (index == tabLexerSpecificVars.header_row_map.end()) {
@@ -1086,7 +1086,7 @@ case 3:
 YY_RULE_SETUP
 #line 90 "tab-separated-values2-lex.l"
 {
-	printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
+	//printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = tabLexerSpecificVars.header_row_map.find(tabLexerSpecificVars.num_fields);
 	if (index == tabLexerSpecificVars.header_row_map.end()) {
@@ -1107,7 +1107,7 @@ case 4:
 YY_RULE_SETUP
 #line 108 "tab-separated-values2-lex.l"
 {
-	printf("got field: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
+	//printf("got field: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
 	map<int,string>::const_iterator  index = tabLexerSpecificVars.header_row_map.find(tabLexerSpecificVars.num_fields);
 	if (index == tabLexerSpecificVars.header_row_map.end()) {
@@ -1190,7 +1190,7 @@ YY_RULE_SETUP
 		//	<< field << endl; 
 	}
 	BEGIN(INITIAL);
-	printf("got a quoted field: %s\n", tabLexerSpecificVars.buffer.c_str());
+	//printf("got a quoted field: %s\n", tabLexerSpecificVars.buffer.c_str());
 	++tabLexerSpecificVars.num_quoted_fields;
 	tabLexerSpecificVars.semi_colon_count += std::count(field.begin(), field.end(), ';');
 	tabLexerSpecificVars.tab_count += std::count(field.begin(), field.end(), '\t');

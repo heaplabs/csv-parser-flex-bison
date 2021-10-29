@@ -1796,7 +1796,7 @@ yyreduce:
   case 8:
 #line 269 "tab-separated-values.y"
                       {
-		cout << "got TABSV_FIELD" << endl;
+		//cout << "got TABSV_FIELD" << endl;
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
 		if (header_mode2) {
@@ -1809,7 +1809,7 @@ yyreduce:
   case 9:
 #line 277 "tab-separated-values.y"
                               {
-		cout << "got TABSV_QUOTED_FIELD" << endl;
+		//cout << "got TABSV_QUOTED_FIELD" << endl;
 		csv_record.push_back(yyvsp[0]);
 		++ num_fields2;
 		if (header_mode2) {
