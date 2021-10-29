@@ -13,7 +13,7 @@ build/csv2_ubuntu.exe: $(OBJ2S) $(SRC)
 
 .PHONY: clean
 
-build/driver.o: common/driver.cpp comma-separated-values/csv.tab.h semicolon-separated-values/semicolon-separated-values.tab.h
+build/driver.o: common/driver.cpp comma-separated-values/csv.tab.h semicolon-separated-values/semicolon-separated-values.tab.h tab-separated-values/tab-separated-values.tab.h
 	$(CC) -std=c++11 -Itab-separated-values -Icomma-separated-values -Isemicolon-separated-values -Icommon -c $< -o $@
 
 # bison files c -> obj
@@ -80,6 +80,8 @@ clean:
 		comma-separated-values/csv2-lex.yy.c \
 		build/*.exe \
 		semicolon-separated-values/semicolon-separated-values2-lex.yy.c \
-		semicolon-separated-values/semicolon-separated-values.tab.[hc]
+		semicolon-separated-values/semicolon-separated-values.tab.[hc] \
+		tab-separated-values/tab-separated-values2-lex.yy.c \
+		tab-separated-values/tab-separated-values.tab.[hc]
 
 
