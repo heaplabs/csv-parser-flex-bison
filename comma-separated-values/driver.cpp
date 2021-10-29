@@ -49,7 +49,26 @@ void semicolon_separated_values_error ( vector<string> & csv_record,
 	//printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
 }
 
+
+/* Called by yyparse on error. */
+void tab_separated_values_error ( vector<string> & csv_record,
+		vector<vector<string>> & all_csv_records,
+		int &num_fields2,
+		int &num_lines2,
+		std::map<int, std::string> & header_row_map2,
+		bool &header_mod2 ,
+		int &expected_filds2,
+		vector<error_pos> & error_line_nos,
+		bool &enable_proress_report,
+		bool &has_last_bad_header,
+		char const *s )
+{
+	error_line_nos.push_back( error_pos(num_lines2, num_fields2, s));
+	printf ("%s ERROR line: %d, field : %d\n", s, num_lines2, num_fields2);
+}
+
 extern  void csv2_lex_clean_up() ;
+extern void tabsv2_lex_clean_up() ;
 extern bool initialise_yylex_from_file(string file_name) ;
 
 // https://stackoverflow.com/questions/1031645/how-to-detect-utf-8-in-plain-c

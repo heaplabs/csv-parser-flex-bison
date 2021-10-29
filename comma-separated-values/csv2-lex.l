@@ -163,6 +163,7 @@ int comma_count = 0;
 
 ,	{
 	++num_fields;
+	++comma_count ;
 	//printf("field separator: %d\n", num_fields);
 	return ',';
 }

@@ -180,6 +180,7 @@ struct LexerSpecificVars lexerSpecificVars;
 
 ;	{
 	++lexerSpecificVars.num_fields;
+	++lexerSpecificVars.semi_colon_count;
 	//printf("field separator: %d\n", lexerSpecificVars.num_fields);
 	return ';';
 }

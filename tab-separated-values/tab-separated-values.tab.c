@@ -74,7 +74,7 @@
 #define yychar          tab_separated_values_char
 
 /* First part of user prologue.  */
-#line 1 "tab-separated-values.y"
+#line 1 "tab-separated-values/tab-separated-values.y"
 
 	#include "common_defs.h"
 	#include <stdio.h>
@@ -123,7 +123,7 @@
 	//bool enable_progress_report = false; 
 	//bool has_last_bad_header = false; 
 
-#line 127 "tab-separated-values.tab.c"
+#line 127 "tab-separated-values/tab-separated-values.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -156,8 +156,8 @@
 
 /* Use api.header.include to #include this header
    instead of duplicating it here.  */
-#ifndef YY_TAB_SEPARATED_VALUES_TAB_SEPARATED_VALUES_TAB_H_INCLUDED
-# define YY_TAB_SEPARATED_VALUES_TAB_SEPARATED_VALUES_TAB_H_INCLUDED
+#ifndef YY_TAB_SEPARATED_VALUES_TAB_SEPARATED_VALUES_TAB_SEPARATED_VALUES_TAB_H_INCLUDED
+# define YY_TAB_SEPARATED_VALUES_TAB_SEPARATED_VALUES_TAB_SEPARATED_VALUES_TAB_H_INCLUDED
 /* Debug traces.  */
 #ifndef TAB_SEPARATED_VALUES_DEBUG
 # if defined YYDEBUG
@@ -196,7 +196,7 @@ extern TAB_SEPARATED_VALUES_STYPE tab_separated_values_lval;
 
 int tab_separated_values_parse (vector<string> & csv_record, vector<vector<string>> & all_csv_records, int &num_fields2, int &num_lines2, std::map<int, std::string> & header_row_map2, bool &header_mode2, int &expected_fields2, vector<error_pos> & error_line_nos, bool &enable_progress_report, bool &has_last_bad_header);
 
-#endif /* !YY_TAB_SEPARATED_VALUES_TAB_SEPARATED_VALUES_TAB_H_INCLUDED  */
+#endif /* !YY_TAB_SEPARATED_VALUES_TAB_SEPARATED_VALUES_TAB_SEPARATED_VALUES_TAB_H_INCLUDED  */
 
 
 
@@ -1605,7 +1605,7 @@ yyreduce:
     switch (yyn)
       {
   case 2:
-#line 75 "tab-separated-values.y"
+#line 75 "tab-separated-values/tab-separated-values.y"
                     {
 		int total_len = 0;
 		//for (int i =0; i < csv_record.size(); ++i) {
@@ -1659,11 +1659,11 @@ yyreduce:
 		header_mode2 = false;
 		//cout << "header row, expected_fields2:" << expected_fields2 << endl;
 	}
-#line 1663 "tab-separated-values.tab.c"
+#line 1663 "tab-separated-values/tab-separated-values.tab.c"
     break;
 
   case 3:
-#line 131 "tab-separated-values.y"
+#line 131 "tab-separated-values/tab-separated-values.y"
                             {
 
 		++num_lines2;
@@ -1722,11 +1722,11 @@ yyreduce:
 		//cout << "parsed a record" << endl;
 
 	}
-#line 1726 "tab-separated-values.tab.c"
+#line 1726 "tab-separated-values/tab-separated-values.tab.c"
     break;
 
   case 4:
-#line 215 "tab-separated-values.y"
+#line 215 "tab-separated-values/tab-separated-values.y"
                        { 
 		if (num_fields2 == expected_fields2) {
 			all_csv_records.push_back(csv_record);
@@ -1742,11 +1742,11 @@ yyreduce:
 		//cout << "ERROR: " << endl;
 		yyerrok; 
 	}
-#line 1746 "tab-separated-values.tab.c"
+#line 1746 "tab-separated-values/tab-separated-values.tab.c"
     break;
 
   case 5:
-#line 233 "tab-separated-values.y"
+#line 233 "tab-separated-values/tab-separated-values.y"
                   {
 		//csv_record.push_back($1);
 		//++ num_fields2;
@@ -1754,11 +1754,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1758 "tab-separated-values.tab.c"
+#line 1758 "tab-separated-values/tab-separated-values.tab.c"
     break;
 
   case 6:
-#line 240 "tab-separated-values.y"
+#line 240 "tab-separated-values/tab-separated-values.y"
                                 {
 		//csv_record.push_back($3);
 		//++ num_fields2;
@@ -1766,11 +1766,11 @@ yyreduce:
 		//	header_row_map2[num_fields2] = $1;
 		//}
 	}
-#line 1770 "tab-separated-values.tab.c"
+#line 1770 "tab-separated-values/tab-separated-values.tab.c"
     break;
 
   case 7:
-#line 250 "tab-separated-values.y"
+#line 250 "tab-separated-values/tab-separated-values.y"
                {
 		//cout << " not pushing last field as it's empty:"
 		//	<< ", num_fields2: " << num_fields2
@@ -1790,11 +1790,11 @@ yyreduce:
 			header_row_map2[num_fields2] = string("");
 		}
 	}
-#line 1794 "tab-separated-values.tab.c"
+#line 1794 "tab-separated-values/tab-separated-values.tab.c"
     break;
 
   case 8:
-#line 269 "tab-separated-values.y"
+#line 269 "tab-separated-values/tab-separated-values.y"
                       {
 		//cout << "got TABSV_FIELD" << endl;
 		csv_record.push_back(yyvsp[0]);
@@ -1803,11 +1803,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1807 "tab-separated-values.tab.c"
+#line 1807 "tab-separated-values/tab-separated-values.tab.c"
     break;
 
   case 9:
-#line 277 "tab-separated-values.y"
+#line 277 "tab-separated-values/tab-separated-values.y"
                               {
 		//cout << "got TABSV_QUOTED_FIELD" << endl;
 		csv_record.push_back(yyvsp[0]);
@@ -1816,11 +1816,11 @@ yyreduce:
 			header_row_map2[num_fields2] = yyvsp[0];
 		}
 	}
-#line 1820 "tab-separated-values.tab.c"
+#line 1820 "tab-separated-values/tab-separated-values.tab.c"
     break;
 
 
-#line 1824 "tab-separated-values.tab.c"
+#line 1824 "tab-separated-values/tab-separated-values.tab.c"
 
         default: break;
       }
@@ -2064,6 +2064,6 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 367 "tab-separated-values.y"
+#line 367 "tab-separated-values/tab-separated-values.y"
 
 

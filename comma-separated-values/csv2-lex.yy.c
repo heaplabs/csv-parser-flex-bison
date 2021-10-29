@@ -1189,6 +1189,7 @@ YY_RULE_SETUP
 #line 164 "comma-separated-values/csv2-lex.l"
 {
 	++num_fields;
+	++comma_count ;
 	//printf("field separator: %d\n", num_fields);
 	return ',';
 }
@@ -1203,7 +1204,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 178 "comma-separated-values/csv2-lex.l"
+#line 179 "comma-separated-values/csv2-lex.l"
 {
 	++num_lines;
 	//printf("total fields :%d\n", num_fields);
@@ -1222,10 +1223,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 194 "comma-separated-values/csv2-lex.l"
+#line 195 "comma-separated-values/csv2-lex.l"
 ECHO;
 	YY_BREAK
-#line 1229 "comma-separated-values/csv2-lex.yy.c"
+#line 1230 "comma-separated-values/csv2-lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(quoted_field):
 	yyterminate();
@@ -2231,7 +2232,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 194 "comma-separated-values/csv2-lex.l"
+#line 195 "comma-separated-values/csv2-lex.l"
 
 
 void csv2_lex_clean_up() {

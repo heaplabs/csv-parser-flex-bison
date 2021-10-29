@@ -180,6 +180,7 @@ struct LexerSpecificVars tabLexerSpecificVars;
 
 \t	{
 	++tabLexerSpecificVars.num_fields;
+	++tabLexerSpecificVars.tab_count;
 	//printf("field separator: %d\n", tabLexerSpecificVars.num_fields);
 	return '\t';
 }

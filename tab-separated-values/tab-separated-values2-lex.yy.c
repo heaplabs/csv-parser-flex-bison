@@ -1,6 +1,6 @@
-#line 2 "tab-separated-values2-lex.yy.c"
+#line 2 "tab-separated-values/tab-separated-values2-lex.yy.c"
 
-#line 4 "tab-separated-values2-lex.yy.c"
+#line 4 "tab-separated-values/tab-separated-values2-lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -438,7 +438,7 @@ extern FILE *yyin, *yyout;
 		YY_DO_BEFORE_ACTION; /* set up yytext again */ \
 		} \
 	while ( 0 )
-#define unput(c) yyunput( c, (yytext_ptr)  )
+#define unput(c) yyunput( c, (tabsv_text_ptr)  )
 
 #ifndef YY_STRUCT_YY_BUFFER_STATE
 #define YY_STRUCT_YY_BUFFER_STATE
@@ -605,13 +605,13 @@ static void yynoreturn yy_fatal_error ( const char* msg  );
  * corresponding action - sets up yytext.
  */
 #define YY_DO_BEFORE_ACTION \
-	(yytext_ptr) = yy_bp; \
+	(tabsv_text_ptr) = yy_bp; \
 	yyleng = (int) (yy_cp - yy_bp); \
 	(yy_hold_char) = *yy_cp; \
 	*yy_cp = '\0'; \
 	if ( yyleng >= YYLMAX ) \
 		YY_FATAL_ERROR( "token too large, exceeds YYLMAX" ); \
-	yy_flex_strncpy( yytext, (yytext_ptr), yyleng + 1 ); \
+	yy_flex_strncpy( yytext, (tabsv_text_ptr), yyleng + 1 ); \
 	(yy_c_buf_p) = yy_cp;
 #define YY_NUM_RULES 14
 #define YY_END_OF_BUFFER 15
@@ -712,9 +712,9 @@ int yy_flex_debug = 0;
 #endif
 
 char yytext[YYLMAX];
-char *yytext_ptr;
-#line 1 "tab-separated-values2-lex.l"
-#line 2 "tab-separated-values2-lex.l"
+char *tabsv_text_ptr;
+#line 1 "tab-separated-values/tab-separated-values2-lex.l"
+#line 2 "tab-separated-values/tab-separated-values2-lex.l"
 #include <map>
 #include <string>
 #include <iostream>
@@ -756,9 +756,9 @@ struct LexerSpecificVars tabLexerSpecificVars;
 // int comma_count = 0;
 // int num_lines = 0, num_fields = 1, num_quoted_fields = 0;
 
-#line 760 "tab-separated-values2-lex.yy.c"
+#line 760 "tab-separated-values/tab-separated-values2-lex.yy.c"
 
-#line 762 "tab-separated-values2-lex.yy.c"
+#line 762 "tab-separated-values/tab-separated-values2-lex.yy.c"
 
 #define INITIAL 0
 #define quoted_field 1
@@ -824,7 +824,7 @@ extern int yywrap ( void );
     
 #endif
 
-#ifndef yytext_ptr
+#ifndef tabsv_text_ptr
 static void yy_flex_strncpy ( char *, const char *, int );
 #endif
 
@@ -976,10 +976,10 @@ YY_DECL
 		}
 
 	{
-#line 51 "tab-separated-values2-lex.l"
+#line 51 "tab-separated-values/tab-separated-values2-lex.l"
 
 
-#line 983 "tab-separated-values2-lex.yy.c"
+#line 983 "tab-separated-values/tab-separated-values2-lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -1038,7 +1038,7 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 53 "tab-separated-values2-lex.l"
+#line 53 "tab-separated-values/tab-separated-values2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote0: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
@@ -1062,7 +1062,7 @@ case 2:
 (yy_c_buf_p) = yy_cp -= 1;
 YY_DO_BEFORE_ACTION; /* set up yytext again */
 YY_RULE_SETUP
-#line 71 "tab-separated-values2-lex.l"
+#line 71 "tab-separated-values/tab-separated-values2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote1: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
@@ -1084,7 +1084,7 @@ YY_RULE_SETUP
 /* warning rule cant be matched because of my changes */ 
 case 3:
 YY_RULE_SETUP
-#line 90 "tab-separated-values2-lex.l"
+#line 90 "tab-separated-values/tab-separated-values2-lex.l"
 {
 	//printf("CSV_FIELD got field with misplaced double quote2: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
@@ -1105,7 +1105,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 108 "tab-separated-values2-lex.l"
+#line 108 "tab-separated-values/tab-separated-values2-lex.l"
 {
 	//printf("got field: |%s|, field_no: %d\n", yytext, tabLexerSpecificVars.num_fields);
 	string field(yytext);
@@ -1126,14 +1126,14 @@ YY_RULE_SETUP
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 126 "tab-separated-values2-lex.l"
+#line 126 "tab-separated-values/tab-separated-values2-lex.l"
 {
 	BEGIN(quoted_field);
 }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 130 "tab-separated-values2-lex.l"
+#line 130 "tab-separated-values/tab-separated-values2-lex.l"
 {
 	//strcpy(buffer+strlen(buffer), yytext);
 	tabLexerSpecificVars.buffer += string(yytext);
@@ -1141,7 +1141,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 135 "tab-separated-values2-lex.l"
+#line 135 "tab-separated-values/tab-separated-values2-lex.l"
 {
 	//printf("got a double quote inside a csv field");
 	//strcpy(buffer + strlen(buffer), "\"\"");
@@ -1151,7 +1151,7 @@ YY_RULE_SETUP
 case 8:
 /* rule 8 can match eol */
 YY_RULE_SETUP
-#line 141 "tab-separated-values2-lex.l"
+#line 141 "tab-separated-values/tab-separated-values2-lex.l"
 {
 	//printf("found a newline in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\n");
@@ -1160,7 +1160,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 147 "tab-separated-values2-lex.l"
+#line 147 "tab-separated-values/tab-separated-values2-lex.l"
 {
 	//printf("found a carriage return in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), "\r");
@@ -1169,7 +1169,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 153 "tab-separated-values2-lex.l"
+#line 153 "tab-separated-values/tab-separated-values2-lex.l"
 {
 	//printf("found a comma in a quoted field\n");
 	//strcpy(buffer + strlen(buffer), ",");
@@ -1178,7 +1178,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 159 "tab-separated-values2-lex.l"
+#line 159 "tab-separated-values/tab-separated-values2-lex.l"
 {
 	map<int,string>::const_iterator  index = tabLexerSpecificVars.header_row_map.find(tabLexerSpecificVars.num_fields);
 	string field(tabLexerSpecificVars.buffer);
@@ -1203,9 +1203,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 181 "tab-separated-values2-lex.l"
+#line 181 "tab-separated-values/tab-separated-values2-lex.l"
 {
 	++tabLexerSpecificVars.num_fields;
+	++tabLexerSpecificVars.tab_count;
 	//printf("field separator: %d\n", tabLexerSpecificVars.num_fields);
 	return '\t';
 }
@@ -1220,7 +1221,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 195 "tab-separated-values2-lex.l"
+#line 196 "tab-separated-values/tab-separated-values2-lex.l"
 {
 	++tabLexerSpecificVars.num_lines;
 	//printf("total fields :%d\n", tabLexerSpecificVars.num_fields);
@@ -1239,10 +1240,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 211 "tab-separated-values2-lex.l"
+#line 212 "tab-separated-values/tab-separated-values2-lex.l"
 ECHO;
 	YY_BREAK
-#line 1246 "tab-separated-values2-lex.yy.c"
+#line 1247 "tab-separated-values/tab-separated-values2-lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(quoted_field):
 	yyterminate();
@@ -1250,7 +1251,7 @@ case YY_STATE_EOF(quoted_field):
 	case YY_END_OF_BUFFER:
 		{
 		/* Amount of text matched not including the EOB char. */
-		int yy_amount_of_matched_text = (int) (yy_cp - (yytext_ptr)) - 1;
+		int yy_amount_of_matched_text = (int) (yy_cp - (tabsv_text_ptr)) - 1;
 
 		/* Undo the effects of YY_DO_BEFORE_ACTION. */
 		*yy_cp = (yy_hold_char);
@@ -1283,7 +1284,7 @@ case YY_STATE_EOF(quoted_field):
 			{ /* This was really a NUL. */
 			yy_state_type yy_next_state;
 
-			(yy_c_buf_p) = (yytext_ptr) + yy_amount_of_matched_text;
+			(yy_c_buf_p) = (tabsv_text_ptr) + yy_amount_of_matched_text;
 
 			yy_current_state = yy_get_previous_state(  );
 
@@ -1298,7 +1299,7 @@ case YY_STATE_EOF(quoted_field):
 
 			yy_next_state = yy_try_NUL_trans( yy_current_state );
 
-			yy_bp = (yytext_ptr) + YY_MORE_ADJ;
+			yy_bp = (tabsv_text_ptr) + YY_MORE_ADJ;
 
 			if ( yy_next_state )
 				{
@@ -1332,7 +1333,7 @@ case YY_STATE_EOF(quoted_field):
 					 * YY_NULL, it'll still work - another
 					 * YY_NULL will get returned.
 					 */
-					(yy_c_buf_p) = (yytext_ptr) + YY_MORE_ADJ;
+					(yy_c_buf_p) = (tabsv_text_ptr) + YY_MORE_ADJ;
 
 					yy_act = YY_STATE_EOF(YY_START);
 					goto do_action;
@@ -1348,12 +1349,12 @@ case YY_STATE_EOF(quoted_field):
 
 			case EOB_ACT_CONTINUE_SCAN:
 				(yy_c_buf_p) =
-					(yytext_ptr) + yy_amount_of_matched_text;
+					(tabsv_text_ptr) + yy_amount_of_matched_text;
 
 				yy_current_state = yy_get_previous_state(  );
 
 				yy_cp = (yy_c_buf_p);
-				yy_bp = (yytext_ptr) + YY_MORE_ADJ;
+				yy_bp = (tabsv_text_ptr) + YY_MORE_ADJ;
 				goto yy_match;
 
 			case EOB_ACT_LAST_MATCH:
@@ -1363,7 +1364,7 @@ case YY_STATE_EOF(quoted_field):
 				yy_current_state = yy_get_previous_state(  );
 
 				yy_cp = (yy_c_buf_p);
-				yy_bp = (yytext_ptr) + YY_MORE_ADJ;
+				yy_bp = (tabsv_text_ptr) + YY_MORE_ADJ;
 				goto yy_find_action;
 			}
 		break;
@@ -1387,7 +1388,7 @@ case YY_STATE_EOF(quoted_field):
 static int yy_get_next_buffer (void)
 {
     	char *dest = YY_CURRENT_BUFFER_LVALUE->yy_ch_buf;
-	char *source = (yytext_ptr);
+	char *source = (tabsv_text_ptr);
 	int number_to_move, i;
 	int ret_val;
 
@@ -1397,7 +1398,7 @@ static int yy_get_next_buffer (void)
 
 	if ( YY_CURRENT_BUFFER_LVALUE->yy_fill_buffer == 0 )
 		{ /* Don't try to fill the buffer, so this is an EOF. */
-		if ( (yy_c_buf_p) - (yytext_ptr) - YY_MORE_ADJ == 1 )
+		if ( (yy_c_buf_p) - (tabsv_text_ptr) - YY_MORE_ADJ == 1 )
 			{
 			/* We matched a single character, the EOB, so
 			 * treat this as a final EOF.
@@ -1417,7 +1418,7 @@ static int yy_get_next_buffer (void)
 	/* Try to read more data. */
 
 	/* First move last chars to start of buffer. */
-	number_to_move = (int) ((yy_c_buf_p) - (yytext_ptr) - 1);
+	number_to_move = (int) ((yy_c_buf_p) - (tabsv_text_ptr) - 1);
 
 	for ( i = 0; i < number_to_move; ++i )
 		*(dest++) = *(source++);
@@ -1515,7 +1516,7 @@ static int yy_get_next_buffer (void)
 	YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars)] = YY_END_OF_BUFFER_CHAR;
 	YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[(yy_n_chars) + 1] = YY_END_OF_BUFFER_CHAR;
 
-	(yytext_ptr) = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[0];
+	(tabsv_text_ptr) = &YY_CURRENT_BUFFER_LVALUE->yy_ch_buf[0];
 
 	return ret_val;
 }
@@ -1529,7 +1530,7 @@ static int yy_get_next_buffer (void)
     
 	yy_current_state = (yy_start);
 
-	for ( yy_cp = (yytext_ptr) + YY_MORE_ADJ; yy_cp < (yy_c_buf_p); ++yy_cp )
+	for ( yy_cp = (tabsv_text_ptr) + YY_MORE_ADJ; yy_cp < (yy_c_buf_p); ++yy_cp )
 		{
 		YY_CHAR yy_c = (*yy_cp ? yy_ec[YY_SC_TO_UI(*yy_cp)] : 1);
 		if ( yy_accept[yy_current_state] )
@@ -1611,7 +1612,7 @@ static int yy_get_next_buffer (void)
 
 	*--yy_cp = (char) c;
 
-	(yytext_ptr) = yy_bp;
+	(tabsv_text_ptr) = yy_bp;
 	(yy_hold_char) = *yy_cp;
 	(yy_c_buf_p) = yy_cp;
 }
@@ -1642,7 +1643,7 @@ static int yy_get_next_buffer (void)
 
 		else
 			{ /* need more input */
-			int offset = (int) ((yy_c_buf_p) - (yytext_ptr));
+			int offset = (int) ((yy_c_buf_p) - (tabsv_text_ptr));
 			++(yy_c_buf_p);
 
 			switch ( yy_get_next_buffer(  ) )
@@ -1678,7 +1679,7 @@ static int yy_get_next_buffer (void)
 					}
 
 				case EOB_ACT_CONTINUE_SCAN:
-					(yy_c_buf_p) = (yytext_ptr) + offset;
+					(yy_c_buf_p) = (tabsv_text_ptr) + offset;
 					break;
 				}
 			}
@@ -1748,7 +1749,7 @@ static int yy_get_next_buffer (void)
 static void yy_load_buffer_state  (void)
 {
     	(yy_n_chars) = YY_CURRENT_BUFFER_LVALUE->yy_n_chars;
-	(yytext_ptr) = (yy_c_buf_p) = YY_CURRENT_BUFFER_LVALUE->yy_buf_pos;
+	(tabsv_text_ptr) = (yy_c_buf_p) = YY_CURRENT_BUFFER_LVALUE->yy_buf_pos;
 	yyin = YY_CURRENT_BUFFER_LVALUE->yy_input_file;
 	(yy_hold_char) = *(yy_c_buf_p);
 }
@@ -2202,7 +2203,7 @@ int yylex_destroy  (void)
  * Internal utility routines.
  */
 
-#ifndef yytext_ptr
+#ifndef tabsv_text_ptr
 static void yy_flex_strncpy (char* s1, const char * s2, int n )
 {
 		
@@ -2248,7 +2249,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 211 "tab-separated-values2-lex.l"
+#line 212 "tab-separated-values/tab-separated-values2-lex.l"
 
 
 void tabsv2_lex_clean_up() {

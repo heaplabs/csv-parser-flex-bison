@@ -1206,6 +1206,7 @@ YY_RULE_SETUP
 #line 181 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	++lexerSpecificVars.num_fields;
+	++lexerSpecificVars.semi_colon_count;
 	//printf("field separator: %d\n", lexerSpecificVars.num_fields);
 	return ';';
 }
@@ -1220,7 +1221,7 @@ YY_RULE_SETUP
 case 13:
 /* rule 13 can match eol */
 YY_RULE_SETUP
-#line 195 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 196 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 {
 	++lexerSpecificVars.num_lines;
 	//printf("total fields :%d\n", lexerSpecificVars.num_fields);
@@ -1239,10 +1240,10 @@ YY_RULE_SETUP
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 211 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 212 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 ECHO;
 	YY_BREAK
-#line 1246 "semicolon-separated-values/semicolon-separated-values2-lex.yy.c"
+#line 1247 "semicolon-separated-values/semicolon-separated-values2-lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(quoted_field):
 	yyterminate();
@@ -2248,7 +2249,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 211 "semicolon-separated-values/semicolon-separated-values2-lex.l"
+#line 212 "semicolon-separated-values/semicolon-separated-values2-lex.l"
 
 
 void semicolonsv2_lex_clean_up() {
