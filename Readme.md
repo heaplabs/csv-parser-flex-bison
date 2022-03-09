@@ -22,6 +22,75 @@ To see that logic - have a look at common/driver.cpp
 * c++-11 
 * GNU make
 
+```
+brew info flex
+
+
+flex: stable 2.6.4 (bottled), HEAD [keg-only]
+Fast Lexical Analyzer, generates Scanners (tokenizers)
+https://github.com/westes/flex
+/opt/homebrew/Cellar/flex/2.6.4_2 (46 files, 1.6MB)
+Poured from bottle on 2021-09-25 at 13:48:45
+From: https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/flex.rb
+License: BSD-2-Clause
+==> Dependencies
+Build: help2man ✘
+Required: gettext ✔
+==> Options
+--HEAD
+Install HEAD version
+==> Caveats
+flex is keg-only, which means it was not symlinked into /opt/homebrew,
+because macOS already provides this software and installing another version in
+parallel can cause all kinds of trouble.
+
+If you need to have flex first in your PATH, run:
+echo 'export PATH="/opt/homebrew/opt/flex/bin:$PATH"' >> ~/.zshrc
+
+For compilers to find flex you may need to set:
+export LDFLAGS="-L/opt/homebrew/opt/flex/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/flex/include"
+
+==> Analytics
+install: 1,962 (30 days), 5,700 (90 days), 28,177 (365 days)
+install-on-request: 1,600 (30 days), 4,605 (90 days), 22,208 (365 days)
+build-error: 1 (30 days)
+```
+
+```
+brew info bison
+
+
+bison: stable 3.8.2 (bottled) [keg-only]
+Parser generator
+https://www.gnu.org/software/bison/
+/opt/homebrew/Cellar/bison/3.8.2 (99 files, 3.7MB)
+Poured from bottle on 2021-10-08 at 16:13:15
+From: https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/bison.rb
+License: GPL-3.0-or-later
+==> Caveats
+bison is keg-only, which means it was not symlinked into /opt/homebrew,
+because macOS already provides this software and installing another version in
+parallel can cause all kinds of trouble.
+
+
+
+If you need to have bison first in your PATH, run:
+echo 'export PATH="/opt/homebrew/opt/bison/bin:$PATH"' >> ~/.zshrc
+
+
+
+For compilers to find bison you may need to set:
+export LDFLAGS="-L/opt/homebrew/opt/bison/lib"
+
+
+
+==> Analytics
+install: 16,083 (30 days), 47,157 (90 days), 221,672 (365 days)
+install-on-request: 10,204 (30 days), 31,108 (90 days), 136,836 (365 days)
+build-error: 1 (30 days)
+```
+
 # Tested platforms
 MacOS 
 Ubuntu Linux
