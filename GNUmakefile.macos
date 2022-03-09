@@ -8,7 +8,7 @@ OBJ2S= build/driver.o \
 SRC=comma-separated-values/csv.y comma-separated-values/csv2-lex.l
 CC=g++-11 -g -O2 -std=c++11
 
-build/csv2_ubuntu.exe: $(OBJ2S) $(SRC)
+build/csv2_macos.exe: $(OBJ2S) $(SRC)
 	$(CC) -o $@ $(OBJ2S)
 
 .PHONY: clean
