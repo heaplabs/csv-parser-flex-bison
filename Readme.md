@@ -1,5 +1,5 @@
 # Summary
-This is a custom CSV parser written for our usecase at [SmartReach.io(https://smartreach.io)]
+This is a custom CSV parser written for our usecase at [SmartReach.io](https://smartreach.io)
 
 We faced various issues with csv parsing libraries and finally to 
 reduce our error rate we decided to roll our own parser.
