@@ -139,7 +139,9 @@ run the program as illustrated below:
 
 the result of the parse is printed as a json to stdout:
 
-## Example 1:
+## Ubuntu Linux
+
+### Example 1:
 
 ```shell
 ❯ ./build/csv2_ubuntu.exe comma-separated-values/csv-test-files/inp1.csv
@@ -164,10 +166,82 @@ the result of the parse is printed as a json to stdout:
 ]}
 ```
 
-## Example 2:
+### Example 2:
 
 ```shell
 ❯ ./build/csv2_ubuntu.exe comma-separated-values/csv-test-files/inp2.csv
+```
+
+```json
+{
+"expected_fields" : 3,
+"n_iso_8859_1" : 0,
+"n_utf8_longer_than_1byte" : 0,
+"n_wincp1252" : 0,
+"successfully_parsed" : 4,
+"total_errors" : 0,
+"total_records" : 4,
+"header" :  [ 
+    "abcd",
+    "efgh",
+    "1235"
+ ] 
+,
+"parsed_data":[
+ [ 
+    "abcd",
+    "efgh",
+    "1235"
+ ] 
+, [ 
+    "abcd",
+    "efgh",
+    "1235"
+ ] 
+, [ 
+    "abcd",
+    "efgh",
+    "12\t35"
+ ] 
+, [ 
+    "abcd",
+    "efgh",
+    "1235"
+ ] ]}
+ ```
+
+
+## MacOS
+
+### Example 1:
+
+```shell
+❯ ./build/csv2_macos.exe comma-separated-values/csv-test-files/inp1.csv
+```
+
+```json
+{
+"expected_fields" : 3,
+"n_iso_8859_1" : 0,
+"n_utf8_longer_than_1byte" : 0,
+"n_wincp1252" : 0,
+"successfully_parsed" : 0,
+"total_errors" : 0,
+"total_records" : 0,
+"header" :  [ 
+    "abcd",
+    "efgh",
+    "1235"
+ ] 
+,
+"parsed_data":[
+]}
+```
+
+### Example 2:
+
+```shell
+❯ ./build/csv2_macos.exe comma-separated-values/csv-test-files/inp2.csv
 ```
 
 ```json
