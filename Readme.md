@@ -92,8 +92,8 @@ build-error: 1 (30 days)
 ```
 
 # Tested platforms
-MacOS 
-Ubuntu Linux
+* MacOS 
+* Ubuntu Linux
 
 
 # Building
