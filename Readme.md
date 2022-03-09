@@ -1,5 +1,5 @@
 # Summary
-This is a custom CSV parser written for our usecase at SmartReach.io
+This is a custom CSV parser written for our usecase at [SmartReach.io(https://smartreach.io)]
 
 We faced various issues with csv parsing libraries and finally to 
 reduce our error rate we decided to roll our own parser.
@@ -13,10 +13,10 @@ To see that logic - have a look at common/driver.cpp
 
 # Prerequisites
 
-bison (GNU Bison) 3.5.1
-flex 2.6.4
-c++-11 
-GNU make
+* bison (GNU Bison) 3.5.1
+* flex 2.6.4
+* c++-11 
+* GNU make
 
 # Tested platforms
 MacOS 
@@ -56,7 +56,6 @@ make -f GNUmakefile.macos
 The integrated parser (for csv, tsv and semicolon separated files) will
 live in `build` folder, the generated exe is : `csv2_macos.exe`
 
-## Build output 
 
 # Running the generated parser.
 
