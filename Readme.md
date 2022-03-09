@@ -1,8 +1,12 @@
 # Summary
 This is a custom CSV parser written for our usecase at [SmartReach.io](https://smartreach.io)
 
-We faced various issues with csv parsing libraries and finally to 
-reduce our error rate we decided to roll our own parser.
+We faced various issues with csv parsing libraries.
+These were not necessarily the faults of the libraries, but rather
+the varied formats of CSV files - including incorrectly formatted files that our customers 
+expected to "just" work, Tab separated files and semi-colon separated files.
+
+Finally to reduce our error rate we decided to roll our own parser.
 
 We have seen a significant reduction in CSV errors after this.
 
