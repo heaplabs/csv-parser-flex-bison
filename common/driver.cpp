@@ -319,7 +319,14 @@ StringCodePageAnalysisResult json_print(std::string const & s)
 			//cout << "std ascii" << endl;
 			//cout << "ascii printable char: |" << s[i] << "|" << endl;
 			// todo - bring back later
-			if (s[i] == '"' || s[i] == '\\' || s[i] == '/') {
+			if (i> 0 && s[i] == '"' && s[i-1] == '"') {
+				//cout << "adding backslash" << endl;
+				// there are 2 consecutive double quotes - so strip off
+				// one by not outputting it
+				//ss << "\\" << s[i];
+			} else if (i> 0 && s[i] == '"' && s[i-1] != '"') {
+				ss << "\\" << s[i];
+			} else if ( s[i] == '\\' || s[i] == '/') {
 				//cout << "adding backslash" << endl;
 				ss << "\\" << s[i];
 			} else {
